@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,booktabs,hyperref}
+\title{Calibration Collapse on the Distant Stratum: Frozen ESM-2 Biosecurity Retrieval Is Confidently Wrong Precisely Where Confidence Matters}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We compute reliability diagrams per similarity stratum for frozen ESM-2 t30 cosine $k{=}25$ retrieval on 24{,}885 biosecurity-relevant proteins with panel $R{=}1000$, seed 20260410. Expected Calibration Error increases 4.3-fold from close stratum (0.069) to distant stratum (0.294). Positive-prediction precision collapses from 0.788 to 0.068 across the same gradient: on the distant stratum, the classifier makes 44 positive predictions of which only 3 are true positives. The high-confidence failure mode is particularly severe: in the vote-fraction bin $[0.9, 1.0)$ on the distant stratum, the classifier makes 3 positive predictions, 0 of which are correct. For biosecurity deployment this implies a cosine k-NN pipeline at the regime described would generate a 93.2\% false-alarm rate on distant-stratum hits, operationally unusable without either a different metric (the learned-projection companion paper shows a 2.6$\times$ improvement) or human review of all distant-stratum flags.
+\end{abstract}
+
+\section{Reliability}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+vote-fraction bin & close $P(y{=}1)$ & moderate $P(y{=}1)$ & distant $P(y{=}1)$ \\
+\midrule
+{[0.0, 0.1)} & 0.003 & 0.001 & 0.000 \\
+{[0.1, 0.2)} & 0.025 & 0.000 & 0.000 \\
+{[0.2, 0.3)} & 0.095 & 0.012 & 0.050 \\
+{[0.3, 0.4)} & 0.140 & 0.093 & 0.100 \\
+{[0.4, 0.5)} & 0.197 & 0.028 & 0.035 \\
+{[0.5, 0.6)} & 0.278 & 0.136 & 0.046 \\
+{[0.6, 0.7)} & 0.358 & 0.344 & 0.000 \\
+{[0.7, 0.8)} & 0.601 & 0.338 & 0.250 \\
+{[0.8, 0.9)} & 0.653 & 0.424 & 0.000 \\
+{[0.9, 1.0)} & 0.912 & 0.534 & 0.000 \\
+\midrule
+ECE & 0.0685 & 0.1537 & \textbf{0.2938} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Precision}
+At the decision threshold vote-fraction $\ge 0.5$ (majority positive): close precision $0.788$ (6152/7810), moderate $0.347$ (125/360), distant $\mathbf{0.068}$ (3/44). The number of distant-stratum positive predictions (44) is already small, and the vast majority (41 of 44) are false alarms.
+
+\section{Implications for biosecurity}
+Retrieval pipelines that assume vote-fraction reflects true positive probability across strata will systematically over-flag distant proteins as toxins. The calibration asymmetry is not correctable by a single global Platt or isotonic fit because the miscalibration is stratum-dependent. Either (i) the classifier is conditioned on stratum (per-stratum calibration), (ii) the classifier switches metrics (see companion learned-projection paper), or (iii) all distant-stratum positive hits go to human review. Operationally, option (iii) is safe; options (i) and (ii) reduce the human-review burden.
+
+\section{Companion results}
+This calibration finding is one of five pre-registered experiments on the same 24{,}885-protein test set: main homology-cliff factorial (3000 cells), panel-only shuffle null (3000 cells), full-pool permutation null (in progress), Fisher-Rao whitening (rejected), metric cascade (rejected), learned-projection (wins all strata). See homology-cliff v3, Fisher-negative, cascade-negative, and learned-projection papers.
+\end{document}

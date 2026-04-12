@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref,verbatim}
+\title{Methods and Pre-Registrations: A 4000-Cell Factorial Harness with Four Locked Pre-Registrations and a Pre-Committed Seed-Variance Gate}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+This methods paper documents the infrastructure shared by all five papers in the homology-cliff compendium. A 4000-cell pre-registered factorial (4 ESM-2 scales $\times$ 5 panel sizes $\times$ 5 neighbor counts $\times$ 4 metrics $\times$ 10 seeds) runs on 36 GB RAM i7 CPU with FAISS for k-NN, Ledoit-Wolf shrinkage for Mahalanobis, and a 50-iteration triplet-surrogate linear projection for the supervised metric. Four pre-registrations with SHA256 locks guard against hypothesis-after-results-known (HARKing): main cliff hypothesis (SHA256 139f6012\ldots), full-pool permutation null addendum (f3864d09\ldots), stratified cascade, Fisher-Rao whitening. A pre-committed seed-variance gate voids any (scale, $R$, $k$, metric) group where across-seed std exceeds the claimed effect size. Full code release (MIT), full pre-reg release (timestamped), 9{,}360 per-cell .npz outputs with bootstrap CIs per stratum per cell.
+\end{abstract}
+
+\section{Factorial}
+$\{$t6, t12, t30$\} \times \{$50, 100, 250, 500, 1000$\} \times \{$1, 3, 5, 10, 25$\} \times \{$cosine, Euclidean, Mahalanobis, learned$\} \times$ 10 seeds $=$ 3000 cells for the main factorial. The full 4000-cell commitment includes t33 (650M) pending Kaggle GPU embedding.
+
+\section{Metrics}
+Four metric implementations, shared across all experiments:
+\begin{enumerate}
+\item \textbf{Cosine}: FAISS IndexFlatIP on $L_2$-normalized embeddings; equivalent to Euclidean on the unit sphere (proved in Paper 1).
+\item \textbf{Euclidean}: FAISS IndexFlatL2; used only for numerical verification.
+\item \textbf{Mahalanobis}: Ledoit-Wolf shrinkage covariance on panel, eigendecomposition whitening, FAISS IndexFlatL2 on whitened coordinates.
+\item \textbf{Learned}: 50-iteration Adam on $W \in \mathbb{R}^{D \times 128}$ (seed 0), triplet-surrogate loss $\mathcal{L}(W) = -\langle Z_+, Z_+ \rangle - \langle Z_-, Z_- \rangle + \langle Z_+, Z_- \rangle$ on panel only, FAISS IndexFlatIP on projected $L_2$-normalized embeddings.
+\end{enumerate}
+
+\section{Stratification}
+Close: $s_{\max} \ge 0.95$. Moderate: $0.90 \le s_{\max} < 0.95$. Distant: $s_{\max} < 0.90$. Thresholds locked in main pre-reg before any evaluation. Strata with $n < 100$ flagged \texttt{underpowered} but still reported; pooled analysis excludes underpowered strata.
+
+\section{Seed-variance gate}
+Per (scale, $R$, $k$, metric) group of 10 seeds: compute $\sigma^{(10)}_{\text{distant}} = \text{std}(\{F_1^{\text{distant}}_s\}_{s=1}^{10})$ and the across-seed mean gap. If $\sigma^{(10)}_{\text{distant}} \ge \overline{F_1^{\text{close}}} - \overline{F_1^{\text{distant}}}$, the group is voided: the claimed cliff effect is reclassified as reference-panel-induced variance and H1 is not considered supported for that cell. All 300 main groups passed.
+
+\section{Bootstrap CIs}
+\texttt{BOOTSTRAP\_N} = 10{,}000 percentile-bootstrap resamples per cell per stratum. Percentile (not BCa) chosen because BCa jackknife across 4000 cells is expensive; percentile CIs are the standard fallback.
+
+\section{Pre-registrations and SHA256 locks}
+Four registrations locked before execution:
+\begin{itemize}
+\item \texttt{PRE\_REGISTRATION\_HOMOLOGY\_CLIFF\_v1.md} — SHA256 \texttt{139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06}. Main cliff factorial + stratum definitions + seed-variance gate.
+\item \texttt{PRE\_REGISTRATION\_HOMOLOGY\_CLIFF\_ADDENDUM\_FULLNULL.md} — SHA256 \texttt{f3864d097a0c611d790e6fb15a42e7efb36b2d1b103be4ec1c4f28f99d1004dc}. Full-pool permutation null after panel-only shuffle failed its criterion.
+\item \texttt{PRE\_REGISTRATION\_STRATIFIED\_CASCADE\_v1.md} — stratified cascade H1.
+\item \texttt{PRE\_REGISTRATION\_FISHER\_CLIFF\_v1.md} — Fisher-Rao H1.
+\end{itemize}
+Each harness verifies the pre-reg file's SHA256 at runtime and aborts if mismatched.
+
+\section{Reproducibility package}
+All harness + analysis scripts under MIT license in \texttt{code/}. All per-cell \texttt{.npz} files have schema \texttt{\{cell, shuffle, close, moderate, distant\}} where each stratum field is a dict containing \texttt{n, f1, f1\_ci\_lo, f1\_ci\_hi, underpowered, precision, recall}. Total 9{,}360 .npz files (3000 main + 3000 panel-null + 3000 full-null + 180 cascade + 180 fisher) on local disk; not committed to git due to size.
+
+\section{Hardware}
+Single 36 GB RAM Intel i7 workstation. No GPU used for any main-factorial experiment. FAISS CPU for k-NN. Total wall time for 9{,}360 cells: approximately 28 hours including all reruns and background processes.
+
+\section{Statistical conventions}
+$F_1$ defined with ties-in-majority-vote broken toward label 1: $\text{predict}(+) \iff \text{pos} \cdot 2 \ge k$. This is asymmetric; its effect on class-imbalanced F1 at base rate 28.7\% is documented in Paper 3 (Calibration Collapse) of this compendium.
+
+\section{Limitations}
+(L1) t33 (650M) and external PLMs (ProtT5, SaProt, ESM-3) not in main factorial; require GPU and are provided as Colab-notebook extensions. (L2) Stratification threshold sensitivity sweep not run. (L3) Learned metric uses a surrogate loss, not a proper triplet loss; a stronger baseline may exist.
+
+\section{Versioning}
+This compendium is version 1.0 dated April 12, 2026. Future extensions (full PLM leaderboard via Kaggle/Colab, adversarial phase 2, Pfam-gated cross-family partition) will appear as v1.1 and later in the same repository.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,booktabs,hyperref}
+\title{Panel Augmentation from Mapper-Identified Positive-Enriched Manifold Regions Does Not Rescue the Homology Cliff: A Pre-Registered Null Result}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+A Mapper decomposition of the frozen ESM-2 t30 embedding of our 24{,}885-protein biosecurity test set finds 149 nodes, of which 6 are all-positive and 30 have positive fraction $>0.5$. The positive class forms a coherent, spatially-localized cluster on the PCA lens. We pre-registered H1: a reference panel biased toward positive-enriched Mapper nodes rescues distant-stratum $F_1$ over uniform sampling by at least $+0.02$ with 95\% CI excluding zero. Across 10 seeds at t30 $R{=}1000$ $k{=}25$, the rescue is $+0.0018$, 95\% CI $[-0.027, +0.029]$, solidly including zero. H1 rejected. This joins the cascade-, Fisher-, and Mahalanobis-based attempts: the cliff cannot be rescued by panel composition or by post-hoc distance substitution. Only a supervised linear projection of the embedding space itself (learned-projection companion) improves distant-stratum $F_1$ significantly. The cliff is a property of the embedding space geometry, not of panel sampling strategy or metric choice.
+\end{abstract}
+
+\section{Setup}
+Mapper: PCA lens to 2D (33\% explained variance), 10$\times$10 cover with 30\% overlap, DBSCAN clustering ($\varepsilon{=}0.05$, min\_samples 5) on cosine distance per pre-image. 149 nodes, sizes 5--3579, 6 all-positive, 30 with pos\_frac $>0.5$. Top positive-enriched node: bin (7,4), $n{=}1708$, pos\_frac $0.885$. The top 1 positive node alone has 1131 positive proteins.
+
+Biased panel: $R/2 = 500$ positive members drawn from the top-1 positive-enriched Mapper node (1131 positives available); $R/2 = 500$ negative members drawn uniformly from the 17{,}752-negative pool. Seed rule matches the main pre-reg.
+
+\section{Result}
+\begin{center}
+\begin{tabular}{rcc}
+\toprule
+seed & uniform distant $F_1$ & biased distant $F_1$ \\
+\midrule
+20260410 & 0.1200 & 0.1081 \\
+20260411 & 0.1013 & 0.1446 \\
+20260412 & 0.1488 & 0.1017 \\
+20260413 & 0.1270 & 0.1429 \\
+20260414 & 0.1159 & 0.1282 \\
+20260415 & 0.0984 & 0.1481 \\
+20260416 & 0.0857 & 0.0600 \\
+20260417 & 0.1846 & 0.1500 \\
+20260418 & 0.0571 & 0.1250 \\
+20260419 & 0.1644 & 0.1124 \\
+\midrule
+mean     & 0.1203 & 0.1221 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Rescue = biased mean $-$ uniform mean $= +0.0018$. Bootstrap 95\% CI (5000 resamples, 10 seeds each): $[-0.0274, +0.0293]$. Includes zero. H1 rejected.
+
+\section{Why it fails}
+Positives on the t30 embedding manifold are clustered in a contiguous region (PCA bins (6,3)-(8,8)), with 93.9\% of the top-2 Mapper nodes being positive. Any panel sampled with $R/2{=}500$ positives from a class with 7{,}133 members already covers this region densely. Further biasing toward the largest positive node does not add information the panel did not already contain.
+
+The cliff lies elsewhere: on queries that are \emph{distant} from the entire positive cluster in embedding space (the distant stratum by $s_{\max}$), no amount of panel augmentation within the cluster helps, because the cluster is not where distant queries project their nearest neighbors. Distant queries are retrieving from the periphery of the manifold, not from the cluster core.
+
+\section{Relation to other rescue attempts}
+Four independent pre-registered attempts to rescue the cliff: (i) Ledoit-Wolf Mahalanobis whitening (rejected, degrades all strata), (ii) Fisher-Rao within-class whitening (rejected, 17/18 worse), (iii) stratified cosine+Mahalanobis cascade (rejected, 18/18), (iv) Mapper-biased panel augmentation (rejected, this paper). The only method that succeeds is a supervised linear projection of the embedding space (panel-only triplet surrogate), which wins 18/18 factorial groups. The working hypothesis: the cliff is a property of the frozen embedding manifold geometry. Panel tricks and distance tricks rearrange the same information without adding any, while a projection actively rotates the manifold into a class-aware subspace.
+
+\section{Limitations}
+(i) Single positive node used; biasing from multiple positive-enriched nodes could behave differently. (ii) Negative biasing not tested; it may be that over-sampling from negative-enriched regions near the distant stratum is the correct panel-side intervention. (iii) Only t30 $R{=}1000$ $k{=}25$ measured; smaller scales or panels not tested.
+
+\end{document}

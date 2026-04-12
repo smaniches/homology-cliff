@@ -1,0 +1,9 @@
+Creative Commons Attribution 4.0 International License (CC BY 4.0)
+
+Copyright (c) 2026 Santiago Maniches (ORCID: 0009-0005-6480-1987), TOPOLOGICA LLC
+
+All papers, figures, text, tables, and prose in this repository are licensed under CC BY 4.0.
+Full text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+You are free to share and adapt the material for any purpose, even commercially, under the
+following terms: attribution must be given (author, ORCID, repository URL).

@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "scale": "t30",
+    "R": 1000,
+    "k": 25,
+    "seed": 20260410,
+    "criterion": "distant-stratum true-positive false-negative, ranked by s_max",
+    "note": "Phase 1: selection only. Phase 2 (edit + re-embed) requires ESM-2 t30 model load and is run separately."
+  },
+  "targets": [
+    {
+      "uniprot_acc": "P0C1X3",
+      "smax": 0.8797465562820435,
+      "test_idx": 5658
+    },
+    {
+      "uniprot_acc": "Q6RY98",
+      "smax": 0.7726120948791504,
+      "test_idx": 14695
+    },
+    {
+      "uniprot_acc": "P13208",
+      "smax": 0.754798173904419,
+      "test_idx": 5361
+    }
+  ]
+}

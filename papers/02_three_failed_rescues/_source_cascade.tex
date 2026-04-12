@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{A Stratified Metric Cascade Does Not Rescue the Homology Cliff in Frozen ESM-2 Biosecurity Retrieval: A Pre-Registered Null Result}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+A natural proposal for rescuing the close-distant $F_1$ cliff in frozen ESM-2 retrieval is to apply different metrics on different similarity strata: cosine for close-stratum queries (where cosine $F_1 \approx 0.88$) and Mahalanobis for moderate and distant strata (where Mahalanobis reportedly reduces the close-distant gap). We pre-registered H1: this stratified cascade beats the better single-metric baseline by at least $+0.02$ pooled $F_1$ with 95\% bootstrap CI excluding zero. Running the 180-cell factorial (3 ESM-2 scales, 3 panel sizes, 2 neighbor counts, 10 seeds) decisively rejects H1: the cascade loses to cosine-alone in 18 of 18 groups by $0.05$ to $0.31$ absolute pooled $F_1$. The root cause is that Mahalanobis closes the close-distant \emph{gap} not by rescuing the distant stratum but by degrading the close stratum; it reduces both distant and close $F_1$. No stratum-dependent metric substitution built from \{cosine, Mahalanobis\} can improve over cosine-alone. An incidental finding in the same factorial is that the panel-only triplet-surrogate learned linear projection wins pooled $F_1$ in all 18 groups and provides the only deployable cliff rescue we have found; that result is presented in a companion paper.
+\end{abstract}
+
+\section{Pre-registration}
+\texttt{PRE\_REGISTRATION\_STRATIFIED\_CASCADE\_v1.md}, locked April 12, 2026. H1: cascade pooled $F_1$ exceeds $\max($cos, mah, learned$)$ pooled $F_1$ by at least $+0.02$ with 95\% CI excluding zero, across 10-seed bootstrap.
+
+\section{Cascade definition}
+For each test point, compute $s_{\max}$ against the panel, stratify close / moderate / distant with locked thresholds (0.95, 0.90). Predictions: cosine $k$-NN on close-stratum points, Mahalanobis $k$-NN on moderate and distant points. Pooled $F_1$ computed over the full test set (all strata combined).
+
+\section{Result}
+\begin{center}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+scale & $R$ & $k$ & cos & mah & learned & cascade & cas$-$best \\
+\midrule
+t6  & 100  & 5  & 0.826 & 0.640 & 0.820 & 0.709 & $-0.117$ \\
+t6  & 100  & 25 & 0.808 & 0.480 & 0.818 & 0.624 & $-0.194$ \\
+t6  & 500  & 5  & 0.862 & 0.722 & 0.863 & 0.802 & $-0.061$ \\
+t6  & 500  & 25 & 0.841 & 0.560 & 0.858 & 0.717 & $-0.141$ \\
+t6  & 1000 & 5  & 0.879 & 0.750 & 0.877 & 0.833 & $-0.046$ \\
+t6  & 1000 & 25 & 0.858 & 0.579 & 0.864 & 0.762 & $-0.102$ \\
+t12 & 100  & 5  & 0.818 & 0.547 & 0.837 & 0.601 & $-0.235$ \\
+t12 & 100  & 25 & 0.763 & 0.449 & 0.836 & 0.527 & $-0.310$ \\
+t12 & 500  & 5  & 0.859 & 0.606 & 0.873 & 0.696 & $-0.176$ \\
+t12 & 500  & 25 & 0.832 & 0.470 & 0.867 & 0.607 & $-0.260$ \\
+t12 & 1000 & 5  & 0.881 & 0.639 & 0.888 & 0.756 & $-0.131$ \\
+t12 & 1000 & 25 & 0.852 & 0.491 & 0.878 & 0.666 & $-0.212$ \\
+t30 & 100  & 5  & 0.819 & 0.509 & 0.849 & 0.680 & $-0.169$ \\
+t30 & 100  & 25 & 0.734 & 0.456 & 0.850 & 0.611 & $-0.239$ \\
+t30 & 500  & 5  & 0.862 & 0.454 & 0.887 & 0.763 & $-0.124$ \\
+t30 & 500  & 25 & 0.829 & 0.440 & 0.885 & 0.735 & $-0.150$ \\
+t30 & 1000 & 5  & 0.883 & 0.466 & 0.896 & 0.811 & $-0.086$ \\
+t30 & 1000 & 25 & 0.848 & 0.435 & 0.891 & 0.778 & $-0.112$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Cascade loses in 18 of 18 groups. The penalty grows with the gap between cosine and Mahalanobis on the close stratum, which is itself large because Mahalanobis degrades close-stratum $F_1$ substantially below cosine.
+
+\section{Why cascade fails}
+The cascade hypothesis assumed Mahalanobis rescues moderate and distant F1. Examining per-stratum F1 at t30 R=1000 k=25: cosine $(0.866, 0.393, 0.120)$ for (close, moderate, distant); Mahalanobis $(0.456, 0.118, 0.087)$. Mahalanobis is worse at every stratum, not better. The ``gap reduction'' reported in prior analyses is an artifact of close collapsing faster than distant. Since Mahalanobis dominates nothing, substituting it anywhere hurts pooled $F_1$.
+
+\section{What does work}
+The same 180-cell factorial shows the learned-metric baseline (50-iteration panel-only Adam triplet-surrogate linear projection to dim$=\min(128, D)$, seed 0) wins pooled $F_1$ in 18 of 18 groups. At t30 $R{=}1000$ $k{=}25$, learned pooled $F_1 = 0.891$, the best value observed anywhere in the factorial. Per-stratum at that cell: $(0.901, 0.525, 0.177)$ for (close, moderate, distant). The learned metric strictly dominates cosine on every stratum at every scale. This is the deployable cliff rescue; it is reported in a companion paper.
+
+\section{Conclusion}
+H1 rejected: stratified cosine+Mahalanobis cascade underperforms cosine-alone in 18 of 18 groups. Any framing that treats Mahalanobis whitening as a ``rescue'' for the homology cliff is incorrect. Practitioners seeking cliff improvement should use the panel-only learned-metric baseline, not a metric cascade.
+
+\end{document}

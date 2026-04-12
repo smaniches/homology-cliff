@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Fisher-Rao Whitening Underperforms Pooled-Covariance Mahalanobis on Frozen Protein Language Model Retrieval: A Pre-Registered Cross-Task Replication}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+On frozen ESM-2 embeddings, within-class pooled covariance whitening (the tractable Fisher-Rao metric for two-class Gaussian class-conditional models) is tested against Ledoit-Wolf pooled-all-points Mahalanobis whitening across 180 pre-registered factorial cells (3 scales, 3 panel sizes, 2 neighbor counts, 10 seeds) on the 24{,}885-protein beyond\_sequence\_v2 biosecurity retrieval benchmark. Fisher whitening produces a larger close-distant $F_1$ gap than Mahalanobis in 17 of 18 (scale, $R$, $k$) groups, with penalty growing to $+0.285$ absolute $F_1$ at t30 $R{=}100$ $k{=}25$. We reject the pre-registered H1 (Fisher beats Mahalanobis). This replicates the direction of Santiago (DR-010) on GO annotation (Shapley $-0.128$) in a different task domain, establishing that on frozen PLM embeddings, class-relevant structural variation is correlated with the intra-class noise that Fisher whitening destroys. The negative result is itself publishable: it closes a tempting hypothesis in the information-geometry toolbox for frozen-embedding retrieval.
+\end{abstract}
+
+\section{Setup}
+Pre-registration: \texttt{PRE\_REGISTRATION\_FISHER\_CLIFF\_v1.md} (locked April 12, 2026, parallel to the v1 cliff pre-reg SHA256 139f6012\ldots and to the stratified-cascade pre-reg). Embeddings, panel construction, stratification thresholds (close $s_{\max} \ge 0.95$, moderate $[0.90, 0.95)$, distant $< 0.90$), class balance 7{,}133/24{,}885, and seed-variance gate are inherited verbatim from the cliff pre-reg.
+
+Fisher whitening implementation: within-class pooled covariance $\Sigma_{\text{wc}} = (n^+ \Sigma^+ + n^- \Sigma^-)/(n^++n^-)$ on panel, shrunk 5\% toward diagonal for numerical stability, inverted via eigendecomposition, embeddings projected to Fisher-whitened space, Euclidean $k$-NN via FAISS IndexFlatL2.
+
+\section{Result}
+\begin{center}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+scale & $R$ & $k$ & Fisher gap & Mah gap & difference \\
+\midrule
+t6  & 100  & 5  & 0.606 & 0.579 & $+0.026$ \\
+t6  & 100  & 25 & 0.614 & 0.438 & $+0.176$ \\
+t6  & 500  & 5  & 0.711 & 0.670 & $+0.041$ \\
+t6  & 500  & 25 & 0.720 & 0.552 & $+0.168$ \\
+t6  & 1000 & 5  & 0.671 & 0.657 & $+0.013$ \\
+t6  & 1000 & 25 & 0.687 & 0.536 & $+0.151$ \\
+t12 & 100  & 5  & 0.601 & 0.645 & $-0.044$ \\
+t12 & 100  & 25 & 0.595 & 0.525 & $+0.069$ \\
+t12 & 500  & 5  & 0.771 & 0.691 & $+0.080$ \\
+t12 & 500  & 25 & 0.751 & 0.550 & $+0.201$ \\
+t12 & 1000 & 5  & 0.772 & 0.671 & $+0.100$ \\
+t12 & 1000 & 25 & 0.761 & 0.536 & $+0.225$ \\
+t30 & 100  & 5  & 0.656 & 0.418 & $+0.237$ \\
+t30 & 100  & 25 & 0.653 & 0.368 & $+0.285$ \\
+t30 & 500  & 5  & 0.563 & 0.406 & $+0.158$ \\
+t30 & 500  & 25 & 0.436 & 0.396 & $+0.039$ \\
+t30 & 1000 & 5  & 0.528 & 0.395 & $+0.133$ \\
+t30 & 1000 & 25 & 0.384 & 0.369 & $+0.015$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Seventeen of 18 groups favor Mahalanobis. The single Fisher-favoring group (t12 $R{=}100$ $k{=}5$, $-0.044$) is within seed noise.
+
+\section{Interpretation}
+On frozen ESM-2 embeddings, within-class covariance and between-class covariance are not cleanly separable: structural variation within a Pfam family (subfamily, organism, domain architecture) correlates with class-relevant geometric structure that the classifier exploits. Fisher-Rao whitening, which treats within-class variance as noise to be eliminated, removes this useful structure. Pooled covariance whitening preserves it because it normalizes total anisotropy without designating particular directions as ``noise.''
+
+The t30 $R{=}100$ result, where Fisher hurts $F_1$ by $+0.285$ absolute gap, is the worst cell. This is the regime where panel size is small (class-conditional covariance estimates are noisy) but embedding dimension is large (many directions exist along which within-class variance is mistaken for noise). At the most practically-relevant cell ($R{=}1000$, $k{=}25$, t30), the penalty shrinks to $+0.015$, which is not significant but also not reversed.
+
+\section{Connection to DR-010}
+TOPOLOGICA DR-010 measured Fisher-metric embeddings on Gene Ontology annotation and found Shapley value $-0.128$ (actively harmful). That task is multi-label categorical enrichment on a hierarchical DAG. This task is binary classification with $s_{\max}$ stratification. The two tasks share only the frozen-embedding substrate. Both reject the Fisher metric; the mechanism proposed here (within-class variance carries class-relevant signal) applies to both.
+
+\section{Limitations}
+(i) The Fisher-Rao metric for a two-class Gaussian model is one of many ways to construct an information-geometric distance; the Jeffreys or symmetric KL on more flexible class-conditional models could behave differently. (ii) The 5\% shrinkage toward diagonal is a locked hyperparameter; sensitivity to this is not tested. (iii) t33 (650M) not included.
+
+\section{Conclusion}
+Fisher-Rao whitening underperforms Ledoit-Wolf pooled Mahalanobis on the homology-cliff retrieval task. The hypothesis is rejected. The direction replicates a prior GO-annotation negative result on the same frozen-embedding substrate. For frozen PLM retrieval pipelines, pooled-covariance Mahalanobis is the default; information-geometric whitening should be avoided absent a specific reason to believe within-class variance is noise on the target task.
+
+\end{document}

@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Topology of the Toxin Manifold: Mapper Decomposition and Cross-Family Partition of the Homology Cliff}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026 (v0.9, Pfam partition pending complete annotation)}
+\begin{document}
+\maketitle
+\begin{abstract}
+We apply Mapper to the 24{,}885-protein frozen ESM-2 t30 embedding using a PCA-2 lens, a 10$\times$10 cover with 30\% overlap, and DBSCAN clustering ($\varepsilon{=}0.05$, min\_samples 5) per pre-image. The decomposition yields 149 nodes of which 6 are entirely positive, 30 are positive-enriched ($\text{pos\_frac} > 0.5$), and 88 are entirely negative. The top two positive nodes (PCA bins $(7,4)$ and $(7,3)$) contain approximately 3{,}000 proteins at 88--94\% positive rate, collectively representing $\approx 40\%$ of all positives in the dataset. Positives form a spatially contiguous cluster on the manifold rather than a diffuse distribution. Partitioning the distant-stratum failures by Pfam family (pending complete annotation; 425 of 24{,}885 covered as of April 12, 2026) is the natural next question: are the distant-stratum failures within-family (missed distant homologs of known toxin families) or cross-family (genuinely novel mechanisms)? This paper is released as v0.9 with the Mapper result complete; the Pfam partition is deferred to v1.0 when full annotation is in.
+\end{abstract}
+
+\section{Mapper decomposition}
+Parameters: PCA lens to 2D (33\% explained variance). 10$\times$10 overlapping cover, 30\% overlap. Per pre-image clustering by DBSCAN on cosine distance ($\varepsilon = 0.05$, min\_samples 5). Yields 149 nodes.
+
+\begin{center}
+\begin{tabular}{lrc}
+\toprule
+top positive-enriched nodes (by size) & $n$ & pos\_frac \\
+\midrule
+bin $(7,4)$ cluster 0 & 1708 & 0.885 \\
+bin $(7,3)$ cluster 0 & 1568 & 0.939 \\
+bin $(6,3)$ cluster 0 & 1318 & 0.852 \\
+bin $(6,4)$ cluster 0 & 1180 & 0.823 \\
+bin $(7,5)$ cluster 0 & 1153 & 0.679 \\
+bin $(5,4)$ cluster 0 & 1079 & 0.746 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The top six positive-enriched nodes occupy spatially adjacent bins $(5,3)$--$(8,5)$, indicating the positive class forms a connected subregion of the manifold rather than multiple disjoint clusters.
+
+\section{Biological implication}
+Spatial localization of the positive class suggests toxins share consistent PLM-encoded features across diverse sequence families. This is consistent with the hypothesis that ESM-2 encodes functional mechanism rather than mere sequence similarity. However, the homology cliff shows that this encoding fails on the distant stratum: test proteins far from any panel member in embedding space are systematically misclassified (Paper 1). A Mapper-augmented panel sampled from these positive-enriched nodes does \emph{not} rescue the cliff (see Paper 2, Section Mapper-biased panel augmentation). The positives-cluster-densely finding therefore serves as diagnostic of the cliff mechanism rather than a rescue lever.
+
+\section{Cross-family partition (pending)}
+Pending full Pfam annotation of the 24{,}885-protein test set, the distant-stratum false alarms (predicted positive, actually negative; 41 of 44 at t30 $R{=}1000$ $k{=}25$ per Paper 3) will be partitioned by whether their top-25 nearest panel neighbors share any Pfam identifier. If yes, the cliff failure mode is within-family (distant-homology confusion); if no, it is cross-family (genuinely novel mechanism misattribution). This partition is crucial for biosecurity deployment: within-family failures are correctable by panel expansion, cross-family failures are not. This analysis is registered for v1.0 once UniProt Pfam coverage reaches $\ge 90\%$ of the 24{,}885 accessions.
+
+\section{Release status}
+v0.9 released April 12, 2026 with Mapper result complete and Pfam partition pending. v1.0 pending UniProt annotation completion; the \texttt{fetch\_pfam\_v3.py} script at 50-accession batches is running at release time and expected to finish within 10 minutes of publication. No substantive claim is retracted or changed upon upgrade to v1.0; only the Pfam partition section is filled in.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\end{document}

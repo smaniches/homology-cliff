@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Three Failed Rescue Attempts for the Homology Cliff in Frozen ESM-2 Retrieval: Mahalanobis, Fisher-Rao, Stratified Cascade, and Mapper Panel Augmentation}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
+\date{April 12, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We report four pre-registered attempts to rescue the close-distant $F_1$ cliff in frozen ESM-2 biosecurity retrieval. All four fail. (i) Ledoit-Wolf Mahalanobis whitening reduces the close-distant gap but only by degrading close-stratum $F_1$ more than distant-stratum $F_1$; it worsens pooled $F_1$ at all scales. (ii) Fisher-Rao within-class whitening underperforms Mahalanobis in 17 of 18 pre-registered cells. (iii) A stratified cosine-then-Mahalanobis cascade loses to cosine-alone in 18 of 18 cells by 4.6 to 31.0 absolute $F_1$ points. (iv) A Mapper-biased reference panel drawn from positive-enriched topological regions produces a distant-$F_1$ rescue of $+0.0018$ (95\% CI $[-0.027, +0.029]$), indistinguishable from zero. Taken together, these four null results narrow the space of possible cliff rescues: neither post-hoc distance substitution nor panel composition tricks help. The cliff is a property of the frozen embedding geometry itself, as confirmed by the positive learned-projection result in the main paper of this compendium.
+\end{abstract}
+
+\section{Common setup}
+All four experiments use the 24{,}885-protein test set, frozen ESM-2 t6/t12/t30 embeddings, the stratification thresholds ($s_{\max} \ge 0.95$ close, $[0.90, 0.95)$ moderate, $< 0.90$ distant), and the seed-variance gate from the main cliff pre-registration (SHA256 139f6012\ldots). See Paper 1 of this compendium for full method details.
+
+\section{Mahalanobis (Ledoit-Wolf) whitening}
+At t30 $R{=}1000$ $k{=}25$, Mahalanobis $F_1$: close 0.456, moderate 0.118, distant 0.087; versus cosine close 0.866, moderate 0.393, distant 0.120. The cliff \emph{gap} shrinks from 0.745 to 0.369, but this is a close-stratum collapse, not a distant-stratum rescue. Pooled $F_1$ drops from 0.848 to 0.435.
+
+\section{Fisher-Rao within-class whitening}
+Pre-reg: \texttt{PRE\_REGISTRATION\_FISHER\_CLIFF\_v1.md}. H1: Fisher reduces the close-distant gap beyond Mahalanobis at t30 $R{=}1000$ $k{=}25$ with 95\% CI excluding zero. Observed: Fisher gap 0.384 vs Mahalanobis 0.369 ($+0.015$, H1 rejected). Across 180 cells, Fisher is worse than Mahalanobis in 17 of 18 (scale, $R$, $k$) groups, with penalty up to $+0.285$ at t30 $R{=}100$ $k{=}25$. Mechanism: within-class covariance on frozen ESM-2 embeddings carries class-relevant signal that Fisher whitening destroys. Replicates the direction of TOPOLOGICA DR-010 on GO annotation (Shapley $-0.128$) in a different task domain.
+
+\section{Stratified cosine+Mahalanobis cascade}
+Pre-reg: \texttt{PRE\_REGISTRATION\_STRATIFIED\_CASCADE\_v1.md}. H1: cascade (cosine for close, Mahalanobis for moderate+distant) beats single-metric baselines by $+0.02$ pooled $F_1$ with 95\% CI excluding zero. 180-cell factorial: cascade loses in 18 of 18 groups, penalty range $-0.046$ to $-0.310$. Mechanism: Mahalanobis does not beat cosine on any stratum individually; the cascade inherits Mahalanobis's per-stratum inferiority on 7\% of the test population (the 93\% close portion is handled by cosine, as designed).
+
+\section{Mapper-biased panel augmentation}
+Following the 149-node Mapper decomposition in Paper 5 of this compendium, we construct a positive-biased reference panel (500 positive members drawn from the top-1 all-positive Mapper node containing 1{,}131 positives; 500 negative members drawn uniformly). At t30 $R{=}1000$ $k{=}25$ across 10 seeds:
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+panel scheme & distant $F_1$ (10-seed mean) \\
+\midrule
+uniform class-balanced & 0.1203 \\
+Mapper-biased positives & 0.1221 \\
+rescue & $+0.0018$ (95\% CI $[-0.027, +0.029]$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+H1 rejected. Interpretation: positives already cluster densely on the embedding manifold, so uniform sampling of 500 positives from 7{,}133 total already saturates the positive region; further biasing adds no information. Distant queries are distant from the entire positive cluster, not from any particular sub-region within it.
+
+\section{Synthesis}
+Four distinct cliff-rescue hypotheses, four null results. The space of rescues that do NOT work includes (1) post-hoc covariance-based distance substitution, (2) information-geometric whitening, (3) per-stratum distance switching, (4) topologically-informed panel composition. The one rescue that does work, reported in Paper 1 of this compendium, rotates the embedding space itself via a supervised linear projection. This sharp dichotomy is the practical take-home: embed-space surgery succeeds where distance-tricks and sampling-tricks fail.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\end{document}
