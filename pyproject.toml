@@ -13,4 +13,4 @@ test = ["pytest>=8.0", "pytest-cov"]
 paper = ["biopython"]
 
 [project.urls]
-Homepage = "https://github.com/santiagomaniches/homology-cliff"
+Homepage = "https://github.com/smaniches/homology-cliff"

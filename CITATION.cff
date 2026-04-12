@@ -8,7 +8,7 @@ authors:
     affiliation: "TOPOLOGICA LLC"
 version: 1.0.0
 date-released: 2026-04-12
-repository-code: "https://github.com/santiagomaniches/homology-cliff"
+repository-code: "https://github.com/smaniches/homology-cliff"
 license: [MIT, CC-BY-4.0]
 keywords:
   - protein language models
