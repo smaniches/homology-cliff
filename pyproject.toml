@@ -1,0 +1,16 @@
+[project]
+name = "homology-cliff"
+version = "1.0.0"
+description = "Homology cliff in frozen protein language models: characterization, pre-registered nulls, and a deployable rescue"
+authors = [{name = "Santiago Maniches", email = "santiago@topologica.llc"}]
+readme = "README.md"
+license = {text = "MIT AND CC-BY-4.0"}
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "scikit-learn>=1.4", "faiss-cpu>=1.7.4", "torch>=2.0", "scipy>=1.11"]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0", "pytest-cov"]
+paper = ["biopython"]
+
+[project.urls]
+Homepage = "https://github.com/santiagomaniches/homology-cliff"

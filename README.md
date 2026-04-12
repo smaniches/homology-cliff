@@ -75,3 +75,44 @@ homology_cliff_repo/
   url = {https://github.com/USER/homology_cliff_repo}
 }
 ```
+
+
+## Full evidence committed
+
+This repository contains the full research evidence, not just code and papers:
+
+- **9,360 per-cell .npz results** under `data/cells/{main,negctrl,fullnull,cascade,fisher}/`
+- **3 ESM-2 embeddings** (t6, t12, t30) under `data/embeddings/` — 137 MB total
+- **Pfam annotations** for 24,885 proteins under `data/annotations/proteins_25k_pfam.json`
+- **Sequence data** under `data/sequences/proteins_25k_sequences.json`
+- **SHA256 manifest** for every file: `MANIFEST.sha256.json` (9,445 entries)
+
+Large binaries are tracked via **Git LFS** (see `.gitattributes`). Clone is fast;
+`git lfs pull` fetches binaries on demand. Total repository size: **195 MB**.
+
+## Production infrastructure
+
+- `pyproject.toml` — Python package metadata
+- `CITATION.cff` — citation metadata
+- `codemeta.json` — software metadata (CodeMeta 3.0)
+- `.github/workflows/tests.yml` — CI on push
+- `tests/test_cell_schema.py` — pytest sanity harness (4 tests)
+- `LICENSE-papers.txt` (CC-BY-4.0), `LICENSE-code.txt` (MIT)
+- `PROBLEMS.md` — honest known-issues document
+- `ACKNOWLEDGMENTS.md` — infrastructure attribution with max humility
+- `MANIFEST.sha256.json` — SHA256 of every file
+
+## To push to GitHub (private)
+
+```bash
+cd C:\TOPOLOGICA_BIOSECURITY\homology_cliff_repo
+git lfs install
+git remote add origin https://github.com/<your_user>/homology-cliff.git
+git push -u origin main
+git tag v1.0.0 && git push --tags
+```
+
+## To deposit on Zenodo
+
+Enable GitHub integration at zenodo.org, push the `v1.0.0` tag, Zenodo will
+auto-archive and mint a DOI. Update `CITATION.cff` with the DOI and push amendment.

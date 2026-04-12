@@ -1,0 +1,4 @@
+*.npz filter=lfs diff=lfs merge=lfs -text
+*.npy filter=lfs diff=lfs merge=lfs -text
+data/annotations/*.json filter=lfs diff=lfs merge=lfs -text
+data/sequences/*.json filter=lfs diff=lfs merge=lfs -text

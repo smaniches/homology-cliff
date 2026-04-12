@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "Homology Cliff in Frozen Protein Language Models: Research Compendium v1.0"
+message: "If you use this compendium or its findings, please cite."
+authors:
+  - family-names: Maniches
+    given-names: Santiago
+    orcid: "https://orcid.org/0009-0005-6480-1987"
+    affiliation: "TOPOLOGICA LLC"
+version: 1.0.0
+date-released: 2026-04-12
+repository-code: "https://github.com/santiagomaniches/homology-cliff"
+license: [MIT, CC-BY-4.0]
+keywords:
+  - protein language models
+  - ESM-2
+  - biosecurity
+  - pre-registered research
+  - retrieval
+  - homology detection
