@@ -107,9 +107,8 @@ At t30 $R{=}1000$ $k{=}25$ cosine (seed 20260410): of 24{,}885 test proteins, \e
 \begin{axis}[width=11cm,height=5cm,xlabel={predicted vote fraction bin},ylabel={empirical positive rate},ybar,bar width=7pt,grid=major,legend pos=north west,ymin=0,ymax=1,symbolic x coords={{[0.0,0.1)},{[0.1,0.3)},{[0.3,0.5)},{[0.5,0.7)},{[0.7,0.9)},{[0.9,1.0]}},xtick=data,x tick label style={rotate=30,anchor=east,font=\small}]
 \addplot[fill=blue!60] coordinates {({[0.0,0.1)},0.02)({[0.1,0.3)},0.18)({[0.3,0.5)},0.41)({[0.5,0.7)},0.69)({[0.7,0.9)},0.88)({[0.9,1.0]},0.97)}; \addlegendentry{close (ECE=0.069)}
 \addplot[fill=red!60] coordinates {({[0.0,0.1)},0.24)({[0.1,0.3)},0.26)({[0.3,0.5)},0.31)({[0.5,0.7)},0.28)({[0.7,0.9)},0.20)({[0.9,1.0]},0.00)}; \addlegendentry{distant (ECE=0.294)}
-\addplot[black,dashed,domain=0.05:0.95,samples=10] {x}; \addlegendentry{perfectly calibrated}
 \end{axis}\end{tikzpicture}
-\caption{\textbf{Calibration collapse on the distant stratum.} Close-stratum reliability (blue) tracks the diagonal closely, ECE = 0.069. Distant-stratum reliability (red) is nearly flat across confidence bins and collapses at the highest-confidence bin: 3 predictions in $[0.9, 1.0)$, 0 correct. ECE = 0.294. Data at t30 $R{=}1000$ $k{=}25$ cosine, seed 20260410.}\label{fig:reliability}
+\caption{\textbf{Calibration collapse on the distant stratum.} Close-stratum reliability (blue) tracks the diagonal closely (ECE = 0.069). Distant-stratum reliability (red) is nearly flat across confidence bins and collapses at the highest-confidence bin: 3 predictions in $[0.9, 1.0)$, 0 correct (ECE = 0.294). Data at t30 $R{=}1000$ $k{=}25$ cosine, seed 20260410.}\label{fig:reliability}
 \end{figure}
 
 \section{Cross-family partition (new in v1.1)}
