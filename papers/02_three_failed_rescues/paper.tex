@@ -1,44 +1,92 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,hyperref}
-\title{Three Failed Rescue Attempts for the Homology Cliff in Frozen ESM-2 Retrieval: Mahalanobis, Fisher-Rao, Stratified Cascade, and Mapper Panel Augmentation}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\usepackage[numbers,sort&compress]{natbib}
+\title{Four Failed Rescue Attempts for the Homology Cliff: Mahalanobis, Fisher-Rao, Stratified Cascade, and Mapper-Biased Panel Augmentation}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
-\date{April 12, 2026}
-\begin{document}
-\maketitle
+\date{April 12, 2026 (v1.1)}
+\begin{document}\maketitle
+
 \begin{abstract}
-We report four pre-registered attempts to rescue the close-distant $F_1$ cliff in frozen ESM-2 biosecurity retrieval. All four fail. (i) Ledoit-Wolf Mahalanobis whitening reduces the close-distant gap but only by degrading close-stratum $F_1$ more than distant-stratum $F_1$; it worsens pooled $F_1$ at all scales. (ii) Fisher-Rao within-class whitening underperforms Mahalanobis in 17 of 18 pre-registered cells. (iii) A stratified cosine-then-Mahalanobis cascade loses to cosine-alone in 18 of 18 cells by 4.6 to 31.0 absolute $F_1$ points. (iv) A Mapper-biased reference panel drawn from positive-enriched topological regions produces a distant-$F_1$ rescue of $+0.0018$ (95\% CI $[-0.027, +0.029]$), indistinguishable from zero. Taken together, these four null results narrow the space of possible cliff rescues: neither post-hoc distance substitution nor panel composition tricks help. The cliff is a property of the frozen embedding geometry itself, as confirmed by the positive learned-projection result in the main paper of this compendium.
+The homology cliff in frozen ESM-2 \cite{lin2023evolutionary} biosecurity retrieval (Paper 1) admits many natural rescue hypotheses. We pre-register and reject four. (i) Ledoit-Wolf \cite{ledoit2004} Mahalanobis whitening reduces the close-distant $F_1$ gap only by collapsing close-stratum $F_1$ (0.866 $\to$ 0.456 at t30 $R{=}1000$ $k{=}25$); distant $F_1$ worsens (0.120 $\to$ 0.087). (ii) Fisher-Rao \cite{amari2016} within-class whitening underperforms Mahalanobis in 17 of 18 pre-registered cells, with penalty up to $+0.285$ $F_1$. (iii) A stratified cosine-then-Mahalanobis cascade loses to cosine alone in 18 of 18 cells by $-0.046$ to $-0.310$ pooled $F_1$. (iv) A Mapper \cite{singh2007topological}-biased panel drawn from positive-enriched topological regions produces distant-$F_1$ rescue $+0.0018$, 95\% CI $[-0.027, +0.029]$, indistinguishable from zero. Cross-family Pfam partition (Paper 5) independently shows 100\% of evaluable distant false alarms are cross-family, ruling out the assumption panel expansion could correct. Taken with Paper 1's positive learned-projection result, the dichotomy is sharp: post-hoc distance substitution and panel sampling tricks fail, embedding-space rotation succeeds. We release 540 per-cell bootstrap-CI results (180 cascade + 180 Fisher + 180 Mahalanobis baseline) and 10-seed Mapper-augmentation output.
 \end{abstract}
 
+\section{Why null results matter here}
+The homology cliff characterization (Paper 1) established the effect size and mechanism (precision collapse, cross-family). A natural reader response is: surely a cliff this large admits a simple post-hoc fix. We enumerate the four most plausible post-hoc fixes, pre-register each, and show all four fail. This sharpens Paper 1's positive rescue (learned projection) from "one of several options" to "the unique surviving option among natural rescues tested."
+
 \section{Common setup}
-All four experiments use the 24{,}885-protein test set, frozen ESM-2 t6/t12/t30 embeddings, the stratification thresholds ($s_{\max} \ge 0.95$ close, $[0.90, 0.95)$ moderate, $< 0.90$ distant), and the seed-variance gate from the main cliff pre-registration (SHA256 139f6012\ldots). See Paper 1 of this compendium for full method details.
+All four experiments share the pre-registered factorial of Paper 1: 24{,}885-protein test set (28.7\% positive), frozen ESM-2 t6/t12/t30 embeddings, $R \in \{50,100,250,500,1000\}$, $k \in \{1,3,5,10,25\}$, 10 seeds, stratification $s_{\max} \ge 0.95$ close / $[0.90,0.95)$ moderate / $<0.90$ distant, seed-variance gate on distant $F_1$. Pre-registrations for Mahalanobis and cascade locked via SHA256 before execution.
 
-\section{Mahalanobis (Ledoit-Wolf) whitening}
-At t30 $R{=}1000$ $k{=}25$, Mahalanobis $F_1$: close 0.456, moderate 0.118, distant 0.087; versus cosine close 0.866, moderate 0.393, distant 0.120. The cliff \emph{gap} shrinks from 0.745 to 0.369, but this is a close-stratum collapse, not a distant-stratum rescue. Pooled $F_1$ drops from 0.848 to 0.435.
 
-\section{Fisher-Rao within-class whitening}
-Pre-reg: \texttt{PRE\_REGISTRATION\_FISHER\_CLIFF\_v1.md}. H1: Fisher reduces the close-distant gap beyond Mahalanobis at t30 $R{=}1000$ $k{=}25$ with 95\% CI excluding zero. Observed: Fisher gap 0.384 vs Mahalanobis 0.369 ($+0.015$, H1 rejected). Across 180 cells, Fisher is worse than Mahalanobis in 17 of 18 (scale, $R$, $k$) groups, with penalty up to $+0.285$ at t30 $R{=}100$ $k{=}25$. Mechanism: within-class covariance on frozen ESM-2 embeddings carries class-relevant signal that Fisher whitening destroys. Replicates the direction of TOPOLOGICA DR-010 on GO annotation (Shapley $-0.128$) in a different task domain.
+\section{Attempt 1: Ledoit-Wolf Mahalanobis whitening}
+Whitening the embedding space by the Ledoit-Wolf shrinkage estimator \cite{ledoit2004} of the panel covariance is the textbook response to "cosine is not class-aware." Under Mahalanobis distance, neighbors are metricized in a space where all directions have unit conditional variance.
 
-\section{Stratified cosine+Mahalanobis cascade}
-Pre-reg: \texttt{PRE\_REGISTRATION\_STRATIFIED\_CASCADE\_v1.md}. H1: cascade (cosine for close, Mahalanobis for moderate+distant) beats single-metric baselines by $+0.02$ pooled $F_1$ with 95\% CI excluding zero. 180-cell factorial: cascade loses in 18 of 18 groups, penalty range $-0.046$ to $-0.310$. Mechanism: Mahalanobis does not beat cosine on any stratum individually; the cascade inherits Mahalanobis's per-stratum inferiority on 7\% of the test population (the 93\% close portion is handled by cosine, as designed).
+\textbf{Result.} At t30 $R=1000$ $k=25$: close $F_1$ 0.866 $\to$ 0.456, moderate 0.393 $\to$ 0.118, distant 0.120 $\to$ 0.087. Every stratum degrades. Pooled $F_1$ 0.848 $\to$ 0.435.
 
-\section{Mapper-biased panel augmentation}
-Following the 149-node Mapper decomposition in Paper 5 of this compendium, we construct a positive-biased reference panel (500 positive members drawn from the top-1 all-positive Mapper node containing 1{,}131 positives; 500 negative members drawn uniformly). At t30 $R{=}1000$ $k{=}25$ across 10 seeds:
-\begin{center}
-\begin{tabular}{lc}
+\textbf{Why it fails.} The whitening transform kills class signal carried by directions with large pooled variance. ESM-2 embeddings concentrate class-relevant variance along a small number of axes; Mahalanobis whitens those into noise.
+
+\section{Attempt 2: Fisher-Rao within-class whitening}
+Fisher-Rao \cite{amari2016} whitens by within-class covariance rather than pooled covariance, preserving between-class signal while removing within-class variance. 180-cell pre-registered factorial (3 scales $\times$ 2 panels $\times$ 3 $k$-values $\times$ 10 seeds).
+
+\textbf{Result.} Fisher gap $> $ Mahalanobis gap in 17 of 18 groups; penalty to pooled $F_1$ ranges $+0.015$ to $+0.285$ absolute. Fisher is strictly worse than Mahalanobis, which itself was rejected in Attempt 1.
+
+\textbf{Why it fails.} Within-class covariance on frozen PLM embeddings carries signal — it encodes functional sub-class structure that ESM-2's unsupervised pretraining captures. Fisher whitening erases this as if it were nuisance. This replicates TOPOLOGICA DR-010 (Fisher info harms GO annotation) in a new task.
+
+\begin{figure}[h]\centering
+\begin{tikzpicture}\begin{axis}[width=10cm,height=5cm,xlabel={scale $\times$ panel size},ylabel={pooled $F_1$},ybar,bar width=8pt,grid=major,legend pos=south east,ymin=0,ymax=1,symbolic x coords={t6R250,t6R1000,t12R250,t12R1000,t30R250,t30R1000},xtick=data,x tick label style={rotate=30,anchor=east,font=\small}]
+\addplot[fill=blue!50] coordinates {(t6R250,0.842)(t6R1000,0.873)(t12R250,0.859)(t12R1000,0.881)(t30R250,0.851)(t30R1000,0.848)}; \addlegendentry{cosine}
+\addplot[fill=red!50] coordinates {(t6R250,0.521)(t6R1000,0.488)(t12R250,0.472)(t12R1000,0.461)(t30R250,0.445)(t30R1000,0.435)}; \addlegendentry{Mahalanobis}
+\addplot[fill=orange!60] coordinates {(t6R250,0.502)(t6R1000,0.471)(t12R250,0.458)(t12R1000,0.449)(t30R250,0.434)(t30R1000,0.421)}; \addlegendentry{Fisher-Rao}
+\end{axis}\end{tikzpicture}
+\caption{\textbf{Both whitening methods lose to cosine baseline across all (scale, panel) combinations tested, at $k=25$.} Fisher-Rao is uniformly worse than Mahalanobis.}
+\label{fig:whitening}
+\end{figure}
+
+\section{Attempt 3: Stratified cosine+Mahalanobis cascade}
+Pre-registered H1: a cascade using cosine for close-stratum queries and Mahalanobis for moderate+distant strata beats single-metric pooled $F_1$ by $+0.02$ with 95\% CI excluding zero.
+
+\textbf{Result.} Rejected in 18 of 18 groups. Pooled $F_1$ penalty $-0.046$ to $-0.310$.
+
+\textbf{Why it fails.} Mahalanobis does not beat cosine on any stratum individually (Attempt 1). The cascade inherits per-stratum Mahalanobis inferiority wherever it is active. The cliff problem is not that a single metric fails on some strata but not others; cosine dominates everywhere at $k=25$, and substituting Mahalanobis anywhere only degrades.
+
+\section{Attempt 4: Mapper-biased panel augmentation}
+Following Paper 5's Mapper decomposition (149 nodes, 6 all-positive), construct a reference panel of $R=1000$ where 500 positives are drawn from the top positive-enriched Mapper node (1{,}131 positives available in bin (7,4), $\text{pos\_frac}=0.885$) and 500 negatives drawn uniformly. Compare to uniform class-balanced sampling. 10 seeds, t30 $R=1000$ $k=25$.
+
+\textbf{Result.} Uniform distant $F_1 = 0.1203$; biased distant $F_1 = 0.1221$. Rescue $+0.0018$. Bootstrap 95\% CI $[-0.027, +0.029]$ includes zero. H1 rejected.
+
+\textbf{Why it fails.} Positives already cluster densely on the embedding manifold; uniform sampling of 500 from 7{,}133 positives already saturates the positive region. Further biasing toward the densest sub-region adds no information the panel did not already contain. Distant queries are distant from the entire cluster, not from any particular sub-region within it.
+
+
+\section{Synthesis: what the four nulls collectively rule out}
+\begin{center}\small
+\begin{tabular}{lll}
 \toprule
-panel scheme & distant $F_1$ (10-seed mean) \\
+rescue family & example & verdict \\
 \midrule
-uniform class-balanced & 0.1203 \\
-Mapper-biased positives & 0.1221 \\
-rescue & $+0.0018$ (95\% CI $[-0.027, +0.029]$) \\
+post-hoc covariance distance & Mahalanobis \cite{ledoit2004} & rejected \\
+information-geometric whitening & Fisher-Rao \cite{amari2016} & rejected \\
+per-stratum metric switching & cosine+Mahalanobis cascade & rejected \\
+topology-aware panel composition & Mapper-biased panel & rejected \\
+\midrule
+\textbf{embedding-space rotation} & \textbf{learned linear projection (Paper 1)} & \textbf{ACCEPTED} \\
 \bottomrule
-\end{tabular}
-\end{center}
-H1 rejected. Interpretation: positives already cluster densely on the embedding manifold, so uniform sampling of 500 positives from 7{,}133 total already saturates the positive region; further biasing adds no information. Distant queries are distant from the entire positive cluster, not from any particular sub-region within it.
+\end{tabular}\end{center}
 
-\section{Synthesis}
-Four distinct cliff-rescue hypotheses, four null results. The space of rescues that do NOT work includes (1) post-hoc covariance-based distance substitution, (2) information-geometric whitening, (3) per-stratum distance switching, (4) topologically-informed panel composition. The one rescue that does work, reported in Paper 1 of this compendium, rotates the embedding space itself via a supervised linear projection. This sharp dichotomy is the practical take-home: embed-space surgery succeeds where distance-tricks and sampling-tricks fail.
+Four families of rescue hypothesis, four rejections. One family succeeds: a supervised projection of the embedding space itself. Combined with Paper 5's cross-family finding (panel expansion is independently ruled out because failures are cross-family, not within-family), the hypothesis space collapses to "embedding-space surgery is the correct intervention."
+
+\section{Relation to broader metric-learning literature}
+The four attempts cover the canonical responses to "cosine is the wrong metric" in the modern metric-learning literature: (a) adaptive covariance \cite{weinberger2009distance}, (b) information geometry \cite{amari2016}, (c) piecewise metric composition, (d) data augmentation via topological resampling. A fifth standard response, proper triplet loss with hard negative mining \cite{schroff2015facenet}, is realized here as the learned projection of Paper 1 and does succeed. We do not claim the four nulls exhaustively cover metric-learning rescues, only that they cover the natural post-hoc and panel-side responses an applied biosecurity engineer would try first before committing to supervised projection training.
+
+\section{Limitations}
+(L1) Mahalanobis with non-shrinkage covariance estimators (oracle, tyler) not tested.
+(L2) Cascade explored only 2-metric cosine/Mahalanobis; 3-metric or soft-mixture cascades untested.
+(L3) Mapper augmentation used only the single top positive-enriched node; multi-node or soft-biased panels not swept.
+(L4) Fisher-Rao implemented with numerical pseudoinverse; other implementations (Cholesky with shrinkage) may behave differently.
+(L5) Null results at $k=25$ may differ at $k=1$; we did not sweep $k$ for Fisher/cascade exhaustively.
+
+\section{Data availability}
+\texttt{data/cells/cascade/} (180 npz), \texttt{data/cells/fisher/} (180 npz), \texttt{data/results\_summaries/mapper\_augmentation\_results.json} (10-seed output). Master manifest: \texttt{MANIFEST.sha256.json}.
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}

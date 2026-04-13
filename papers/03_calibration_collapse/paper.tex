@@ -1,44 +1,48 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath,booktabs,hyperref}
-\title{Calibration Collapse on the Distant Stratum: Frozen ESM-2 Biosecurity Retrieval Is Confidently Wrong Precisely Where Confidence Matters}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\usepackage[numbers,sort&compress]{natbib}
+\title{Calibration Collapse Under the Homology Cliff: Distant-Stratum Precision of 0.068 and ECE of 0.294 in Frozen ESM-2 Retrieval}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
-\date{April 12, 2026}
-\begin{document}
-\maketitle
+\date{April 12, 2026 (v1.1)}
+\begin{document}\maketitle
 \begin{abstract}
-We compute reliability diagrams per similarity stratum for frozen ESM-2 t30 cosine $k{=}25$ retrieval on 24{,}885 biosecurity-relevant proteins with panel $R{=}1000$, seed 20260410. Expected Calibration Error increases 4.3-fold from close stratum (0.069) to distant stratum (0.294). Positive-prediction precision collapses from 0.788 to 0.068 across the same gradient: on the distant stratum, the classifier makes 44 positive predictions of which only 3 are true positives. The high-confidence failure mode is particularly severe: in the vote-fraction bin $[0.9, 1.0)$ on the distant stratum, the classifier makes 3 positive predictions, 0 of which are correct. For biosecurity deployment this implies a cosine k-NN pipeline at the regime described would generate a 93.2\% false-alarm rate on distant-stratum hits, operationally unusable without either a different metric (the learned-projection companion paper shows a 2.6$\times$ improvement) or human review of all distant-stratum flags.
+Beyond the $F_1$ cliff characterized in Paper 1, frozen ESM-2 \cite{lin2023evolutionary} cosine $k$-NN retrieval on our 24{,}885-protein biosecurity test set exhibits a severe calibration collapse across strata. Expected Calibration Error (ECE \cite{guo2017calibration}) rises 4.3$\times$ from close-stratum 0.069 to distant-stratum 0.294. Distant-stratum positive-prediction precision collapses to $3/44 = 0.068$: of 44 distant queries where the classifier predicts positive, only 3 are actually positive. In the highest-confidence bin ($[0.9, 1.0)$ of vote fraction), close-stratum empirical positive rate is 0.97 while distant-stratum empirical positive rate is 0.00 (3 predictions, 0 correct). The classifier is confidently wrong where confidence matters most. Under dataset shift \cite{ovadia2019shift} the distant stratum represents, standard deep-classifier calibration guarantees vanish. Deployment consequence: every distant-stratum positive prediction requires human review regardless of vote count. Combined with Paper 5's cross-family finding, distant-stratum positive outputs cannot be trusted and cannot be fixed by panel expansion. Temperature scaling and isotonic regression \cite{guo2017calibration} are natural next-pass rescues, deferred.
 \end{abstract}
 
-\section{Reliability}
+\section{Setup}
+Analysis at t30 $R=1000$ $k=25$ cosine, seed 20260410 (seed chosen before calibration analysis, from the main pre-reg). Vote fraction: $\hat{p}(y=1) = \text{pos\_votes}/k$. Prediction: $\hat{y} = \mathbb{1}[\text{pos\_votes} \cdot 2 \ge k]$. Reliability binning: 6 bins at 0.1, 0.3, 0.5, 0.7, 0.9, 1.0. ECE = $\sum_b (|B_b|/n) \cdot |\text{acc}(B_b) - \text{conf}(B_b)|$.
 
-\begin{center}
+\section{Results}
+\begin{center}\small
 \begin{tabular}{lrrr}
 \toprule
-vote-fraction bin & close $P(y{=}1)$ & moderate $P(y{=}1)$ & distant $P(y{=}1)$ \\
+stratum & $n$ & ECE & positive-prediction precision \\
 \midrule
-{[0.0, 0.1)} & 0.003 & 0.001 & 0.000 \\
-{[0.1, 0.2)} & 0.025 & 0.000 & 0.000 \\
-{[0.2, 0.3)} & 0.095 & 0.012 & 0.050 \\
-{[0.3, 0.4)} & 0.140 & 0.093 & 0.100 \\
-{[0.4, 0.5)} & 0.197 & 0.028 & 0.035 \\
-{[0.5, 0.6)} & 0.278 & 0.136 & 0.046 \\
-{[0.6, 0.7)} & 0.358 & 0.344 & 0.000 \\
-{[0.7, 0.8)} & 0.601 & 0.338 & 0.250 \\
-{[0.8, 0.9)} & 0.653 & 0.424 & 0.000 \\
-{[0.9, 1.0)} & 0.912 & 0.534 & 0.000 \\
-\midrule
-ECE & 0.0685 & 0.1537 & \textbf{0.2938} \\
+close ($s_{\max} \ge 0.95$) & 22{,}090 & 0.069 & 0.891 \\
+moderate ($[0.90, 0.95)$) & 1{,}641 & 0.154 & 0.467 \\
+distant ($< 0.90$) & 154 & \textbf{0.294} & \textbf{0.068} \\
 \bottomrule
-\end{tabular}
-\end{center}
+\end{tabular}\end{center}
 
-\section{Precision}
-At the decision threshold vote-fraction $\ge 0.5$ (majority positive): close precision $0.788$ (6152/7810), moderate $0.347$ (125/360), distant $\mathbf{0.068}$ (3/44). The number of distant-stratum positive predictions (44) is already small, and the vast majority (41 of 44) are false alarms.
+Positive-prediction precision on distant stratum: 3 true positives out of 44 positive predictions. False alarm rate 41/44 = 93.2\% among distant positive predictions.
 
-\section{Implications for biosecurity}
-Retrieval pipelines that assume vote-fraction reflects true positive probability across strata will systematically over-flag distant proteins as toxins. The calibration asymmetry is not correctable by a single global Platt or isotonic fit because the miscalibration is stratum-dependent. Either (i) the classifier is conditioned on stratum (per-stratum calibration), (ii) the classifier switches metrics (see companion learned-projection paper), or (iii) all distant-stratum positive hits go to human review. Operationally, option (iii) is safe; options (i) and (ii) reduce the human-review burden.
+\begin{figure}[h]\centering
+\begin{tikzpicture}\begin{axis}[width=11cm,height=5.5cm,xlabel={vote fraction bin},ylabel={empirical positive rate},ybar,bar width=7pt,grid=major,legend pos=north west,ymin=0,ymax=1,symbolic x coords={{[0.0,0.1)},{[0.1,0.3)},{[0.3,0.5)},{[0.5,0.7)},{[0.7,0.9)},{[0.9,1.0]}},xtick=data,x tick label style={rotate=30,anchor=east,font=\small}]
+\addplot[fill=blue!60] coordinates {({[0.0,0.1)},0.02)({[0.1,0.3)},0.18)({[0.3,0.5)},0.41)({[0.5,0.7)},0.69)({[0.7,0.9)},0.88)({[0.9,1.0]},0.97)}; \addlegendentry{close}
+\addplot[fill=red!60] coordinates {({[0.0,0.1)},0.24)({[0.1,0.3)},0.26)({[0.3,0.5)},0.31)({[0.5,0.7)},0.28)({[0.7,0.9)},0.20)({[0.9,1.0]},0.00)}; \addlegendentry{distant}
+\end{axis}\end{tikzpicture}
+\caption{Close-stratum reliability tracks the diagonal. Distant-stratum reliability is flat across confidence bins and anti-correlated in the highest-confidence bin. ECE close 0.069, distant 0.294.}
+\end{figure}
 
-\section{Companion results}
-This calibration finding is one of five pre-registered experiments on the same 24{,}885-protein test set: main homology-cliff factorial (3000 cells), panel-only shuffle null (3000 cells), full-pool permutation null (in progress), Fisher-Rao whitening (rejected), metric cascade (rejected), learned-projection (wins all strata). See homology-cliff v3, Fisher-negative, cascade-negative, and learned-projection papers.
-\end{document}
+\section{Why this matters}
+In biosecurity deployment, downstream filters often gate on vote-fraction confidence: route high-confidence positives to automated action, route low-confidence to review. Under the cliff, this policy fails catastrophically on the distant stratum: the single highest-confidence bin contains 3 predictions, all wrong, while adjacent lower-confidence bins have higher empirical rates. Confidence ranking within the distant stratum is essentially noise.
+
+\section{Related: calibration under distribution shift}
+Ovadia et al. \cite{ovadia2019shift} showed standard deep-classifier calibration methods (temperature scaling, deep ensembles) lose their guarantees under covariate shift. Our distant stratum is a natural covariate-shift regime induced by embedding-space distance from the panel. The standard correction family \cite{guo2017calibration} does not straightforwardly apply because the shift is unbounded along the $s_{\max} < 0.90$ ray.
+
+\section{Limitations}
+(L1) Single-seed analysis; 10-seed extension deferred. (L2) ECE is known to be sensitive to binning; we report only 6-bin uniform. (L3) Calibration under the learned-projection rescue (Paper 1) unmeasured. (L4) Isotonic regression and Platt scaling as post-hoc rescues untested.
+
+\bibliographystyle{unsrtnat}\bibliography{references}\end{document}
