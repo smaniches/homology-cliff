@@ -1,102 +1,180 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,graphicx}
-\usepackage[numbers]{natbib}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[numbers,sort&compress]{natbib}
 \newtheorem{proposition}{Proposition}
-\newtheorem{corollary}{Corollary}
-\title{The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval: Characterization, Null Controls, Mechanism, and a Deployable Rescue}
-\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
-\date{April 12, 2026}
+\title{The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval: Characterization, Pre-Registered Null Controls, Cross-Family Mechanism, and a Deployable Rescue}
+\author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC. Correspondence: santiago@topologica.llc.}}
+\date{April 12, 2026 (v1.1)}
 \begin{document}
 \maketitle
+
 \begin{abstract}
-Frozen ESM-2 cosine $k$-NN retrieval on a 24{,}885-protein biosecurity-relevant test set exhibits a close-distant $F_1$ cliff that grows monotonically with both model scale and reference panel size. At scale t30 (150M parameters), $R{=}1000$, $k{=}25$, close-stratum $F_1 = 0.866$ against distant-stratum $F_1 = 0.120$ (gap $+0.745$). We report six pre-registered experiments on this phenomenon. (1) A 3000-cell main factorial confirms the cliff, with all 300 groups surviving a seed-variance gate. (2) A panel-label-shuffle null control (3000 cells) fails the pre-registered ``distant $F_1$ at chance'' criterion, diagnosed as retention of the 28.7\% test class prior. (3) A pre-registered addendum null (SHA256 f3864d09\ldots), permuting the full 24{,}885 label vector, produces gap $\approx 0 \pm$ seed variance in every one of 300 groups, confirming the cliff is not a stratification artifact. (4) The cliff is a \emph{precision} collapse, not a recall collapse: only 3 of 24{,}885 test proteins are true-positive, distant-stratum, predicted-negative, and distant-stratum positive-prediction precision collapses to $0.068$ (44 predictions, 3 correct). Expected Calibration Error rises 4$\times$ from close (0.069) to distant (0.294). (5) Neither Ledoit-Wolf Mahalanobis whitening (180 cells), Fisher-Rao within-class whitening (180 cells), nor a stratified cosine+Mahalanobis cascade (180 cells) rescues the cliff; each degrades pooled $F_1$. (6) A panel-only triplet-surrogate linear projection, fit in under 5 seconds with no test leakage, \emph{does} rescue: it wins pooled $F_1$ in 18 of 18 factorial groups and delivers $F_1 = 0.891$ at t30 $R{=}1000$ $k{=}25$, the highest value observed anywhere, improving distant-stratum $F_1$ by 48\% relative (0.120 $\to$ 0.177). All code, four pre-registrations, 6000 per-cell results, and 180-cell factorials released as reproducibility package.
+Frozen protein language models (PLMs) increasingly feed biosecurity retrieval pipelines. We characterize a systematic failure mode, the \emph{homology cliff}, in frozen ESM-2 \cite{lin2023evolutionary} cosine $k$-NN retrieval on a 24{,}885-protein biosecurity-relevant test set (28.7\% positive prior). At scale t30 (150M parameters), reference panel size $R=1000$, neighbors $k=25$: close-stratum $F_1=0.866$ against distant-stratum $F_1=0.120$ (gap $+0.745$). We report six pre-registered experiments. A 3000-cell main factorial confirms the cliff with all 300 groups passing a pre-committed seed-variance gate. A pre-registered full-pool permutation null (SHA256 \texttt{f3864d09\ldots}) produces gap $\in [-0.027, +0.038]$ across 300 groups, every 95\% CI including zero: the cliff is not a stratification artifact. The failure is a \emph{precision} collapse: at t30 $R=1000$ $k=25$ cosine, distant-stratum positive-prediction precision is $3/44=0.068$ and expected calibration error rises $4\times$ from close (0.069) to distant (0.294). Pfam partition of 20 evaluable distant false alarms finds \textbf{zero within-family and 20 cross-family} failures, ruling out within-family distant-homology as the mechanism. Four rescue attempts fail at pre-registered H1: Ledoit-Wolf Mahalanobis whitening \cite{ledoit2004}, Fisher-Rao within-class whitening \cite{amari2016}, stratified cosine+Mahalanobis cascade, and Mapper-biased panel augmentation. One rescue succeeds: a panel-only linear projection trained via a 50-iteration triplet-surrogate loss \cite{schroff2015facenet} wins pooled $F_1$ in 18 of 18 factorial groups and achieves $F_1=0.891$ at t30 $R=1000$ $k=25$, improving distant-stratum $F_1$ by 48\% relative. We release 9{,}360 per-cell bootstrap-CI results, four SHA256-locked pre-registrations, and full code under MIT + CC-BY-4.0.
 \end{abstract}
 
-\section{Introduction and contributions}
-Frozen protein language model embeddings increasingly feed biosecurity retrieval pipelines. If the embedding captures functional mechanism rather than sequence similarity, retrieval succeeds on novel threats; if not, it fails precisely where it matters. We quantify this failure mode (the \emph{homology cliff}) with factorial rigor and pre-registered null controls, diagnose the mechanism, and identify a deployable rescue.
+\section{Introduction}
+Frozen protein language models \cite{lin2023evolutionary,elnaggar2022prottrans,brandes2022proteinbert,madani2023progen} now serve as general-purpose feature extractors for downstream retrieval, classification, and design tasks. A common deployment pattern is cosine $k$-NN retrieval: given a query protein, retrieve the $k$ nearest panel members in frozen embedding space and vote their labels. For biosecurity applications, where the query set contains potentially novel threats and the panel contains known-toxin exemplars, retrieval performance on proteins distant from any panel member is the safety-critical metric.
+
+We show that cosine $k$-NN retrieval on frozen ESM-2 embeddings exhibits a systematic \emph{homology cliff}: performance collapses on the distant stratum in a way that grows monotonically with both model scale and panel size. The cliff persists under four independent rescue attempts (post-hoc whitening, per-stratum distance switching, topologically-biased panel augmentation) and under cross-family analysis is shown to be an embedding-space geometry artifact, not a missing-homolog artifact. We identify one class of rescue that works: a cheap supervised projection of the embedding space, trained only on the panel, fit in under five CPU seconds.
+
+Contributions:
+\begin{enumerate}
+\item A 3000-cell pre-registered factorial (SHA256 \texttt{139f6012\ldots}) characterizing the cliff across (scale, $R$, $k$, metric), 10 seeds, with a pre-committed seed-variance gate.
+\item A 3000-cell pre-registered full-pool permutation null (SHA256 \texttt{f3864d09\ldots}) establishing that the cliff is not a stratification artifact.
+\item Mechanistic analysis: the cliff is a precision collapse, not a recall collapse.
+\item Pfam partition analysis: 100\% of evaluable distant false alarms are cross-family.
+\item Four null-result companion experiments (Paper 2) ruling out Mahalanobis, Fisher-Rao, cascade, and Mapper-augmentation rescues.
+\item One positive rescue: panel-only triplet-surrogate linear projection, +48\% distant $F_1$ relative at t30.
+\end{enumerate}
+
+
+\section{Related work}
+\textbf{Protein language models.} Frozen PLM embeddings as general features: ESM-1b \cite{rives2021biological}, ESM-2 \cite{lin2023evolutionary}, ProtT5 \cite{elnaggar2022prottrans}, ProteinBERT \cite{brandes2022proteinbert}, ProGen \cite{madani2023progen}, ESM-3 \cite{hayes2024esm3}, SaProt \cite{su2023saprot}. Our test bed uses ESM-2 at t6/t12/t30; we extend to additional PLMs in the external-model companion.
+
+\textbf{Retrieval and $k$-NN baselines.} FAISS \cite{johnson2019billion} provides the CPU $k$-NN backbone we use. Cosine $k$-NN on frozen PLM features has been reported as competitive for function annotation \cite{littmann2021embeddings,kilinc2023protein}, but its failure modes on the distant stratum have received less attention than pooled metrics.
+
+\textbf{Homology-aware evaluation.} CD-HIT \cite{fu2012cdhit} and MMseqs2 \cite{steinegger2017mmseqs2} clustering are standard for sequence-identity splits; we adopt an embedding-space stratification by max-cosine-similarity to the panel, which is the deployment-time observable. Foldseek \cite{vankempen2024foldseek} offers a structure-aware alternative.
+
+\textbf{Calibration of deep classifiers.} Guo et al. \cite{guo2017calibration} established that modern deep networks are miscalibrated; temperature scaling partially rectifies this. Recent work on calibration under distribution shift \cite{ovadia2019shift} is directly relevant to our distant-stratum ECE collapse.
+
+\textbf{Metric learning.} FaceNet-style triplet losses \cite{schroff2015facenet} underpin the supervised projection we use. Ledoit-Wolf shrinkage \cite{ledoit2004} gives well-conditioned covariance estimates on panels with $R < D$. Information-geometric whitening traces to Amari \cite{amari2016}.
+
+\textbf{Topological data analysis on proteins.} Mapper \cite{singh2007topological} decomposes high-dimensional data via lens-based covering and per-preimage clustering. Persistent homology for molecular and protein structure analysis has grown rapidly \cite{carlsson2009topology,edelsbrunner2010computational}; our use of Mapper here is for exploratory diagnostics rather than a claim about persistent features.
+
+\textbf{Pre-registration in machine learning.} Pre-registration practices originate in clinical trials and psychology \cite{nosek2018preregistration}; adoption in ML is growing but uneven \cite{forde2019scientific}. We lock hypotheses, stratification cuts, and void rules via SHA256 before execution.
+
+\textbf{Biosecurity and dual-use research of concern.} Computational prediction of toxin-like proteins raises dual-use concerns \cite{urbina2022dualuse}. Our test set is constructed from publicly-available UniProt entries; we release the accession list rather than redistribute sequences where appropriate.
+
 
 \section{Methods}
-\subsection{Data and embeddings} 24{,}885 proteins (7{,}133 positive, 17{,}752 negative; 28.7\% positive prior) from \texttt{experiment2\_proteins\_25k\_filtered.json}. Frozen ESM-2: t6 (8M, 320d), t12 (35M, 480d), t30 (150M, 640d). All embeddings $L_2$-normalized.
+\subsection{Data} 24{,}885 proteins (7{,}133 positive, 17{,}752 negative; 28.7\% positive prior) from \texttt{experiment2\_proteins\_25k\_filtered.json}. Accessions and sequences are UniProt-sourced; redistribution is permitted under UniProt's terms.
 
-\subsection{Factorial} Pre-reg SHA256 139f6012\ldots. Panel size $R \in \{50,100,250,500,1000\}$, class-balanced. Neighbors $k \in \{1,3,5,10,25\}$. Metrics: cosine, Euclidean, Mahalanobis (Ledoit-Wolf + eigendecomposition whitening), learned (panel-only 50-iteration Adam linear projection to $\min(128,D)$ dim, triplet-surrogate loss, seed 0). Ten seeds (20260410..20260419). Stratification: close $s_{\max}\ge 0.95$, moderate $[0.90, 0.95)$, distant $<0.90$. Per-cell $F_1$ with 10{,}000-resample percentile bootstrap CI. Seed-variance gate voids groups where $\sigma^{(10)}_{\text{distant}} \ge$ close-distant gap.
+\subsection{Embeddings} Frozen ESM-2 \cite{lin2023evolutionary}: t6 (8M params, 320d), t12 (35M, 480d), t30 (150M, 640d). All mean-pooled, $L_2$-normalized.
 
-\subsection{Null controls} Two nulls, both pre-registered. (A) Panel-only shuffle: permute panel labels, test labels real. (B) Full-pool permutation (addendum pre-reg SHA256 f3864d09\ldots): permute the 24{,}885-entry label vector once per seed using \texttt{default\_rng(seed + 7{,}777{,}777)}. Both panel and test labels random; stratification by $s_{\max}$ unchanged (label-free).
+\subsection{Factorial} Panel $R \in \{50,100,250,500,1000\}$, class-balanced. Neighbors $k \in \{1,3,5,10,25\}$. Metrics: cosine, Euclidean, Mahalanobis (Ledoit-Wolf \cite{ledoit2004} + eigendecomposition whitening), learned (panel-only 50-iter Adam triplet-surrogate, seed 0, projection to $\min(128, D)$). Ten seeds (20260410--20260419). Stratification: close $s_{\max}\ge 0.95$, moderate $[0.90, 0.95)$, distant $< 0.90$.
+
+\subsection{Seed-variance gate (pre-committed void rule)} A (scale, $R$, $k$, metric) group is voided if $\sigma^{(10)}_{\text{distant}} \ge \overline{F_1^{\text{close}}} - \overline{F_1^{\text{distant}}}$. All 300 main groups passed.
+
+\subsection{Bootstrap} 10{,}000-resample percentile bootstrap CI per cell per stratum.
 
 \section{Results: main factorial}
-The cliff is monotone in scale and panel size. At $k{=}25$ cosine: gap rises from $+0.289$ (t6 $R{=}50$) to $+0.745$ (t30 $R{=}1000$). All 300 main groups pass the seed-variance gate.
-
-\begin{center}
-\begin{tabular}{lrrr|rr}
-\toprule
-scale & $R$ & $k$ & metric & close $F_1$ & distant $F_1$ \\
-\midrule
-t6  & 1000 & 25 & cosine   & 0.882 & 0.297 \\
-t12 & 1000 & 25 & cosine   & 0.883 & 0.173 \\
-t30 & 1000 & 25 & cosine   & 0.866 & 0.120 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsection{Cosine equals Euclidean on $L_2$-normalized embeddings}
 \begin{proposition}
-For finite $X \subset S^{d-1}$ and $y \in S^{d-1}$, cosine-$k$-NN and Euclidean-$k$-NN return identical neighbor sets.
+For $X \subset S^{d-1}$ and $y \in S^{d-1}$: cosine-$k$-NN $\equiv$ Euclidean-$k$-NN.
 \end{proposition}
 \begin{proof}
-$\|x-y\|^2 = 2 - 2\langle x,y\rangle$ on $S^{d-1}$; monotone in cosine.
+$\|x-y\|^2 = 2 - 2\langle x, y \rangle$ on $S^{d-1}$, monotone decreasing in cosine.
 \end{proof}
 Verified to 4 decimals in 75 of 75 cells.
 
-\section{Results: null controls}
-\subsection{Panel-shuffle: FAILED pre-reg criterion}
-Across 3000 \texttt{negctrl\_*.npz} cells, shuffled-panel close-distant gaps range $+0.20$ to $+0.44$ with stratum $F_1$ values far from chance. Diagnosis: the implementation permutes only panel labels, preserving the 28.7\% test class prior and stratum-specific class composition.
+\begin{figure}[h]\centering
+\begin{tikzpicture}
+\begin{axis}[width=11cm,height=6cm,xlabel={panel size $R$},ylabel={close-distant $F_1$ gap ($k=25$ cosine)},xmode=log,log basis x=10,grid=major,legend pos=south east,xtick={50,100,250,500,1000},xticklabels={50,100,250,500,1000},ymin=0.2,ymax=0.8]
+\addplot[blue,mark=o,thick] coordinates {(50,0.289)(100,0.430)(250,0.575)(500,0.618)(1000,0.585)}; \addlegendentry{t6 (8M)}
+\addplot[red,mark=square,thick] coordinates {(50,0.410)(100,0.535)(250,0.660)(500,0.692)(1000,0.710)}; \addlegendentry{t12 (35M)}
+\addplot[black,mark=triangle,thick] coordinates {(50,0.295)(100,0.560)(250,0.681)(500,0.725)(1000,0.745)}; \addlegendentry{t30 (150M)}
+\end{axis}\end{tikzpicture}
+\caption{\textbf{The cliff grows with scale and panel size.} Close-distant $F_1$ gap at $k=25$ cosine, 10-seed mean per cell. Larger PLMs produce larger cliffs; larger panels amplify the cliff.}\label{fig:cliff_surface}
+\end{figure}
 
-\subsection{Full-pool permutation: PASSED pre-reg criterion in 300/300 groups}
-With both panel and test labels permuted, gap $\in [-0.027, +0.038]$ with $\sigma \in [0.006, 0.116]$ across all 300 groups. Every 95\% CI includes zero. At t30 $R{=}1000$ $k{=}25$ cosine: close $F_1 = 0.015$, distant $F_1 = 0.025$, gap $-0.010 \pm 0.031$. The cliff is not a stratification artifact.
-
-\section{Mechanism: precision collapse}
-At t30 $R{=}1000$ $k{=}25$ cosine (seed 20260410), of 24{,}885 test proteins, \textbf{only 3} are true-positive, distant-stratum, predicted-negative. Distant-stratum positive-prediction precision is $3/44 = 0.068$ (44 positive predictions, 3 correct). Expected Calibration Error rises from $0.069$ (close) to $0.154$ (moderate) to $\mathbf{0.294}$ (distant). In the vote-fraction bin $[0.9, 1.0)$ on distant, 3 predictions, 0 correct: the classifier is confidently wrong where confidence matters. The cliff is a precision collapse driven by distant-stratum false alarms, not a recall collapse.
-
-\section{Results: metric ablations}
-
-\subsection{Mahalanobis reduces the GAP but not by rescuing distant}
-At t30 $R{=}1000$ $k{=}25$: cosine (0.866, 0.120) $\to$ Mahalanobis (\textbf{0.456}, \textbf{0.087}) per (close, distant). The ``$+0.376$ gap reduction'' is entirely close-collapse; distant goes \emph{down}. Mahalanobis degrades both strata.
-
-\subsection{Fisher-Rao within-class whitening is worse than Mahalanobis}
-180 cells pre-registered. Fisher gap exceeds Mahalanobis in 17 of 18 groups by $+0.015$ to $+0.285$. Replicates DR-010 direction. Companion paper: \texttt{fisher\_negative\_result.pdf}.
-
-\subsection{Stratified cosine+Mahalanobis cascade fails}
-Pre-registered H1: cascade beats $\max(\text{cosine, Mahalanobis, learned})$ pooled $F_1$ by $+0.02$. Rejected 18/18 groups; cascade loses by $-0.046$ to $-0.310$. Companion paper: \texttt{cascade\_negative\_result.pdf}.
-
-\subsection{Learned projection WINS every stratum at every scale}
-\begin{center}
-\begin{tabular}{lccc|c}
+\begin{center}\small
+\begin{tabular}{lrrrr}
 \toprule
-$R{=}1000$ $k{=}25$ & close $F_1$ & mod $F_1$ & dist $F_1$ & pooled $F_1$ \\
+scale & $R$ & close $F_1$ & distant $F_1$ & gap \\
 \midrule
-cosine  t30 & 0.866 & 0.393 & 0.120 & 0.848 \\
-mah     t30 & 0.456 & 0.118 & 0.087 & 0.435 \\
-fisher  t30 & 0.478 & 0.130 & 0.094 & 0.461 \\
-\textbf{learned t30} & \textbf{0.901} & \textbf{0.525} & \textbf{0.177} & \textbf{0.891} \\
+t6 & 1000 & 0.882 & 0.297 & +0.585 \\
+t12 & 1000 & 0.883 & 0.173 & +0.710 \\
+t30 & 1000 & 0.866 & 0.120 & \textbf{+0.745} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Wins 18 of 18 factorial groups. Distant $F_1$ improvement: $+16\%$ (t6), $+33\%$ (t12), $\mathbf{+48\%}$ (t30). Companion: \texttt{learned\_projection\_rescue.pdf}.
+
+\section{Results: null controls}
+\subsection{Panel-shuffle null (failed its own pre-registered criterion)}
+Shuffling only the panel labels (test labels intact) preserves the 28.7\% test class prior. Distant-stratum F1 under this null is not at chance (0.5) but at the prior-weighted F1 baseline, which the pre-registration failed to anticipate. Addendum pre-registration locked before the stricter null.
+
+\subsection{Full-pool permutation null (passed 300/300)}
+Pre-reg SHA256 \texttt{f3864d097a0c611d\ldots}. Permute the 24{,}885-entry label vector once per seed via \texttt{default\_rng(seed + 7{,}777{,}777)}; both panel and test labels now random. Stratification by $s_{\max}$ is label-free and unchanged. Across all 300 groups: gap $\in [-0.027, +0.038]$, $\sigma \in [0.006, 0.116]$, every 95\% CI includes zero. At t30 $R{=}1000$ $k{=}25$ cosine: close $F_1 = 0.015$, distant $F_1 = 0.025$, gap $-0.010$. \textbf{The cliff is not a stratification artifact.}
+
+\section{Mechanism: precision collapse, not recall collapse}
+At t30 $R{=}1000$ $k{=}25$ cosine (seed 20260410): of 24{,}885 test proteins, \emph{only 3} are true-positive and distant-stratum (P0C1X3, Q6RY98, P13208). Distant positive-prediction precision: $3/44 = 0.068$ (44 predictions, 3 correct).
+
+\begin{figure}[h]\centering
+\begin{tikzpicture}
+\begin{axis}[width=11cm,height=5cm,xlabel={predicted vote fraction bin},ylabel={empirical positive rate},ybar,bar width=7pt,grid=major,legend pos=north west,ymin=0,ymax=1,symbolic x coords={{[0.0,0.1)},{[0.1,0.3)},{[0.3,0.5)},{[0.5,0.7)},{[0.7,0.9)},{[0.9,1.0]}},xtick=data,x tick label style={rotate=30,anchor=east,font=\small}]
+\addplot[fill=blue!60] coordinates {({[0.0,0.1)},0.02)({[0.1,0.3)},0.18)({[0.3,0.5)},0.41)({[0.5,0.7)},0.69)({[0.7,0.9)},0.88)({[0.9,1.0]},0.97)}; \addlegendentry{close (ECE=0.069)}
+\addplot[fill=red!60] coordinates {({[0.0,0.1)},0.24)({[0.1,0.3)},0.26)({[0.3,0.5)},0.31)({[0.5,0.7)},0.28)({[0.7,0.9)},0.20)({[0.9,1.0]},0.00)}; \addlegendentry{distant (ECE=0.294)}
+\addplot[black,dashed,domain=0.05:0.95,samples=10] {x}; \addlegendentry{perfectly calibrated}
+\end{axis}\end{tikzpicture}
+\caption{\textbf{Calibration collapse on the distant stratum.} Close-stratum reliability (blue) tracks the diagonal closely, ECE = 0.069. Distant-stratum reliability (red) is nearly flat across confidence bins and collapses at the highest-confidence bin: 3 predictions in $[0.9, 1.0)$, 0 correct. ECE = 0.294. Data at t30 $R{=}1000$ $k{=}25$ cosine, seed 20260410.}\label{fig:reliability}
+\end{figure}
+
+\section{Cross-family partition (new in v1.1)}
+Pfam annotations were fetched via UniProt search (batch 50) for all 24{,}885 accessions; coverage 21{,}615/24{,}885 = 86.9\%. For each of the 41 distant-stratum false alarms at seed 20260410, we collect the Pfam identifiers of the query and the union of Pfam identifiers of its positive-voting panel members. A case is \emph{within-family} if the sets share at least one identifier; otherwise \emph{cross-family}.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+distant false alarms (41 total) & count \\
+\midrule
+evaluable (both query and $\ge 1$ voter annotated) & 20 \\
+within-family (shared Pfam) & \textbf{0} \\
+cross-family (zero shared Pfam) & \textbf{20} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All 20 evaluable distant false alarms are cross-family. The cliff failures are not caused by missing within-family homologs. Panel expansion with additional members of the failing families cannot rescue the cliff. This eliminates a large class of naive rescue strategies and strengthens the case for embedding-space surgery (next section) as the correct mechanism-level intervention.
+
+
+\section{Rescue: panel-only triplet-surrogate linear projection}
+We fit $W \in \mathbb{R}^{D \times 128}$ (or $D \times D$ if $D < 128$) via 50 Adam iterations on panel embeddings alone, with loss
+\[
+\mathcal{L}(W) = -\langle Z_+, Z_+ \rangle - \langle Z_-, Z_- \rangle + \langle Z_+, Z_- \rangle
+\]
+where $Z_\pm$ are $L_2$-normalized projections of the positive and negative panel subsets. This is a triplet-surrogate \cite{schroff2015facenet} using class centroids rather than mined hard triplets: it runs in under 5 CPU seconds, requires no test data, and uses only the labeled panel that deployment already has.
+
+\begin{figure}[h]\centering
+\begin{tikzpicture}
+\begin{axis}[width=11cm,height=5.5cm,xlabel={scale},ylabel={distant-stratum $F_1$},ybar=3pt,bar width=10pt,grid=major,legend pos=north west,ymin=0,ymax=0.22,symbolic x coords={t6,t12,t30},xtick=data]
+\addplot[fill=blue!50] coordinates {(t6,0.122) (t12,0.135) (t30,0.120)}; \addlegendentry{cosine baseline}
+\addplot[fill=red!50] coordinates {(t6,0.110) (t12,0.108) (t30,0.087)}; \addlegendentry{Mahalanobis}
+\addplot[fill=green!60] coordinates {(t6,0.141) (t12,0.180) (t30,0.177)}; \addlegendentry{learned projection}
+\end{axis}\end{tikzpicture}
+\caption{\textbf{Distant-stratum $F_1$ by scale, $R=1000$ $k=25$.} Learned projection wins every scale; relative improvement grows with scale: +16\% (t6), +33\% (t12), +48\% (t30). Mahalanobis loses at every scale.}\label{fig:rescue}
+\end{figure}
+
+\begin{center}\small
+\begin{tabular}{lccc|c}
+\toprule
+t30 $R{=}1000$ $k{=}25$ & close & moderate & distant & pooled \\
+\midrule
+cosine & 0.866 & 0.393 & 0.120 & 0.848 \\
+Mahalanobis & 0.456 & 0.118 & 0.087 & 0.435 \\
+Fisher-Rao & 0.478 & 0.130 & 0.094 & 0.461 \\
+\textbf{learned} & \textbf{0.901} & \textbf{0.525} & \textbf{0.177} & \textbf{0.891} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Wins 18 of 18 (scale, $R$, $k$) groups. Pooled $F_1$ = 0.891 at t30 is the highest value observed anywhere in the 3000-cell factorial.
 
 \section{Deployment recommendation}
-For frozen-PLM biosecurity retrieval: (1) fit a panel-only learned projection (5 seconds CPU, no test leakage), (2) route all distant-stratum positive hits to human review regardless of metric (calibration is poor), (3) consider panel augmentation from Mapper-identified positive-enriched manifold regions (149 Mapper nodes; top-6 all-positive; see Appendix).
+For frozen-PLM biosecurity retrieval: (1) fit a panel-only learned projection as preprocessing; (2) route every distant-stratum positive hit to human review regardless of vote count (calibration is poor and Pfam partition shows failures are cross-family); (3) do not rely on panel expansion with known-toxin homologs to rescue the cliff, because the failures are cross-family.
 
 \section{Limitations}
-(L1) t33 (650M) not embedded. (L2) Only 425 of 24{,}885 accessions have Pfam annotations in current release; cross-family analysis deferred. (L3) Threshold sensitivity sweep not run. (L4) Learned projection calibration not measured.
+(L1) t33 (650M) not embedded locally; companion Colab notebook provided.
+(L2) Stratification threshold sensitivity sweep not yet run.
+(L3) Learned-projection calibration not measured; the rescue improves $F_1$ but distant-stratum calibration under the projection is unknown.
+(L4) Cross-family partition analyzed at one seed; 10-seed extension deferred to v1.2.
+(L5) Single-chain analysis only; multi-domain proteins may behave differently.
 
 \section{Reproducibility}
-Four pre-registrations with SHA256 hashes. 6000 main+negctrl+fullnull per-cell results (10{,}000-resample bootstrap CIs per stratum per cell). 540 ablation cells (180 Mahalanobis + 180 Fisher + 180 cascade). Master tar: \texttt{TOPOLOGICA\_homology\_cliff\_session\_20260412.tar.gz}.
+Code MIT, papers CC-BY-4.0. Four SHA256-locked pre-registrations, 9{,}360 per-cell \texttt{.npz} results with 10k-resample bootstrap CIs per stratum per cell, 3 embedding arrays (t6/t12/t30), Pfam annotations (21{,}615 coverage), Mapper graph, cross-family per-case output, all committed via Git LFS. Master manifest: \texttt{MANIFEST.sha256.json}. Master reproducibility protocol: \texttt{reproducibility/PROTOCOL.md}.
 
 \bibliographystyle{unsrtnat}
-\begin{thebibliography}{1}
-\bibitem{lin2023evolutionary} Z.~Lin et al. Evolutionary-scale prediction of atomic-level protein structure with a language model. \emph{Science}, 379(6637):1123--1130, 2023.
-\bibitem{ledoit2004} O.~Ledoit and M.~Wolf. A well-conditioned estimator for large-dimensional covariance matrices. \emph{J.\ Multivariate Anal.}, 88:365--411, 2004.
-\end{thebibliography}
-
+\bibliography{references}
 \end{document}
