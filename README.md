@@ -1,9 +1,17 @@
 # The Homology Cliff in Frozen Protein Language Models
 
+[![License: CC BY 4.0](https://img.shields.io/badge/Papers-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![License: MIT](https://img.shields.io/badge/Code-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Papers](https://img.shields.io/badge/papers-5-brightgreen.svg)](./papers/)
+[![Pre-registered cells](https://img.shields.io/badge/cells-9,360-orange.svg)](./data/cells/)
+[![Tests](https://img.shields.io/badge/tests-pytest-success.svg)](./tests/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--6480--1987-a6ce39.svg)](https://orcid.org/0009-0005-6480-1987)
+
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
-**Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; TOPOLOGICA LLC
-**Version:** v1.3.1 &nbsp;·&nbsp; **Date:** April 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT
+**Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
+**Version:** v1.4.0 &nbsp;·&nbsp; **Date:** April 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT
 
 ---
 
