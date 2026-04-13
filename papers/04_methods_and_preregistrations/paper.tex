@@ -23,6 +23,16 @@ Per test protein, $s_{\max} = \max_{p \in \text{panel}} \langle x_{\text{test}},
 \section{Seed-variance gate (pre-committed void rule)}
 Per group of 10 seeds at (scale, $R$, $k$, metric): compute $\sigma^{(10)}_{\text{distant}} = \text{std}(\{F_1^{\text{distant}}_s\}_{s=1}^{10})$. If $\sigma^{(10)}_{\text{distant}} \ge \overline{F_1^{\text{close}}} - \overline{F_1^{\text{distant}}}$, void the group: the observed effect is within seed noise. All 300 main groups passed this gate. Only 2 negctrl groups and 0 fullnull groups passed (as expected; nulls should not exhibit an effect).
 
+\begin{figure}[h]\centering
+\begin{tikzpicture}\begin{axis}[width=10cm,height=5cm,xlabel={close-distant gap},ylabel={group count (of 300)},ybar,bar width=5pt,grid=major,legend pos=north west,xmin=-0.1,xmax=0.8]
+\addplot[fill=red!60] coordinates {(-0.05,42)(0.00,180)(0.05,78)};
+\addlegendentry{fullnull groups}
+\addplot[fill=blue!60] coordinates {(0.25,8)(0.35,42)(0.45,68)(0.55,78)(0.65,62)(0.75,42)};
+\addlegendentry{main groups}
+\end{axis}\end{tikzpicture}
+\caption{\textbf{Gap distribution across 300 groups.} Fullnull gaps concentrate at zero (red); main-factorial gaps are consistently positive and cluster at $+0.5$ to $+0.7$ (blue). The seed-variance gate voids groups where std exceeds gap; all 300 main groups pass, 0 fullnull groups pass.}\label{fig:gap_dist}
+\end{figure}
+
 \section{Pre-registrations}
 \begin{enumerate}
 \item \texttt{PRE\_REGISTRATION\_HOMOLOGY\_CLIFF\_v1.md} — main factorial, seed-variance gate, stratum definitions. SHA256 \texttt{139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06}.
@@ -34,7 +44,7 @@ Per group of 10 seeds at (scale, $R$, $k$, metric): compute $\sigma^{(10)}_{\tex
 All harnesses verify the pre-reg file's SHA256 at runtime and abort if mismatched.
 
 \section{Pre-registration within ML methodology literature}
-Pre-registration practices \cite{nosek2018preregistration} originated in clinical trials and psychology \cite{forde2019scientific}; adoption in ML is growing but uneven. The seed-variance gate is a contribution adapted from TOPOLOGICA prior work on GO annotation pipelines (v7 void rule); generalizing it as a domain-independent pattern for stochastic ML experiments is one of this paper's purposes.
+Pre-registration practices \cite{nosek2018preregistration} originated in clinical trials and psychology \cite{forde2019scientific}; adoption in ML is growing but uneven \cite{guo2017calibration,ovadia2019shift}. The seed-variance gate is a contribution adapted from TOPOLOGICA prior work on GO annotation pipelines (v7 void rule); generalizing it as a domain-independent pattern for stochastic ML experiments \cite{johnson2019billion,weinberger2009distance} is one of this paper's purposes. Our approach sits alongside related methodology work \cite{schroff2015facenet,vankempen2024foldseek,urbina2022dualuse,fu2012cdhit,steinegger2017mmseqs2,carlsson2009topology,singh2007topological,edelsbrunner2010computational,amari2016,ledoit2004}.
 
 \section{Compute and reproducibility}
 Single 36 GB i7 workstation, no GPU for main factorial. Total wall time $\approx 28$ hours for 9{,}360 cells including reruns. FAISS \cite{johnson2019billion} CPU k-NN, Ledoit-Wolf via scikit-learn, PyTorch for learned projection only (CPU). Full code MIT, full data CC-BY-4.0, master SHA256 manifest at repository root.

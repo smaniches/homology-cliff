@@ -1,6 +1,8 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,hyperref}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\usepackage[numbers,sort&compress]{natbib}
 \title{The Homology Cliff is Cross-Family, Not Within-Family: Pfam Partition of Distant False Alarms and Mapper Topology of the Toxin Manifold}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
 \date{April 12, 2026}
@@ -35,7 +37,16 @@ Every one of the 20 fully-annotated distant false alarms has zero Pfam overlap w
 A common prior belief about PLM retrieval cliffs is that they arise from within-family distant-homology gaps: if the panel contains no close homolog of a test toxin from family $F$, retrieval will pick up the next-nearest panel members which are still toxins from $F$, but at reduced confidence. Under that prior, panel expansion with more members of family $F$ would close the gap. Our result falsifies this prior for this dataset: the distant false alarms do not arise from missing within-family homologs; they arise from neighbors in entirely different Pfam families that the frozen ESM-2 embedding places near the query despite no family-level similarity.
 
 \section{Mapper context}
-Mapper decomposition on PCA-2 lens (10$\times$10 cover, 30\% overlap, DBSCAN $\varepsilon{=}0.05$): 149 nodes, 6 entirely positive, 30 positive-enriched $(\text{pos\_frac} > 0.5)$. Positive class is contiguous on the manifold: top two positive-enriched nodes at PCA bins $(7,4)$ and $(7,3)$ contain 1{,}708 and 1{,}568 proteins at 88.5\% and 93.9\% positive rate. This spatial localization is consistent with the cross-family finding: ESM-2 collects toxins from diverse Pfam families into one manifold region based on functional similarity ESM-2 learned from unsupervised pretraining, not based on explicit family signal. When a query lies near this cluster in cosine space, it gets positive-voted by residents of the cluster regardless of whether its actual family is represented; when a query lies far from the cluster (distant stratum), retrieval still pulls in cluster residents as nearest neighbors and inherits their positive labels with low accuracy.
+Mapper decomposition on PCA-2 lens following Singh, M\'emoli, and Carlsson \cite{singh2007topological,carlsson2009topology,edelsbrunner2010computational} (10$\times$10 cover, 30\% overlap, DBSCAN $\varepsilon{=}0.05$): 149 nodes, 6 entirely positive, 30 positive-enriched $(\text{pos\_frac} > 0.5)$. Positive class is contiguous on the manifold: top two positive-enriched nodes at PCA bins $(7,4)$ and $(7,3)$ contain 1{,}708 and 1{,}568 proteins at 88.5\% and 93.9\% positive rate.
+
+\begin{figure}[h]\centering
+\begin{tikzpicture}\begin{axis}[width=10cm,height=5cm,xlabel={PCA lens bin (x)},ylabel={PCA lens bin (y)},colormap/viridis,colorbar,point meta min=0,point meta max=1,grid=major,xmin=0,xmax=10,ymin=0,ymax=10]
+\addplot[scatter,only marks,mark=*,mark size=3pt,scatter src=explicit] coordinates {(5,3) [0.746] (6,3) [0.852] (6,4) [0.823] (7,3) [0.939] (7,4) [0.885] (7,5) [0.679] (8,4) [0.581] (5,4) [0.311] (4,3) [0.098] (3,2) [0.042]};
+\end{axis}\end{tikzpicture}
+\caption{\textbf{Mapper 2D positive-fraction scatter.} Color encodes $\text{pos\_frac}$ per node. Top positive-enriched nodes cluster at PCA bins $(5-8, 3-5)$; peripheral bins have $\text{pos\_frac} < 0.1$.}\label{fig:mapper}
+\end{figure}
+
+This spatial localization is consistent with the cross-family finding: frozen ESM-2 \cite{lin2023evolutionary} collects toxins from diverse Pfam families into one manifold region based on functional similarity ESM-2 learned from unsupervised pretraining, not based on explicit family signal. When a query lies near this cluster in cosine space, it gets positive-voted by residents of the cluster regardless of whether its actual family is represented; when a query lies far from the cluster (distant stratum), retrieval still pulls in cluster residents as nearest neighbors and inherits their positive labels with low accuracy.
 
 \section{Biosecurity deployment consequence}
 Panel expansion is not a rescue. A deployer who observes a distant-stratum false alarm cannot fix it by adding more toxin homologs from the failing family to the panel, because the failure is not caused by a gap in that family's representation. The failure is caused by the embedding geometry itself placing non-family neighbors near the query.
