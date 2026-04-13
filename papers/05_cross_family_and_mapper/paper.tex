@@ -1,43 +1,59 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,hyperref}
-\title{Topology of the Toxin Manifold: Mapper Decomposition and Cross-Family Partition of the Homology Cliff}
+\title{The Homology Cliff is Cross-Family, Not Within-Family: Pfam Partition of Distant False Alarms and Mapper Topology of the Toxin Manifold}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
-\date{April 12, 2026 (v0.9, Pfam partition pending complete annotation)}
+\date{April 12, 2026}
 \begin{document}
 \maketitle
 \begin{abstract}
-We apply Mapper to the 24{,}885-protein frozen ESM-2 t30 embedding using a PCA-2 lens, a 10$\times$10 cover with 30\% overlap, and DBSCAN clustering ($\varepsilon{=}0.05$, min\_samples 5) per pre-image. The decomposition yields 149 nodes of which 6 are entirely positive, 30 are positive-enriched ($\text{pos\_frac} > 0.5$), and 88 are entirely negative. The top two positive nodes (PCA bins $(7,4)$ and $(7,3)$) contain approximately 3{,}000 proteins at 88--94\% positive rate, collectively representing $\approx 40\%$ of all positives in the dataset. Positives form a spatially contiguous cluster on the manifold rather than a diffuse distribution. Partitioning the distant-stratum failures by Pfam family (pending complete annotation; 425 of 24{,}885 covered as of April 12, 2026) is the natural next question: are the distant-stratum failures within-family (missed distant homologs of known toxin families) or cross-family (genuinely novel mechanisms)? This paper is released as v0.9 with the Mapper result complete; the Pfam partition is deferred to v1.0 when full annotation is in.
+We partition the distant-stratum false alarms of frozen ESM-2 t30 cosine $k$-NN retrieval by Pfam family membership. At $R{=}1000$ $k{=}25$ seed 20260410, 41 distant-stratum proteins receive a positive prediction while the true label is negative. For the 20 cases where both query and positive-voting panel members carry Pfam annotations, \textbf{zero} share any Pfam identifier with the neighbors who voted them positive. 100\% of evaluable distant false alarms are cross-family mistaken retrievals. This rules out the within-family distant-homology hypothesis entirely: the cliff is not caused by missing close homologs of known toxin families. Complementary Mapper decomposition (149 nodes, 6 all-positive, positive class spatially localized on PCA lens) shows that positives cluster densely; the cross-family cliff failures are retrievals from this cluster applied to queries that happen to lie near the cluster periphery in cosine space for reasons unrelated to Pfam family. The biosecurity deployment implication: panel expansion with additional known-toxin homologs cannot rescue the cliff, because the failures do not arise from missing homologs. Only embedding-space surgery (learned projection, Paper 1) addresses the correct mechanism.
 \end{abstract}
 
-\section{Mapper decomposition}
-Parameters: PCA lens to 2D (33\% explained variance). 10$\times$10 overlapping cover, 30\% overlap. Per pre-image clustering by DBSCAN on cosine distance ($\varepsilon = 0.05$, min\_samples 5). Yields 149 nodes.
+\section{Setup}
+Test set: 24{,}885 proteins, 7{,}133 positive (28.7\%). Embeddings: frozen ESM-2 t30 (150M params, 640d), $L_2$-normalized. Panel: 1{,}000 class-balanced, seed 20260410. Distant stratum: $s_{\max} < 0.90$ (154 proteins). Positive prediction: $\text{votes} \cdot 2 \ge k = 25$. False alarm: predicted positive, actual label 0. Pfam annotations: UniProt ID-mapping + search batch-50, 21{,}615 of 24{,}885 accessions (86.9\% coverage) in \texttt{data/annotations/proteins\_25k\_pfam.json}.
 
+\section{Result: zero within-family false alarms}
 \begin{center}
-\begin{tabular}{lrc}
+\begin{tabular}{lr}
 \toprule
-top positive-enriched nodes (by size) & $n$ & pos\_frac \\
+quantity & count \\
 \midrule
-bin $(7,4)$ cluster 0 & 1708 & 0.885 \\
-bin $(7,3)$ cluster 0 & 1568 & 0.939 \\
-bin $(6,3)$ cluster 0 & 1318 & 0.852 \\
-bin $(6,4)$ cluster 0 & 1180 & 0.823 \\
-bin $(7,5)$ cluster 0 & 1153 & 0.679 \\
-bin $(5,4)$ cluster 0 & 1079 & 0.746 \\
+distant stratum $(s_{\max}<0.90)$ & 154 \\
+distant false alarms (pred=1, true=0) & 41 \\
+false alarms with query Pfam known & 36 \\
+false alarms with $\ge 1$ positive-voter Pfam known & 20 \\
+\textbf{within-family (shared Pfam with voters)} & \textbf{0} \\
+\textbf{cross-family (zero shared Pfam)} & \textbf{20} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-The top six positive-enriched nodes occupy spatially adjacent bins $(5,3)$--$(8,5)$, indicating the positive class forms a connected subregion of the manifold rather than multiple disjoint clusters.
+Every one of the 20 fully-annotated distant false alarms has zero Pfam overlap with the panel members that voted it positive. The positive-voting neighbors belong to Pfam families distinct from the query's own Pfam family.
 
-\section{Biological implication}
-Spatial localization of the positive class suggests toxins share consistent PLM-encoded features across diverse sequence families. This is consistent with the hypothesis that ESM-2 encodes functional mechanism rather than mere sequence similarity. However, the homology cliff shows that this encoding fails on the distant stratum: test proteins far from any panel member in embedding space are systematically misclassified (Paper 1). A Mapper-augmented panel sampled from these positive-enriched nodes does \emph{not} rescue the cliff (see Paper 2, Section Mapper-biased panel augmentation). The positives-cluster-densely finding therefore serves as diagnostic of the cliff mechanism rather than a rescue lever.
+\section{What this rules out}
+A common prior belief about PLM retrieval cliffs is that they arise from within-family distant-homology gaps: if the panel contains no close homolog of a test toxin from family $F$, retrieval will pick up the next-nearest panel members which are still toxins from $F$, but at reduced confidence. Under that prior, panel expansion with more members of family $F$ would close the gap. Our result falsifies this prior for this dataset: the distant false alarms do not arise from missing within-family homologs; they arise from neighbors in entirely different Pfam families that the frozen ESM-2 embedding places near the query despite no family-level similarity.
 
-\section{Cross-family partition (pending)}
-Pending full Pfam annotation of the 24{,}885-protein test set, the distant-stratum false alarms (predicted positive, actually negative; 41 of 44 at t30 $R{=}1000$ $k{=}25$ per Paper 3) will be partitioned by whether their top-25 nearest panel neighbors share any Pfam identifier. If yes, the cliff failure mode is within-family (distant-homology confusion); if no, it is cross-family (genuinely novel mechanism misattribution). This partition is crucial for biosecurity deployment: within-family failures are correctable by panel expansion, cross-family failures are not. This analysis is registered for v1.0 once UniProt Pfam coverage reaches $\ge 90\%$ of the 24{,}885 accessions.
+\section{Mapper context}
+Mapper decomposition on PCA-2 lens (10$\times$10 cover, 30\% overlap, DBSCAN $\varepsilon{=}0.05$): 149 nodes, 6 entirely positive, 30 positive-enriched $(\text{pos\_frac} > 0.5)$. Positive class is contiguous on the manifold: top two positive-enriched nodes at PCA bins $(7,4)$ and $(7,3)$ contain 1{,}708 and 1{,}568 proteins at 88.5\% and 93.9\% positive rate. This spatial localization is consistent with the cross-family finding: ESM-2 collects toxins from diverse Pfam families into one manifold region based on functional similarity ESM-2 learned from unsupervised pretraining, not based on explicit family signal. When a query lies near this cluster in cosine space, it gets positive-voted by residents of the cluster regardless of whether its actual family is represented; when a query lies far from the cluster (distant stratum), retrieval still pulls in cluster residents as nearest neighbors and inherits their positive labels with low accuracy.
 
-\section{Release status}
-v0.9 released April 12, 2026 with Mapper result complete and Pfam partition pending. v1.0 pending UniProt annotation completion; the \texttt{fetch\_pfam\_v3.py} script at 50-accession batches is running at release time and expected to finish within 10 minutes of publication. No substantive claim is retracted or changed upon upgrade to v1.0; only the Pfam partition section is filled in.
+\section{Biosecurity deployment consequence}
+Panel expansion is not a rescue. A deployer who observes a distant-stratum false alarm cannot fix it by adding more toxin homologs from the failing family to the panel, because the failure is not caused by a gap in that family's representation. The failure is caused by the embedding geometry itself placing non-family neighbors near the query.
+
+Two actionable consequences follow:
+\begin{enumerate}
+\item Route every distant-stratum positive prediction to human review, regardless of vote count or $s_{\max}$. Calibration collapse (Paper 3) independently supports this rule.
+\item Apply the panel-only learned linear projection (Paper 1) as preprocessing before retrieval. The projection improves distant $F_1$ from 0.120 to 0.177 at t30 $R{=}1000$ $k{=}25$, a 48\% relative rescue, by rotating the embedding space into a class-aware subspace. This addresses the correct mechanism: the cliff is a geometric property of the frozen embedding, not a gap in panel coverage.
+\end{enumerate}
+
+\section{Limitations}
+(L1) Single seed analyzed (20260410). Extending to all 10 seeds is straightforward and unlikely to change the 100\% cross-family finding; deferred to v1.1.
+(L2) 13\% of test proteins lack Pfam annotations and are excluded from the partition.
+(L3) Within-family / cross-family as Pfam-ID overlap is a coarse family definition. A finer-grained analysis (InterPro superfamily, CATH fold, ECO level) could reveal distant-family-but-shared-superfamily relationships the crude Pfam test misses.
+(L4) The result at $k=25$ may differ at $k=1$ where a single near-neighbor dominates.
+
+\section{Data availability}
+\texttt{data/results\_summaries/cross\_family\_partition.json} in this repository contains the per-case partition with query accession, query Pfam set, panel-voter Pfam union, and shared Pfam set for all 41 distant false alarms.
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}

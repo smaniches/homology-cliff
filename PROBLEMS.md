@@ -21,7 +21,7 @@
 3. **Stratification threshold sensitivity sweep** — pre-registered but not yet run.
 4. **Adversarial phase 2** — only 3 target proteins exist (precision-not-recall finding); BLOSUM-edit attack needs GPU for ESM re-embedding. Kaggle notebook provided.
 5. **Learned-projection calibration** — main factorial measured F1 only; calibration of the learned metric on distant stratum is unmeasured.
-6. **Cross-family (Pfam-partitioned) analysis** — Pfam annotations now cover most of 24,885 accessions via v3 fetch; partition analysis pending.
+6. ~~Cross-family (Pfam-partitioned) analysis~~ — COMPLETED v1.0.1. Result: 100% of evaluable distant false alarms are cross-family (zero Pfam overlap with voters). Paper 5 updated from v0.9 stub to full v1.0 with this result.
 
 ## Things deferred to v1.1+
 

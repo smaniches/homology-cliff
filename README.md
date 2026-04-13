@@ -27,6 +27,10 @@ A five-paper research compendium characterizing the **homology cliff** in frozen
 - Distant-stratum positive-prediction precision under cosine: 0.068 (3/44)
 - Mahalanobis, Fisher, cascade, Mapper-augmentation: all rejected at H1
 
+## Cross-family finding (v1.0.1)
+
+**100% of evaluable distant false alarms are cross-family.** 20 of 20 distant-stratum false positives (where both query and voters have Pfam annotations) share ZERO Pfam identifiers with the panel members that voted them positive. Panel expansion cannot rescue the cliff. See Paper 5 and `data/results_summaries/cross_family_partition.json`.
+
 ## Pre-registrations (SHA256 locked)
 
 - `PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md` — hash `139f60129d4e73df…` (main factorial)

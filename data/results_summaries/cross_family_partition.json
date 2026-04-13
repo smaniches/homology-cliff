@@ -1,0 +1,746 @@
+{
+ "R": 1000,
+ "k": 25,
+ "seed": 20260410,
+ "scale": "t30",
+ "n_distant_FP": 41,
+ "n_evaluable": 20,
+ "within_family": 0,
+ "cross_family": 20,
+ "detail": [
+  {
+   "acc": "Q54R21",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01123",
+    "PF01338",
+    "PF02876",
+    "PF03032"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P21246",
+   "q_pfam": [
+    "PF01091",
+    "PF05196"
+   ],
+   "nbr_pfam_union": [
+    "PF02819",
+    "PF07740",
+    "PF08092",
+    "PF10279",
+    "PF10530",
+    "PF15430"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "O97388",
+   "q_pfam": [
+    "PF07846"
+   ],
+   "nbr_pfam_union": [
+    "PF00451",
+    "PF05294",
+    "PF05453",
+    "PF07740",
+    "PF08089",
+    "PF10279",
+    "PF10530",
+    "PF21947"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P02528",
+   "q_pfam": [
+    "PF00030"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF01421",
+    "PF01562",
+    "PF08516"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q97CU2",
+   "q_pfam": [
+    "PF00832"
+   ],
+   "nbr_pfam_union": [
+    "PF00212",
+    "PF07365"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "O22612",
+   "q_pfam": [
+    "PF07172"
+   ],
+   "nbr_pfam_union": [
+    "PF01097",
+    "PF02819",
+    "PF02950",
+    "PF05298",
+    "PF05980",
+    "PF07740",
+    "PF08098",
+    "PF10279",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "A0A023PXQ9",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00212",
+    "PF01372",
+    "PF02950",
+    "PF03032"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q9I9I0",
+   "q_pfam": [
+    "PF00131"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF00451",
+    "PF00537",
+    "PF05294",
+    "PF05453",
+    "PF07740",
+    "PF21947"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q66KZ9",
+   "q_pfam": [
+    "PF05640"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF01421",
+    "PF01562",
+    "PF08516",
+    "PF13765",
+    "PF18078",
+    "PF21109",
+    "PF24674"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q9LJD9",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01097",
+    "PF01372",
+    "PF02950",
+    "PF07365",
+    "PF07740",
+    "PF08098",
+    "PF10279",
+    "PF16981",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q9VV28",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01097",
+    "PF01372",
+    "PF02950",
+    "PF05298",
+    "PF05980",
+    "PF07740",
+    "PF08396",
+    "PF10279",
+    "PF10530",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P83183",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00200",
+    "PF00321",
+    "PF00451",
+    "PF02950",
+    "PF08091",
+    "PF08093",
+    "PF08396",
+    "PF17557"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P10118",
+   "q_pfam": [
+    "PF00260"
+   ],
+   "nbr_pfam_union": [
+    "PF00200",
+    "PF00321",
+    "PF02950",
+    "PF08091",
+    "PF08093",
+    "PF08396",
+    "PF17557"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q54T37",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00123",
+    "PF01372",
+    "PF05298",
+    "PF05480",
+    "PF08093",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q9BYR5",
+   "q_pfam": [
+    "PF13885"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00184",
+    "PF05294",
+    "PF07740",
+    "PF08093",
+    "PF17557"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P52728",
+   "q_pfam": [
+    "PF00131"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF00451",
+    "PF00537",
+    "PF05294",
+    "PF05453",
+    "PF07740",
+    "PF21947"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q29419",
+   "q_pfam": [
+    "PF00096",
+    "PF13909"
+   ],
+   "nbr_pfam_union": [
+    "PF00008",
+    "PF00014",
+    "PF00059",
+    "PF00089",
+    "PF00200",
+    "PF00451",
+    "PF00594",
+    "PF01421",
+    "PF01562",
+    "PF08516",
+    "PF14670",
+    "PF15430"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q07880",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00123",
+    "PF00161",
+    "PF00212",
+    "PF01338",
+    "PF02917",
+    "PF02950",
+    "PF16981",
+    "PF22346",
+    "PF22509"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "O52179",
+   "q_pfam": [
+    "PF17228"
+   ],
+   "nbr_pfam_union": [
+    "PF01372",
+    "PF02950",
+    "PF05298",
+    "PF08024",
+    "PF10279",
+    "PF10530",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P0CI94",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01097",
+    "PF01372",
+    "PF05298",
+    "PF05980",
+    "PF07740",
+    "PF08024",
+    "PF08093",
+    "PF08396",
+    "PF10279",
+    "PF10530",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q71UF9",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF02819",
+    "PF02950",
+    "PF08024",
+    "PF08093",
+    "PF08396"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q71UG1",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF02819",
+    "PF02950",
+    "PF08024",
+    "PF08093",
+    "PF08396"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q6NSX1",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00123",
+    "PF02950",
+    "PF03032",
+    "PF08092"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P68507",
+   "q_pfam": [
+    "PF00131"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF00451",
+    "PF00537",
+    "PF05294",
+    "PF05453",
+    "PF07740",
+    "PF21947"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q7KVQ0",
+   "q_pfam": [
+    "PF04410"
+   ],
+   "nbr_pfam_union": [
+    "PF02950",
+    "PF07740",
+    "PF08093",
+    "PF08116",
+    "PF10530",
+    "PF15430"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q02033",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00008",
+    "PF00014",
+    "PF00059",
+    "PF00089",
+    "PF00200",
+    "PF00594",
+    "PF01421",
+    "PF01562",
+    "PF14670",
+    "PF21947"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P04345",
+   "q_pfam": [
+    "PF00030"
+   ],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF00200",
+    "PF01421",
+    "PF01562",
+    "PF08516",
+    "PF13765",
+    "PF18078",
+    "PF21109",
+    "PF24674"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P67847",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF02819",
+    "PF02950",
+    "PF08024",
+    "PF08093",
+    "PF08396"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P35313",
+   "q_pfam": [
+    "PF00841"
+   ],
+   "nbr_pfam_union": [
+    "PF00184",
+    "PF02950",
+    "PF08121",
+    "PF17557"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P35322",
+   "q_pfam": [
+    "PF02389"
+   ],
+   "nbr_pfam_union": [
+    "PF01372",
+    "PF07740",
+    "PF08089"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P02859",
+   "q_pfam": [
+    "PF01559"
+   ],
+   "nbr_pfam_union": [
+    "PF01372",
+    "PF02950",
+    "PF05298",
+    "PF06377",
+    "PF10279",
+    "PF16981",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P86798",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01372",
+    "PF02950",
+    "PF05298",
+    "PF07740",
+    "PF08024",
+    "PF08093",
+    "PF10279",
+    "PF10530",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "A2ZJC9",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00451",
+    "PF02950",
+    "PF05980",
+    "PF08093",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P52743",
+   "q_pfam": [
+    "PF00096"
+   ],
+   "nbr_pfam_union": [
+    "PF00059",
+    "PF00451",
+    "PF00622",
+    "PF02819",
+    "PF02950",
+    "PF10530",
+    "PF13765"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q8TDU5",
+   "q_pfam": [
+    "PF03402"
+   ],
+   "nbr_pfam_union": [
+    "PF00059",
+    "PF00188",
+    "PF00200",
+    "PF00537",
+    "PF00622",
+    "PF01421",
+    "PF01562",
+    "PF02819",
+    "PF13765",
+    "PF18078",
+    "PF21109",
+    "PF24674"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": true,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q6GZR9",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00212",
+    "PF02950",
+    "PF07365",
+    "PF08121"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q71VP4",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00068",
+    "PF02819",
+    "PF02950",
+    "PF08024",
+    "PF08093",
+    "PF08396"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P05667",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00212",
+    "PF02950",
+    "PF07365",
+    "PF24112"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "P35307",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF02950",
+    "PF08024",
+    "PF08025",
+    "PF08093",
+    "PF08396"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q54MI7",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF00123",
+    "PF01372",
+    "PF03032",
+    "PF05298",
+    "PF08089",
+    "PF10279",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  },
+  {
+   "acc": "Q86IJ5",
+   "q_pfam": [],
+   "nbr_pfam_union": [
+    "PF01372",
+    "PF02950",
+    "PF05298",
+    "PF10279",
+    "PF10530",
+    "PF17499"
+   ],
+   "shared": [],
+   "status": "CROSS_FAMILY",
+   "q_pfam_known": false,
+   "any_nbr_pfam_known": true
+  }
+ ]
+}
