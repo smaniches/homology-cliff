@@ -37728,12 +37728,12 @@
   "sha256": "671c7c0cb311a371bac0471908c9bb8951fc5221caae1471cb858b0eacbeb95f"
  },
  "papers/04_methods_and_preregistrations/paper.pdf": {
-  "bytes": 200267,
-  "sha256": "71cf27e53d567a264f12fec396c50458ec794c4d699b049566ad3b6e1fd54d95"
+  "bytes": 200452,
+  "sha256": "859e5002cdec72c54df3bfbed9b2d982d3ed5033f799fd70228c9d4d5b978b9a"
  },
  "papers/04_methods_and_preregistrations/paper.tex": {
-  "bytes": 6578,
-  "sha256": "159fd5376682ea2e24e436af360d2402a2b866d8db3faf118dfbba1d3b6dc471"
+  "bytes": 6580,
+  "sha256": "7c16cce7e4ce929b1f49d7ad937ee45a568b6bbe1511f817a35f00d44d0a9710"
  },
  "papers/04_methods_and_preregistrations/references.bib": {
   "bytes": 7390,

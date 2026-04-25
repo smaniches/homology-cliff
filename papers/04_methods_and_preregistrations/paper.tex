@@ -21,7 +21,7 @@ Per test protein, $s_{\max} = \max_{p \in \text{panel}} \langle x_{\text{test}},
 10{,}000-resample percentile bootstrap per cell per stratum for $F_1$. Percentile (not BCa) chosen for computational feasibility across 9{,}360 cells; BCa jackknife is $O(n)$ per cell, percentile is $O(1)$.
 
 \section{Seed-variance gate (pre-committed void rule)}
-Per group of 10 seeds at (scale, $R$, $k$, metric): compute $\sigma^{(10)}_{\text{distant}} = \text{std}(\{F_1^{\text{distant}}_s\}_{s=1}^{10})$. If $\sigma^{(10)}_{\text{distant}} \ge \overline{F_1^{\text{close}}} - \overline{F_1^{\text{distant}}}$, void the group: the observed effect is within seed noise. All 300 main groups passed this gate. Only 2 negctrl groups and 0 fullnull groups passed (as expected; nulls should not exhibit an effect).
+Per group of 10 seeds at (scale, $R$, $k$, metric): compute $\sigma^{(10)}_{\text{distant}} = \text{std}(\{F_{1,s}^{\text{distant}}\}_{s=1}^{10})$. If $\sigma^{(10)}_{\text{distant}} \ge \overline{F_1^{\text{close}}} - \overline{F_1^{\text{distant}}}$, void the group: the observed effect is within seed noise. All 300 main groups passed this gate. Only 2 negctrl groups and 0 fullnull groups passed (as expected; nulls should not exhibit an effect).
 
 \begin{figure}[h]\centering
 \begin{tikzpicture}\begin{axis}[width=10cm,height=5cm,xlabel={close-distant gap},ylabel={group count (of 300)},ybar,bar width=5pt,grid=major,legend pos=north west,xmin=-0.1,xmax=0.8]
