@@ -7,6 +7,7 @@
 [![Pre-registered cells](https://img.shields.io/badge/cells-9,360-orange.svg)](./data/cells/)
 [![Tests](https://img.shields.io/badge/tests-pytest-success.svg)](./tests/)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--6480--1987-a6ce39.svg)](https://orcid.org/0009-0005-6480-1987)
+[![DOI](https://zenodo.org/badge/latestdoi/smaniches/homology-cliff.svg)](https://zenodo.org/badge/latestdoi/smaniches/homology-cliff)
 
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
@@ -87,7 +88,7 @@ All four pre-registrations were locked on disk, SHA256-computed, and committed *
 
 ## Honest limitations
 
-This is a v1.3.1 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.4.0 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
 - Reference counts are 24 (Paper 1), 25 (Paper 2), 8 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
@@ -114,7 +115,7 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "orcid": "0009-0005-6480-1987",
   "citation_file": "CITATION.cff",
   "codemeta": "codemeta.json",
@@ -171,7 +172,7 @@ See `reproducibility/GPU_EXECUTION_GUIDE.md`. Two unfinished but scaffolded expe
 
 ## Zenodo DOI (optional)
 
-Enable GitHub integration at zenodo.org → Settings → GitHub → toggle `smaniches/homology-cliff` to ON. Then `git tag v1.3.2 && git push --tags` will auto-archive to Zenodo and mint a permanent DOI. Update `CITATION.cff` with the DOI once minted, commit, push.
+Enable GitHub integration at zenodo.org → Settings → GitHub → toggle `smaniches/homology-cliff` to ON. Then `git tag v1.4.0 && git push --tags` will auto-archive to Zenodo and mint a permanent DOI. Update `CITATION.cff` with the DOI once minted, commit, push.
 
 ## Files to read in order if you have one hour
 
@@ -190,7 +191,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = apr, version = {1.3.1},
+  year = {2026}, month = apr, version = {1.4.0},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},
   license = {CC-BY-4.0 (papers), MIT (code)}
