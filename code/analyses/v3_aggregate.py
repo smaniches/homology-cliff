@@ -1,14 +1,21 @@
 import numpy as np, glob, os, re, random
 from collections import defaultdict
+from pathlib import Path
 
 random.seed(20260412)
-R = r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff\results"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CELLS_DIR = REPO_ROOT / "data" / "cells"
 PAT = re.compile(r"(cell|negctrl|fullnull)_(t\d+)_(\d+)_(\d+)_(\w+?)_(\d+)\.npz$")
 
 groups_main = defaultdict(list)
 groups_neg  = defaultdict(list)
 groups_full = defaultdict(list)
-for f in sorted(glob.glob(os.path.join(R, "*.npz"))):
+_npz_paths = (
+    sorted(glob.glob(str(CELLS_DIR / "main" / "*.npz")))
+    + sorted(glob.glob(str(CELLS_DIR / "negctrl" / "*.npz")))
+    + sorted(glob.glob(str(CELLS_DIR / "fullnull" / "*.npz")))
+)
+for f in _npz_paths:
     m = PAT.search(f)
     if not m: continue
     kind, scale, r, k, metric, seed = m.group(1), m.group(2), int(m.group(3)), int(m.group(4)), m.group(5), int(m.group(6))

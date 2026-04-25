@@ -14,10 +14,12 @@
 
 6. **Duplicate fullnull process** — launched the detached runner twice by accident, two processes raced on identical filenames. Caught by log timestamp interleaving. No data corruption (deterministic RNG), 15 minutes of redundant CPU only.
 
+7. **TikZ figures for all five papers** — COMPLETED in v1.3.1. Initially deferred when papers were drafted with tables only; figures were added across Papers 1-5 in v1.3.1.
+
 ## Things not yet verified
 
 1. **t33 (650M) scale** — committed in the pre-registration but requires GPU embedding. Colab notebook provided; user must execute.
-2. **Per-paper TikZ figures** — Paper 1 has 3 tables but no figures yet. Deferred to v1.1.
+2. **Per-paper TikZ figures** — Paper 1 has 3 TikZ figures (resolved in v1.1.0).
 3. **Stratification threshold sensitivity sweep** — pre-registered but not yet run.
 4. **Adversarial phase 2** — only 3 target proteins exist (precision-not-recall finding); BLOSUM-edit attack needs GPU for ESM re-embedding. Kaggle notebook provided.
 5. **Learned-projection calibration** — main factorial measured F1 only; calibration of the learned metric on distant stratum is unmeasured.
@@ -25,7 +27,6 @@
 
 ## Things deferred to v1.1+
 
-- TikZ figures for all five papers
 - Full 300-group fullnull table as LaTeX supplementary appendix (currently in `data/results_summaries/v3_final.txt`)
 - Zenodo deposit with DOI
 - Adversarial phase 2 BLOSUM-edit results
