@@ -19,11 +19,10 @@
 ## Things not yet verified
 
 1. **t33 (650M) scale** — committed in the pre-registration but requires GPU embedding. Colab notebook provided; user must execute.
-2. **Per-paper TikZ figures** — Paper 1 has 3 TikZ figures (resolved in v1.1.0).
-3. **Stratification threshold sensitivity sweep** — pre-registered but not yet run.
-4. **Adversarial phase 2** — only 3 target proteins exist (precision-not-recall finding); BLOSUM-edit attack needs GPU for ESM re-embedding. Kaggle notebook provided.
-5. **Learned-projection calibration** — main factorial measured F1 only; calibration of the learned metric on distant stratum is unmeasured.
-6. ~~Cross-family (Pfam-partitioned) analysis~~ — COMPLETED v1.0.1. Result: 100% of evaluable distant false alarms are cross-family (zero Pfam overlap with voters). Paper 5 updated from v0.9 stub to full v1.0 with this result.
+2. **Stratification threshold sensitivity sweep** — pre-registered but not yet run.
+3. **Adversarial phase 2** — only 3 target proteins exist (precision-not-recall finding); BLOSUM-edit attack needs GPU for ESM re-embedding. Kaggle notebook provided.
+4. **Learned-projection calibration** — main factorial measured F1 only; calibration of the learned metric on distant stratum is unmeasured.
+5. ~~Cross-family (Pfam-partitioned) analysis~~ — COMPLETED v1.0.1. Result: 100% of evaluable distant false alarms are cross-family (zero Pfam overlap with voters). Paper 5 updated from v0.9 stub to full v1.0 with this result.
 
 ## Things deferred to v1.1+
 
