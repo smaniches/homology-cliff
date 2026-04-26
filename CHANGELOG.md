@@ -4,6 +4,20 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 **Author:** Santiago Maniches, Independent Researcher (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)). **Lab:** TOPOLOGICA LLC (solo research lab, single-person operation).
 
+## [v1.4.3] — 2026-04-25
+### Fixed
+- Dataset filename mismatch: Paper 1 §Data and `DATA_CARD.md` now reference the actual shipped file `data/sequences/proteins_25k_sequences.json` (working ID `experiment2_proteins_25k_filtered` retained for provenance)
+- DOI badge URL replaced with `shields.io` "DOI: pending" placeholder until first Zenodo deposit (previous URL `zenodo.org/badge/latestdoi/<owner>/<repo>.svg` was structurally invalid — Zenodo uses numeric repo IDs)
+- Metadata version normalization to v1.4.3 across `CITATION.cff`, `codemeta.json`, `README.md`
+
+## [v1.4.2] — 2026-04-25
+### Fixed
+- Paper 4: pre-existing `! Double subscript.` LaTeX error in seed-variance gate equation (`F_1^{distant}_s` → `F_{1,s}^{distant}`)
+
+## [v1.4.1] — 2026-04-25
+### Fixed
+- Pre-release audit defects A–J: hardcoded Windows path in `code/analyses/v3_aggregate.py`; version drift across `CITATION.cff`/`codemeta.json`/`README.md`; missing DOI badge; Paper 4 title (4000-Cell → 9{,}360-Cell); Paper 5 date marker; PDF/source drift; manifest staleness; PROBLEMS.md duplicate
+
 ## [v1.4.0] — 2026-04-12
 ### Added
 - `CHANGELOG.md` (this file)

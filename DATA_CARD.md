@@ -1,6 +1,6 @@
 # Data Card: Homology Cliff 25k Protein Test Set
 
-**Dataset name:** `experiment2_proteins_25k_filtered`
+**Dataset name:** working ID `experiment2_proteins_25k_filtered`; shipped as `data/sequences/proteins_25k_sequences.json`
 **Version:** v1.0 (April 2026)
 **Maintainer:** Santiago Maniches (ORCID 0009-0005-6480-1987), TOPOLOGICA LLC
 **License:** UniProt-sourced accessions and sequences are redistributed under UniProt terms (CC-BY-4.0 for UniProt data, 2026).

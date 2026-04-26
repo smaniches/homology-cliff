@@ -8,8 +8,8 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "README.md": {
-  "bytes": 18432,
-  "sha256": "177d4fd31b5011d103ac68491cd082f8fd4b7cc523042b3dfc4c9b1443e0843a"
+  "bytes": 18471,
+  "sha256": "f4d90bf63680e3a919a682bce6683f583df1ae8e695cb3932b2fe0197067b8bc"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 2908,
@@ -37620,12 +37620,12 @@
   "sha256": "b216adf6fe68dccaa3e6af96420253eeb17b8e7436106d8944501415647cdce6"
  },
  "papers/01_homology_cliff_and_rescue/paper.pdf": {
-  "bytes": 235231,
-  "sha256": "1add78f007a29d95b02bc1050cb05c35455c060a99aae962d41f16b74a0c06bf"
+  "bytes": 235479,
+  "sha256": "5589efe5533017de60dcb0b476200ddc87e9f70bb95441b667e8d3d2208b22d4"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 17047,
-  "sha256": "afa16d09c04ffb4009eb075d5cad4a0b2b18ebd7b3009cfadd6454ba833e35a5"
+  "bytes": 17123,
+  "sha256": "c7abcc0290d1dd6da5a197619b0541c243230e84cb9ed20cea1d2011a2c88f4a"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
@@ -37781,11 +37781,11 @@
  },
  "CITATION.cff": {
   "bytes": 579,
-  "sha256": "31e1b231f6a838d38176d5d7bfa326dcded46ebd8f8bce659ad73763588155f6"
+  "sha256": "7f8835f92b8d2d9b7d5955a0571dca97a4c0fde5300ab5b985e71a3cbbb342ce"
  },
  "codemeta.json": {
   "bytes": 1041,
-  "sha256": "f6305ddbe2a83725dc398a17ea6e662326283fa74f90e223dd091f954fe60905"
+  "sha256": "646dd3e2799dbd9d1c45a5671a83a513dddf8867f0d1449c03476be19b7f6ede"
  },
  "PROBLEMS.md": {
   "bytes": 3601,
@@ -37796,12 +37796,12 @@
   "sha256": "d763b75f1e9224ba4dab02e17c4da8ab00f9e80a4076edfd123d8699586f7b4b"
  },
  "DATA_CARD.md": {
-  "bytes": 2813,
-  "sha256": "b9167b65f4d5fcbd6376dff63251f7c99bee24fee41de6b105f80ac12384ff67"
+  "bytes": 2881,
+  "sha256": "1dc4bca4b4b64ae171200a58a6c0175e238fe208fbc9fa3823063fb597e93bcd"
  },
  "CHANGELOG.md": {
-  "bytes": 3721,
-  "sha256": "96223877d14ad57c86009732ea6b36cce2232ce5921a7dba67df79702edb272f"
+  "bytes": 4803,
+  "sha256": "dc0114572c29de3aad7307a3462b71690cba4493988f8f58655325845217bd44"
  },
  "CONTRIBUTING.md": {
   "bytes": 3216,
