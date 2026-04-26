@@ -77,7 +77,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,445 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,464 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
@@ -110,7 +110,7 @@ This compendium was produced by one independent researcher with AI-collaboration
 2. **Every cell is on disk.** All 9,360 per-cell results are committed as .npz files, not as summary statistics. Each file has the full schema `{cell, shuffle, close, moderate, distant}` with n, f1, bootstrap CI, precision, recall for each stratum. You can recompute any aggregate number in any paper from the cells.
 3. **Deterministic seeds.** Every stochastic operation uses `numpy.random.default_rng(seed)` with the seed specified in the filename. `default_rng(seed + 7777777)` is used for the full-pool null. Re-running produces byte-identical outputs.
 4. **Git history.** Every claim's introduction to a paper is tied to a commit. The git log shows, for example, that the cross-family finding (`c097202`) was committed AFTER the Pfam data completion and BEFORE the v1.0.1 tag. Nothing was back-dated.
-5. **Self-audited errors.** `PROBLEMS.md` lists six specific errors caught and corrected during authoring, including one where I used the wrong framing for a finding ("Mahalanobis rescues the cliff by +0.376") and corrected it after the cascade experiment decisively rejected the implied rescue hypothesis. Being willing to write these down is the strongest signal I can offer that the work is honest.
+5. **Self-audited errors.** `PROBLEMS.md` lists ten specific errors caught and corrected during authoring (six in v0, four in the v1.4.4 raised-bar pre-public audit pass), including one where I used the wrong framing for a finding ("Mahalanobis rescues the cliff by +0.376") and corrected it after the cascade experiment decisively rejected the implied rescue hypothesis, and four code/calibration/overclaim issues caught at v1.4.4 and documented as items 8-10 in `PROBLEMS.md`. Being willing to write these down is the strongest signal I can offer that the work is honest.
 
 ## Machine-Readable Index
 
