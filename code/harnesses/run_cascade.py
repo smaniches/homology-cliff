@@ -25,7 +25,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent))
 from run_cliff import (  # type: ignore
     SCALES, SEEDS, CLOSE_THRESHOLD, MODERATE_LOWER, DISTANT_UPPER,
-    BOOTSTRAP_N, RESULTS_DIR,
+    BOOTSTRAP_N, CASCADE_DIR,
     verify_prereg_hash, load_labels, load_embeddings,
     build_panel, compute_smax, stratify,
     knn_cosine, knn_mahalanobis, knn_learned,
@@ -93,11 +93,11 @@ def evaluate_cascade_cell(scale: str, R: int, k: int, seed: int,
 
 
 def cell_done(scale, R, k, seed) -> bool:
-    return (RESULTS_DIR / f"cascade_{scale}_{R}_{k}_{seed}.npz").exists()
+    return (CASCADE_DIR / f"cascade_{scale}_{R}_{k}_{seed}.npz").exists()
 
 
 def run_cascade(scales, resume=True):
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    CASCADE_DIR.mkdir(parents=True, exist_ok=True)
     labels, _ = load_labels()
     for scale in scales:
         emb = load_embeddings(scale)
@@ -108,7 +108,7 @@ def run_cascade(scales, resume=True):
                         continue
                     t0 = time.time()
                     out = evaluate_cascade_cell(scale, R, k, seed, emb, labels)
-                    np.savez(RESULTS_DIR / f"cascade_{scale}_{R}_{k}_{seed}.npz", **out)
+                    np.savez(CASCADE_DIR / f"cascade_{scale}_{R}_{k}_{seed}.npz", **out)
                     logging.info("cascade %s R=%d k=%d seed=%d done in %.1fs",
                                  scale, R, k, seed, time.time() - t0)
 

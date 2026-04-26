@@ -16,11 +16,11 @@ H1: mapper-biased panel distant F1 > uniform distant F1 by at least +0.02
 """
 import json, numpy as np, sys, time
 from pathlib import Path
-sys.path.insert(0, r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff")
-from run_cliff import load_labels, load_embeddings, compute_smax, stratify, knn_cosine, bootstrap_f1_ci
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harnesses"))
+from run_cliff import REPO_ROOT, load_labels, load_embeddings, compute_smax, stratify, knn_cosine, bootstrap_f1_ci
 
-MAPPER = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff\mapper_graph.json")
-OUT = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff\mapper_augmentation_results.json")
+MAPPER = REPO_ROOT / "data" / "results_summaries" / "mapper_graph.json"
+OUT = REPO_ROOT / "data" / "results_summaries" / "mapper_augmentation_results.json"
 
 with open(MAPPER, 'r') as f:
     mg = json.load(f)
@@ -28,10 +28,13 @@ with open(MAPPER, 'r') as f:
 pos_nodes = sorted([n for n in mg['nodes'] if n['pos_frac'] > 0.5], key=lambda x: (-x['pos_frac'], -x['n']))
 # Use top N nodes whose total member count >= 1000 so we can sample 500 positives from them
 top_members = []
+n_nodes_used = 0
 for n in pos_nodes:
     top_members.extend(n['members'])
-    if len(top_members) >= 3000: break
-print(f"biased pool size: {len(top_members)} from top {pos_nodes.index(pos_nodes[pos_nodes.index({x:y for x,y in pos_nodes[0].items()})])+1} nodes")
+    n_nodes_used += 1
+    if len(top_members) >= 3000:
+        break
+print(f"biased pool size: {len(top_members)} from top {n_nodes_used} positive-enriched nodes")
 
 labels, accs = load_labels()
 emb = load_embeddings("t30")

@@ -26,16 +26,16 @@ import json, logging, sys, time
 from pathlib import Path
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent))
+# run_cliff lives in ../harnesses/ relative to this file (code/analyses/).
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harnesses"))
 from run_cliff import (  # type: ignore
+    REPO_ROOT, PROTEINS_JSON,
     load_labels, load_embeddings, build_panel, compute_smax,
     stratify, knn_cosine, CLOSE_THRESHOLD,
 )
 
 AA20 = "ACDEFGHIKLMNPQRSTVWY"
-ROOT = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2")
-PROTEINS_JSON = ROOT / "_data" / "data_25k" / "experiment2_proteins_25k_filtered.json"
-OUTPUT = Path(__file__).parent / "adversarial_results.json"
+OUTPUT = REPO_ROOT / "data" / "results_summaries" / "adversarial_results.json"
 
 # BLOSUM62 substitution scores (higher = more conservative substitution)
 BLOSUM62 = {

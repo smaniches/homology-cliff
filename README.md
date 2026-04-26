@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.4.3 &nbsp;·&nbsp; **Date:** April 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT
+**Version:** v1.4.4 &nbsp;·&nbsp; **Date:** April 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT
 
 ---
 
@@ -24,7 +24,7 @@ You are building a biosecurity screen. You have a panel of a few hundred to a th
 
 This is a safety-critical failure mode hiding behind a healthy-looking pooled metric. A lab reporting their retrieval system achieves, say, 0.85 overall $F_1$ has not told the full story: they may have 0.88 on the 89% of their test queries that look similar to panel members, and 0.12 on the remaining 11% that do not. In a deployment screen, the distant queries are the ones where a novel bioweapon might hide. Worse, the classifier is **confidently wrong** on the distant stratum: Expected Calibration Error quadruples from 0.069 to 0.294, and in the highest-confidence bin on the distant stratum there are 3 predictions and 0 are correct. A downstream filter that routes high-confidence positives to automated action will be routing false alarms to automation precisely where human review is most needed.
 
-We characterize the cliff across a 3000-cell pre-registered factorial, prove it is not a stratification artifact via a 3000-cell full-pool permutation null, show by Pfam partition that 100% of evaluable distant false alarms are cross-family (ruling out "just add more panel homologs"), and identify four pre-registered rescue hypotheses that all fail: Mahalanobis whitening, Fisher-Rao whitening, a stratified metric cascade, and topologically-biased panel augmentation. One rescue survives all tests: a cheap supervised linear projection of the embedding space, fit only on the panel in under five seconds of CPU time, which wins pooled $F_1$ in 18 of 18 factorial groups and improves distant-stratum $F_1$ by 48% relative at the largest scale. The deployment consequence is direct: **apply the projection, and even then, route every distant-stratum positive hit to human review**.
+We characterize the cliff across a 3,000-cell pre-registered factorial, show it is not a stratification artifact via a 3,000-cell full-pool permutation null, and find by Pfam partition that all 20 evaluable distant false alarms in our seed are cross-family (Wilson 95% CI on the within-family rate $[0\%, 17\%]$, substantially weakening the "just add more panel homologs" hypothesis as the dominant mechanism in this regime). We pre-register and reject four rescue hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified metric cascade, and topologically-biased panel augmentation. One rescue survives all tests: a cheap supervised linear projection of the embedding space, fit only on the panel in under five seconds of CPU time, which wins pooled $F_1$ in 18 of 18 factorial groups and improves distant-stratum $F_1$ by 48% relative at the largest scale. The deployment consequence is direct: **apply the projection, and even then, route every distant-stratum positive hit to human review**.
 
 ## Who this repository is for
 
@@ -41,8 +41,8 @@ We characterize the cliff across a 3000-cell pre-registered factorial, prove it 
 | 1 | **Homology Cliff and Its Rescue** | Cliff confirmed (+0.745 gap at t30), full-null passes 300/300, rescue via learned projection wins 18/18 | `papers/01_homology_cliff_and_rescue/paper.pdf` |
 | 2 | **Four Failed Rescue Attempts** | Mahalanobis, Fisher-Rao, cascade, Mapper-augmentation — all pre-registered H1 rejected | `papers/02_three_failed_rescues/paper.pdf` |
 | 3 | **Calibration Collapse** | ECE 0.069 → 0.294 close→distant; 0 of 3 highest-confidence distant predictions correct | `papers/03_calibration_collapse/paper.pdf` |
-| 4 | **Methods and Pre-Registrations** | 4000-cell factorial template, seed-variance gate, SHA256 pre-registration pattern | `papers/04_methods_and_preregistrations/paper.pdf` |
-| 5 | **Cross-Family and Mapper Topology** | 100% of evaluable distant false alarms are cross-family; panel expansion cannot rescue | `papers/05_cross_family_and_mapper/paper.pdf` |
+| 4 | **Methods and Pre-Registrations** | 9,360-cell factorial template, seed-variance gate, SHA256 pre-registration pattern | `papers/04_methods_and_preregistrations/paper.pdf` |
+| 5 | **Cross-Family and Mapper Topology** | 20 of 20 evaluable distant false alarms are cross-family (Wilson 95% CI on within-family rate $[0\%, 17\%]$); panel expansion within failing families is unlikely to rescue | `papers/05_cross_family_and_mapper/paper.pdf` |
 
 Read order for first-time readers: **1 → 5 → 3 → 2 → 4**. Paper 1 gives you the phenomenon and the fix. Paper 5 shows why the fix has to be embedding-space rather than panel-side. Paper 3 gives you the calibration reason to distrust distant positive predictions regardless of metric. Paper 2 shows the three additional rescues that do not work. Paper 4 gives you the methodological scaffolding to replicate this pattern on your own PLM retrieval problem.
 
@@ -88,7 +88,7 @@ All four pre-registrations were locked on disk, SHA256-computed, and committed *
 
 ## Honest limitations
 
-This is a v1.4.3 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.4.4 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
 - Reference counts are 24 (Paper 1), 25 (Paper 2), 8 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
@@ -115,7 +115,7 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "orcid": "0009-0005-6480-1987",
   "citation_file": "CITATION.cff",
   "codemeta": "codemeta.json",
@@ -172,7 +172,7 @@ See `reproducibility/GPU_EXECUTION_GUIDE.md`. Two unfinished but scaffolded expe
 
 ## Zenodo DOI (optional)
 
-Enable GitHub integration at zenodo.org → Settings → GitHub → toggle `smaniches/homology-cliff` to ON. Then `git tag v1.4.3 && git push --tags` will auto-archive to Zenodo and mint a permanent DOI. Update `CITATION.cff` with the DOI once minted, commit, push.
+Enable GitHub integration at zenodo.org → Settings → GitHub → toggle `smaniches/homology-cliff` to ON. Then `git tag v1.4.4 && git push --tags` will auto-archive to Zenodo and mint a permanent DOI. Update `CITATION.cff` with the DOI once minted, commit, push.
 
 ## Files to read in order if you have one hour
 
@@ -191,7 +191,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = apr, version = {1.4.3},
+  year = {2026}, month = apr, version = {1.4.4},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},
   license = {CC-BY-4.0 (papers), MIT (code)}

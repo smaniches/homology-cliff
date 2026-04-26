@@ -1,31 +1,33 @@
 """
-run_cliff.py — Homology Cliff Experiment Harness
+run_cliff.py - Homology Cliff Experiment Harness
 
-Pre-registration: PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md
+Pre-registration: data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md
 SHA256 lock:      139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06
 
 Author: Santiago Maniches (ORCID 0009-0005-6480-1987), TOPOLOGICA LLC
-Date:   April 10, 2026
+Date:   April 10, 2026 (paths refactored for public release in v1.4.4)
 
-Executes the 4000-cell factorial defined in the locked pre-reg. Checkpoints
-per cell so crashes do not lose work. Seeds pinned. FAISS for k-NN. Bootstrap
-CIs via BCa. Shuffled-label negative control as separate pass. Seed-variance
-gate applied post-hoc.
+Executes the 9,360-cell factorial (3,000 main + 3,000 negctrl + 3,000 fullnull
++ 180 cascade + 180 fisher) defined in the locked pre-reg. Checkpoints per
+cell so crashes do not lose work. Seeds pinned. FAISS for k-NN. Bootstrap CIs
+are 10,000-resample percentile (vectorized) - BCa was rejected at design time
+because BCa jackknife on 9,360 imbalanced strata is computationally infeasible
+on a 36 GB i7 workstation. Shuffled-label negative control as separate pass.
+Seed-variance void rule applied post-hoc.
 
 Usage:
     python run_cliff.py --scale t12 --resume
     python run_cliff.py --scale all --dry-run
-    python run_cliff.py --negative-control-only
+    python run_cliff.py --negative-control
     python run_cliff.py --gate-only
 
-Directory layout:
-    _embeddings/embeddings_25k_{t6,t12,t30,t33}/   input embeddings
-    _experiments/homology_cliff/
-        panels/panel_R{R}_seed{seed}.npz           reference panel indices
-        results/cell_{scale}_{R}_{k}_{metric}_{seed}.npz   per-cell F1/CI
-        results/negctrl_{...}.npz                  shuffled-label controls
-        gate/gate_{scale}_{R}_{k}_{metric}.npz     variance-gate decisions
-        logs/run_{timestamp}.log                   per-run log
+Repo-relative path resolution (overridable via --repo-root for CI contexts):
+    REPO_ROOT/data/sequences/proteins_25k_sequences.json   labels and accessions
+    REPO_ROOT/data/embeddings/embeddings_{scale}.npy       L2-normalized matrices
+    REPO_ROOT/data/prereg/PRE_REGISTRATION_*.md            SHA256-locked hypotheses
+    REPO_ROOT/data/cells/{main,negctrl,fullnull,...}/*.npz per-cell outputs
+    REPO_ROOT/data/results_summaries/                      aggregates and gate output
+    REPO_ROOT/_logs/                                       harness logs (gitignored)
 """
 
 from __future__ import annotations
@@ -60,16 +62,43 @@ DISTANT_UPPER = 0.90
 MIN_STRATUM_N = 100                             # underpowered flag threshold
 BOOTSTRAP_N = 10_000
 
-ROOT = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2")
-DATA_DIR = ROOT / "_data" / "data_25k"
-EMB_DIR = ROOT / "_embeddings"
-EXP_DIR = ROOT / "_experiments" / "homology_cliff"
-PANELS_DIR = EXP_DIR / "panels"
-RESULTS_DIR = EXP_DIR / "results"
-GATE_DIR = EXP_DIR / "gate"
-LOGS_DIR = EXP_DIR / "logs"
+# ---------------------------------------------------------------------------
+# Repo-relative path resolution.
+#
+# REPO_ROOT defaults to the parent-of-parent of this file (code/harnesses/.),
+# which is the repository root. Overridable via the HOMOLOGY_CLIFF_REPO_ROOT
+# environment variable for CI or notebook contexts.
+# ---------------------------------------------------------------------------
 
-PROTEINS_JSON = DATA_DIR / "experiment2_proteins_25k_filtered.json"
+REPO_ROOT = Path(
+    os.environ.get("HOMOLOGY_CLIFF_REPO_ROOT", Path(__file__).resolve().parents[2])
+)
+DATA_DIR = REPO_ROOT / "data" / "sequences"
+EMB_DIR = REPO_ROOT / "data" / "embeddings"
+PRE_DIR = REPO_ROOT / "data" / "prereg"
+RES_DIR = REPO_ROOT / "data" / "results_summaries"
+
+CELLS_DIR = REPO_ROOT / "data" / "cells"
+PANELS_DIR = CELLS_DIR / "_panels"
+RESULTS_DIR = CELLS_DIR / "main"               # cell_*.npz live here
+NEGCTRL_DIR = CELLS_DIR / "negctrl"            # negctrl_*.npz live here
+FULLNULL_DIR = CELLS_DIR / "fullnull"          # fullnull_*.npz live here (Paper 1 §Null controls)
+CASCADE_DIR = CELLS_DIR / "cascade"            # cascade_*.npz live here (Paper 2 §Attempt 3)
+FISHER_DIR = CELLS_DIR / "fisher"              # fisher_*.npz live here (Paper 2 §Attempt 2)
+GATE_DIR = RES_DIR / "gate"
+LOGS_DIR = REPO_ROOT / "_logs"
+
+# The dataset is shipped as proteins_25k_sequences.json. The pre-registration
+# (which is SHA256-locked and CANNOT be edited) refers to it by its working
+# ID experiment2_proteins_25k_filtered.json; we look in both locations and
+# accept whichever is present, asserting downstream that content matches the
+# locked dataset cardinality (24,885 entries, 7,133 positives).
+_PROTEINS_CANDIDATES = (
+    DATA_DIR / "proteins_25k_sequences.json",
+    DATA_DIR / "experiment2_proteins_25k_filtered.json",
+)
+PROTEINS_JSON = next((p for p in _PROTEINS_CANDIDATES if p.exists()),
+                    _PROTEINS_CANDIDATES[0])
 
 
 # ---------------------------------------------------------------------------
@@ -104,9 +133,25 @@ class StratumResult:
 # ---------------------------------------------------------------------------
 
 def verify_prereg_hash() -> None:
-    """Abort if the pre-reg file no longer matches the locked hash."""
+    """Abort if the pre-reg file no longer matches the locked hash.
+
+    This is the cryptographic anchor of the compendium's pre-registration
+    discipline: the file's SHA256 was computed at lock time (April 10, 2026)
+    and is hardcoded in PREREG_HASH above. Any byte-level edit to the
+    pre-reg file invalidates the hash, and the harness aborts before any
+    experiment runs.
+
+    Raises SystemExit with a clear message if the file is missing OR if
+    the recomputed hash differs from PREREG_HASH.
+    """
     import hashlib
-    prereg = ROOT / "_prereg" / "PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md"
+    prereg = PRE_DIR / "PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md"
+    if not prereg.is_file():
+        raise SystemExit(
+            f"Pre-registration file missing at {prereg}. "
+            f"Set HOMOLOGY_CLIFF_REPO_ROOT or run from a clone with "
+            f"`git lfs pull` completed."
+        )
     h = hashlib.sha256(prereg.read_bytes()).hexdigest()
     if h != PREREG_HASH:
         raise SystemExit(
@@ -135,13 +180,18 @@ def load_labels() -> tuple[np.ndarray, list[str]]:
 def load_embeddings(scale: str) -> np.ndarray:
     """Return L2-normalized embedding matrix [N=24885, D] for the given scale.
 
-    Layout verified April 10 2026:
-        embeddings_25k_t12/test_embeddings_25k_t12.npy   (24885, D)
-        embeddings_t30/test_embeddings_t30.npy           (assumed 24885, D)
-        embeddings_25k_t6/test_embeddings_25k_t6.npy     (to be computed)
-        embeddings_25k_t33/test_embeddings_25k_t33.npy   (to be computed via Kaggle)
+    Public-release layout (v1.4.4+):
+        data/embeddings/embeddings_t6.npy   (24885, 320)
+        data/embeddings/embeddings_t12.npy  (24885, 480)
+        data/embeddings/embeddings_t30.npy  (24885, 640)
+        data/embeddings/embeddings_t33.npy  (24885, 1280)  -- via GPU notebook
+
+    Working-directory layout (kept for backward compatibility with original
+    workstation runs):
+        _embeddings/embeddings_25k_{scale}/test_embeddings_25k_{scale}.npy
     """
     candidates = [
+        EMB_DIR / f"embeddings_{scale}.npy",
         EMB_DIR / f"embeddings_25k_{scale}" / f"test_embeddings_25k_{scale}.npy",
         EMB_DIR / f"embeddings_{scale}" / f"test_embeddings_{scale}.npy",
         EMB_DIR / f"embeddings_25k_{scale}" / f"test_embeddings_{scale}.npy",
@@ -149,7 +199,9 @@ def load_embeddings(scale: str) -> np.ndarray:
     path = next((p for p in candidates if p.exists()), None)
     if path is None:
         raise FileNotFoundError(
-            f"No embeddings found for scale {scale}. Tried: {candidates}")
+            f"No embeddings found for scale {scale}. Tried: {candidates}. "
+            f"If the .npy files appear small (<1KB) they are likely Git LFS "
+            f"pointer stubs - run `git lfs pull` to fetch the real arrays.")
     emb = np.load(path).astype(np.float32)
     assert emb.shape[0] == 24885, (
         f"scale {scale}: expected 24885 rows, got {emb.shape[0]} from {path}")
@@ -418,15 +470,29 @@ def iter_cells(scales=SCALES) -> Iterator[Cell]:
                         yield Cell(scale, R, k, metric, seed)
 
 
+def _cell_output_dir(shuffle: bool) -> Path:
+    """Resolve the output directory for cell artifacts.
+
+    main cells (shuffle=False)         -> data/cells/main/
+    negctrl cells (shuffle=True)       -> data/cells/negctrl/
+
+    Created on first write so a fresh clone Just Works.
+    """
+    target = NEGCTRL_DIR if shuffle else RESULTS_DIR
+    target.mkdir(parents=True, exist_ok=True)
+    return target
+
+
 def cell_done(cell: Cell, shuffle: bool) -> bool:
     prefix = "negctrl_" if shuffle else "cell_"
-    path = RESULTS_DIR / f"{prefix}{cell.key()}.npz"
-    return path.exists()
+    target = _cell_output_dir(shuffle)
+    return (target / f"{prefix}{cell.key()}.npz").exists()
 
 
 def run_factorial(scales=SCALES, resume: bool = True,
                   shuffle: bool = False) -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    target = _cell_output_dir(shuffle)
+    PANELS_DIR.mkdir(parents=True, exist_ok=True)
     # Load embeddings once per scale; loop metrics/k/R/seeds inside.
     labels, _ = load_labels()
     for scale in scales:
@@ -441,7 +507,7 @@ def run_factorial(scales=SCALES, resume: bool = True,
                 logging.error("NotImplementedError in %s: %s", cell.key(), e)
                 raise
             prefix = "negctrl_" if shuffle else "cell_"
-            np.savez(RESULTS_DIR / f"{prefix}{cell.key()}.npz", **out)
+            np.savez(target / f"{prefix}{cell.key()}.npz", **out)
             logging.info("cell %s done in %.1fs", cell.key(), time.time() - t0)
 
 
@@ -467,7 +533,8 @@ def apply_variance_gate() -> None:
         r"cell_(?P<scale>t\d+)_(?P<R>\d+)_(?P<k>\d+)_(?P<metric>\w+)_(?P<seed>\d+)\.npz"
     )
     groups: dict[tuple, list[dict]] = {}
-    for path in RESULTS_DIR.glob("cell_*.npz"):
+    main_dir = _cell_output_dir(shuffle=False)
+    for path in main_dir.glob("cell_*.npz"):
         m = pattern.match(path.name)
         if not m:
             continue

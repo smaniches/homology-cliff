@@ -23,7 +23,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from run_cliff import (  # type: ignore
-    SEEDS, BOOTSTRAP_N, RESULTS_DIR,
+    SEEDS, BOOTSTRAP_N, FISHER_DIR,
     verify_prereg_hash, load_labels, load_embeddings,
     build_panel, compute_smax, stratify,
     bootstrap_f1_ci,
@@ -102,11 +102,11 @@ def evaluate_fisher_cell(scale, R, k, seed, emb, labels):
 
 
 def cell_done(scale, R, k, seed):
-    return (RESULTS_DIR / f"fisher_{scale}_{R}_{k}_{seed}.npz").exists()
+    return (FISHER_DIR / f"fisher_{scale}_{R}_{k}_{seed}.npz").exists()
 
 
 def run_fisher(scales, resume=True):
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FISHER_DIR.mkdir(parents=True, exist_ok=True)
     labels, _ = load_labels()
     for scale in scales:
         emb = load_embeddings(scale)
@@ -116,7 +116,7 @@ def run_fisher(scales, resume=True):
                     if resume and cell_done(scale, R, k, seed): continue
                     t0 = time.time()
                     out = evaluate_fisher_cell(scale, R, k, seed, emb, labels)
-                    np.savez(RESULTS_DIR / f"fisher_{scale}_{R}_{k}_{seed}.npz",
+                    np.savez(FISHER_DIR / f"fisher_{scale}_{R}_{k}_{seed}.npz",
                              **out)
                     logging.info("fisher %s R=%d k=%d seed=%d in %.1fs",
                                  scale, R, k, seed, time.time() - t0)

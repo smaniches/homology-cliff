@@ -16,6 +16,12 @@
 
 7. **TikZ figures for all five papers** — COMPLETED in v1.3.1. Initially deferred when papers were drafted with tables only; figures were added across Papers 1-5 in v1.3.1.
 
+8. **Hardcoded Windows paths in 11 analysis/harness scripts** — caught in the pre-public deep-audit pass and fixed in v1.4.4. Scripts (`run_cliff.py`, `run_cliff_fullnull.py`, `run_cascade.py`, `run_fisher.py`, `run_calibration.py`, `run_adversarial_phase1.py`, `run_mapper.py`, `run_mapper_augmentation.py`, `fetch_pfam_v3.py`, plus the Kaggle and Colab notebooks) now resolve everything via `Path(__file__).resolve().parents[N]` (overridable with `HOMOLOGY_CLIFF_REPO_ROOT` env var) and accept both the shipped data filename and the pre-reg-locked working ID. Previous releases (v1.4.0-v1.4.3) shipped harnesses that only ran on the original Windows workstation. The cells, papers, and headline numbers were not affected; only the ability of a fresh clone to re-run the experiments. Apologies; this should have been caught earlier.
+
+9. **Calibration script - figure binning mismatch** — caught in the same audit pass and fixed in v1.4.4. The earlier `run_calibration.py` used 10 equal-width bins via `np.linspace(0,1,11)`, but Paper 3's published figure uses six unequal-width bins ($\{0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0\}$). The script now uses the figure's binning, computes ECE on that binning, and writes `data/results_summaries/calibration_results.json`. Paper 3's headline values (ECE 0.069 close, 0.294 distant; 3/44 distant pos-pred precision; 4.3x ratio) now exist as a committed JSON artifact rather than only in paper text.
+
+10. **Overclaim softening across Papers 1, 2, 3, 5** — caught in the same audit pass and fixed in v1.4.4. Phrases like "ruling out within-family distant-homology as the mechanism", "Panel expansion is not a rescue", "rules out the within-family hypothesis entirely", and "panel augmentation is ruled out" overstated the evidence given the n=20 evaluable sample size (Wilson 95\% CI lower bound on the population within-family rate is approximately 83\%, not 100\%). Replaced with consistent "consistent with / inconsistent with / disfavors / Wilson 95\% CI [0\%, 17\%]" framing throughout. The empirical observation (20 of 20 evaluable cases cross-family) is unchanged; only the inferential strength is calibrated.
+
 ## Things not yet verified
 
 1. **t33 (650M) scale** — committed in the pre-registration but requires GPU embedding. Colab notebook provided; user must execute.
@@ -31,6 +37,7 @@
 - Adversarial phase 2 BLOSUM-edit results
 - PLM benchmark (ProtT5, SaProt, ESM-3) via Colab
 - Stronger learned-metric baselines (proper triplet loss, margin-based contrastive, prototype networks)
+- Independent third-party timestamp anchor (e.g., OpenTimestamps proof on Bitcoin) on the four pre-registration files. The cryptographic property `verify_prereg_hash()` enforces (file is byte-identical to its hashed state) is preserved; what's not externally provable in the current repo is the absolute claim "lock-time was April 10, 2026 before any results existed." A reviewer must trust the lock-time is honest. An OpenTimestamps proof would convert this trust step into independent verification. Cost: 5 minutes per pre-reg file. Deferred but noted.
 
 ## Honest epistemic statement
 

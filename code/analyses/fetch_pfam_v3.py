@@ -1,13 +1,26 @@
 """Pfam v3: batch-search strategy. 50 accessions per search query, 500-accession
 URL stays under UniProt's ~8KB limit. Approximately 500 requests, 1 sec each,
 ~10 min wall. Uses the same /uniprotkb/search endpoint that v1 failed on at
-500/batch; reducing to 50/batch keeps URL size manageable."""
-import json, time, urllib.request, urllib.parse, urllib.error
+500/batch; reducing to 50/batch keeps URL size manageable.
+
+Repo-relative paths via REPO_ROOT (overridable with HOMOLOGY_CLIFF_REPO_ROOT
+env var). Reads from data/sequences/, writes to data/annotations/.
+"""
+import json, os, time, urllib.request, urllib.parse, urllib.error
 from pathlib import Path
 
-SRC = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_data\data_25k\experiment2_proteins_25k_filtered.json")
-DST = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_data\data_25k\experiment2_proteins_25k_pfam_v3.json")
-LOG = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff\logs\pfam_v3.log")
+REPO_ROOT = Path(
+    os.environ.get("HOMOLOGY_CLIFF_REPO_ROOT", Path(__file__).resolve().parents[2])
+)
+# Accept either the shipped name or the working ID (per-reg-locked) as input.
+_CANDIDATES = (
+    REPO_ROOT / "data" / "sequences" / "proteins_25k_sequences.json",
+    REPO_ROOT / "data" / "sequences" / "experiment2_proteins_25k_filtered.json",
+)
+SRC = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+DST = REPO_ROOT / "data" / "annotations" / "proteins_25k_pfam.json"
+LOG = REPO_ROOT / "_logs" / "pfam_v3.log"
+DST.parent.mkdir(parents=True, exist_ok=True)
 LOG.parent.mkdir(parents=True, exist_ok=True)
 
 def log(m):

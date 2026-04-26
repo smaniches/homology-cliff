@@ -54,7 +54,7 @@ from run_cliff import (  # type: ignore
     SCALES, PANEL_SIZES, K_VALUES, METRICS, SEEDS,
     CLOSE_THRESHOLD, MODERATE_LOWER, DISTANT_UPPER,
     MIN_STRATUM_N, BOOTSTRAP_N,
-    RESULTS_DIR, PANELS_DIR,
+    FULLNULL_DIR, PANELS_DIR,
     verify_prereg_hash, load_labels, load_embeddings,
     build_panel, save_panel,
     compute_smax, stratify,
@@ -135,11 +135,11 @@ def iter_cells_for_scales(scales):
 
 
 def cell_done_fullnull(cell: Cell) -> bool:
-    return (RESULTS_DIR / f"fullnull_{cell.key()}.npz").exists()
+    return (FULLNULL_DIR / f"fullnull_{cell.key()}.npz").exists()
 
 
 def run_fullnull(scales, resume: bool = True) -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FULLNULL_DIR.mkdir(parents=True, exist_ok=True)
     labels, _ = load_labels()
     for scale in scales:
         emb = load_embeddings(scale)
@@ -148,7 +148,7 @@ def run_fullnull(scales, resume: bool = True) -> None:
                 continue
             t0 = time.time()
             out = evaluate_cell_fullnull(cell, emb, labels)
-            np.savez(RESULTS_DIR / f"fullnull_{cell.key()}.npz", **out)
+            np.savez(FULLNULL_DIR / f"fullnull_{cell.key()}.npz", **out)
             logging.info(
                 "fullnull %s done in %.1fs", cell.key(), time.time() - t0
             )

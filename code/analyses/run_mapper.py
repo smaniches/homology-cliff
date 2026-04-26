@@ -18,8 +18,9 @@ from collections import defaultdict
 from sklearn.decomposition import PCA
 from sklearn.cluster import DBSCAN
 
-sys.path.insert(0, r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff")
-from run_cliff import load_labels, load_embeddings
+# run_cliff lives in ../harnesses/ relative to this file.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harnesses"))
+from run_cliff import REPO_ROOT, load_labels, load_embeddings
 
 print("loading t30 embeddings and labels...")
 labels, accs = load_labels()
@@ -82,7 +83,8 @@ print(f"\ntop 10 positive-enriched nodes (by size):")
 for n in pos_nodes[:10]:
     print(f"  bin={n['bin']} cluster={n['cluster']} n={n['n']} pos_frac={n['pos_frac']:.3f}")
 
-out_path = Path(r"C:\TOPOLOGICA_BIOSECURITY\beyond_sequence_v2\_experiments\homology_cliff\mapper_graph.json")
+out_path = REPO_ROOT / "data" / "results_summaries" / "mapper_graph.json"
+out_path.parent.mkdir(parents=True, exist_ok=True)
 with open(out_path, 'w') as f:
     json.dump({
         'n_nodes': len(nodes),
