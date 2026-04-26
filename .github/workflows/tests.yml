@@ -1,5 +1,13 @@
 name: tests
+# Schema and invariant tests on committed cells. Runs without LFS payload
+# on free open-source allowance; data-dependent tests skip cleanly when
+# files are LFS pointer stubs (see tests/test_cell_schema.py for the
+# graceful-skip logic). To execute the full suite, on a fresh clone:
+#     git lfs pull
+#     pytest tests/ -v
+
 on: [push, pull_request]
+
 jobs:
   pytest:
     runs-on: ubuntu-latest
@@ -7,6 +15,12 @@ jobs:
       - uses: actions/checkout@v4
         with: {lfs: false}
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install numpy scipy scikit-learn faiss-cpu pytest
-      - run: pytest tests/ -v --tb=short
+        with: {python-version: '3.11', cache: 'pip'}
+
+      - name: install minimal test deps
+        run: pip install --quiet numpy scipy pytest
+
+      - name: pytest with skip-summary
+        # -rs prints the skip reasons in the summary so reviewers see
+        # exactly which tests are data-dependent and why they skipped.
+        run: pytest tests/ -v --tb=short -rs
