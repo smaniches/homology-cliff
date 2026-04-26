@@ -20,8 +20,8 @@
   "sha256": "219b6a643fa52097148dabb37bf1085b2f2e334259f537f795ea1727a46e2f03"
  },
  "code/analyses/run_calibration.py": {
-  "bytes": 7115,
-  "sha256": "62260a511209586dea5e3c3a25440aa4f9220480360aa50b736c6bf5587aa923"
+  "bytes": 7290,
+  "sha256": "7ba02831913e61883451c865cc322314bb69f6a266139b5a5a047d9007c39b06"
  },
  "code/analyses/run_mapper.py": {
   "bytes": 4106,
@@ -37834,5 +37834,17 @@
  "data/results_summaries/calibration_results.json": {
   "bytes": 2402,
   "sha256": "5ffa45f8f32719315b776646bb947e3c2d4cdf3ed1c8fab3e142afc63040fe33"
+ },
+ "scripts/ci/verify_manifest.py": {
+  "bytes": 3607,
+  "sha256": "11b7ed9738ab2f2885f64482408f5dfda9061e07811486646ac808dac22b47b2"
+ },
+ "scripts/ci/verify_prereg_locks.py": {
+  "bytes": 2279,
+  "sha256": "ed61d36fe3cbc3911baf43ffc707803f36c50db50a0eab4900367178717d67aa"
+ },
+ "scripts/ci/verify_smoke_imports.py": {
+  "bytes": 5309,
+  "sha256": "0a58b88cf470347509da927d5d8994dc0d4dabda6a5dbbdf94528a098faa39cd"
  }
 }

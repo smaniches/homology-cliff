@@ -1,7 +1,7 @@
 name: smoke-imports
 # Imports every analysis script and harness without LFS payload to catch
 # path-style regressions (e.g. hardcoded Windows paths) before they ship.
-# Cheap (~30s, no LFS bandwidth) and fires on every push and PR.
+# Logic lives in scripts/ci/verify_smoke_imports.py for local debuggability.
 
 on: [push, pull_request]
 
@@ -12,67 +12,15 @@ jobs:
       - uses: actions/checkout@v4
         with: {lfs: false}
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11', cache: 'pip'}
+        with: {python-version: '3.11'}
+
       - name: install minimal deps
-        # Only what's needed to import the scripts. We do NOT install
-        # faiss/torch here because importing the harnesses must not crash
-        # if those are absent at top level. Importing exercises the path
-        # resolution code (REPO_ROOT, repo-relative I/O) which is what
-        # this workflow guards against.
-        run: |
-          pip install numpy scipy scikit-learn
+        # numpy / scipy / scikit-learn are needed for module-level imports
+        # in the analysis scripts. faiss is intentionally NOT installed --
+        # run_calibration defers its faiss import to main(), so import-time
+        # smoke does not need it. Adding faiss here would be ~80 MB of
+        # download per CI run for no gain.
+        run: pip install --quiet numpy scipy scikit-learn
 
-      - name: import master harness
-        run: |
-          python -c "
-          import sys; sys.path.insert(0, 'code/harnesses')
-          import run_cliff
-          assert run_cliff.REPO_ROOT.name == 'homology-cliff', run_cliff.REPO_ROOT
-          assert run_cliff.PROTEINS_JSON.exists(), run_cliff.PROTEINS_JSON
-          assert run_cliff.PRE_DIR.exists(), run_cliff.PRE_DIR
-          assert (run_cliff.PRE_DIR / 'PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md').exists()
-          print('run_cliff: OK', run_cliff.REPO_ROOT)
-          "
-
-      - name: import dependent harnesses
-        run: |
-          python -c "
-          import sys; sys.path.insert(0, 'code/harnesses')
-          import run_cliff_fullnull, run_cascade, run_fisher
-          assert run_cliff_fullnull.FULLNULL_DIR.parent.name == 'cells'
-          assert run_cascade.CASCADE_DIR.name == 'cascade'
-          assert run_fisher.FISHER_DIR.name == 'fisher'
-          print('dependent harnesses: OK')
-          "
-
-      - name: import analysis scripts
-        run: |
-          python -c "
-          import ast, pathlib
-          # Parse-and-import is the goal; some scripts execute top-level
-          # data loading that needs LFS files. We use ast.parse to verify
-          # the source compiles, and explicit import only for those that
-          # do not load data at top level.
-          for p in pathlib.Path('code/analyses').glob('*.py'):
-              src = p.read_text()
-              ast.parse(src)
-              print(f'{p.name}: parses OK')
-          # The two scripts that ARE safe to import (no top-level data load):
-          import sys; sys.path.insert(0, 'code/analyses')
-          import run_calibration  # imports + helper definitions only
-          print('run_calibration: imports OK')
-          "
-
-      - name: forbid hardcoded Windows paths
-        run: |
-          # Exit non-zero if any tracked .py file contains the pre-v1.4.4
-          # absolute Windows path pattern. This guards against re-introducing
-          # Defect R in future commits.
-          set +e
-          matches=$(grep -rn 'C:.TOPOLOGICA_BIOSECURITY' --include='*.py' code/ || true)
-          if [ -n "$matches" ]; then
-              echo "ERROR: hardcoded Windows path detected in code/:"
-              echo "$matches"
-              exit 1
-          fi
-          echo "no hardcoded Windows paths in code/ -- OK"
+      - name: smoke imports
+        run: python scripts/ci/verify_smoke_imports.py

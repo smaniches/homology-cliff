@@ -1,7 +1,9 @@
 name: manifest-verify
-# Verifies that MANIFEST.sha256.json hashes match disk content for every
-# real (non-LFS-stub) tracked file. Catches manifest staleness like the
-# Defect M case where files drifted but the manifest wasn't regenerated.
+# Verifies MANIFEST.sha256.json against disk content for every real
+# (non-LFS-stub) tracked file, AND verifies the four pre-registration
+# SHA256 locks claimed in paper abstracts. Both checks are implemented
+# as standalone scripts in scripts/ci/ so they are runnable locally
+# with the exact same logic CI uses.
 
 on: [push, pull_request]
 
@@ -12,112 +14,10 @@ jobs:
       - uses: actions/checkout@v4
         with: {lfs: false}
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11', cache: 'pip'}
+        with: {python-version: '3.11'}
 
-      - name: verify manifest against disk
-        run: |
-          python <<'PYEOF'
-          import json, hashlib, os, sys
-
-          with open('MANIFEST.sha256.json') as fh:
-              manifest = json.load(fh)
-
-          LFS_PREFIX = b'version https://git-lfs.github.com/spec/v1'
-
-          def is_lfs_stub(path):
-              try:
-                  with open(path, 'rb') as fh:
-                      return fh.read(64).startswith(LFS_PREFIX)
-              except OSError:
-                  return False
-
-          ok = 0
-          lfs_stubs = 0
-          gitignored = 0
-          mismatches = []
-          missing = []
-
-          # Files generated at compile time (LaTeX builds) are gitignored;
-          # they appear in the manifest historically but won't exist in CI.
-          GITIGNORED_SUFFIXES = ('.aux', '.bbl', '.blg', '.log', '.out', '.toc')
-
-          for path, expected in manifest.items():
-              if not isinstance(expected, dict):
-                  mismatches.append((path, 'BAD_FORMAT'))
-                  continue
-              if not os.path.isfile(path):
-                  if path.endswith(GITIGNORED_SUFFIXES):
-                      gitignored += 1
-                      continue
-                  missing.append(path)
-                  continue
-              if is_lfs_stub(path):
-                  # Manifest preserves the real-content hash; we cannot
-                  # verify against a pointer stub.
-                  lfs_stubs += 1
-                  continue
-              with open(path, 'rb') as fh:
-                  content = fh.read()
-              actual_sha = hashlib.sha256(content).hexdigest()
-              actual_bytes = len(content)
-              if (expected.get('sha256') == actual_sha and
-                  expected.get('bytes') == actual_bytes):
-                  ok += 1
-              else:
-                  mismatches.append((path, expected, {
-                      'bytes': actual_bytes, 'sha256': actual_sha
-                  }))
-
-          print(f"Manifest verification:")
-          print(f"  OK (real-file hashes match):    {ok}")
-          print(f"  LFS stubs (skipped, will verify on workstation): {lfs_stubs}")
-          print(f"  Gitignored build artifacts (skipped): {gitignored}")
-          print(f"  Missing on disk:                {len(missing)}")
-          print(f"  Mismatches:                     {len(mismatches)}")
-
-          fail = False
-          if missing:
-              # Missing tracked files (excluding gitignored) IS a problem.
-              real_missing = [p for p in missing if not p.startswith('papers/') or not p.endswith(GITIGNORED_SUFFIXES)]
-              if real_missing:
-                  print(f"\nMISSING (failure):")
-                  for m in real_missing[:20]:
-                      print(f"  - {m}")
-                  fail = True
-          if mismatches:
-              print(f"\nMISMATCHES (failure):")
-              for tup in mismatches[:10]:
-                  print(f"  - {tup[0]}")
-              fail = True
-          sys.exit(1 if fail else 0)
-          PYEOF
+      - name: verify manifest hashes against disk
+        run: python scripts/ci/verify_manifest.py
 
       - name: verify pre-registration SHA256 locks
-        run: |
-          # The cryptographic anchor of the compendium: pre-reg SHA256
-          # prefixes claimed in papers must match files on disk. Hardcoded
-          # here to match the values cited in the abstracts.
-          python <<'PYEOF'
-          import hashlib
-
-          EXPECTED = {
-              'data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md':
-                  '139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06',
-              'data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_ADDENDUM_FULLNULL.md':
-                  'f3864d097a0c611d790e6fb15a42e7efb36b2d1b103be4ec1c4f28f99d1004dc',
-          }
-
-          for path, expected in EXPECTED.items():
-              with open(path, 'rb') as fh:
-                  actual = hashlib.sha256(fh.read()).hexdigest()
-              status = "OK" if actual == expected else "MISMATCH"
-              print(f"{status}  {path}")
-              print(f"       expected: {expected}")
-              print(f"       actual:   {actual}")
-              if actual != expected:
-                  raise SystemExit(
-                      f"Pre-registration SHA256 mismatch on {path}. "
-                      f"This file is locked; any byte-level edit voids the registration."
-                  )
-          print("\nAll pre-registration hashes verified.")
-          PYEOF
+        run: python scripts/ci/verify_prereg_locks.py

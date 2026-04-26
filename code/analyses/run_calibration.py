@@ -34,14 +34,9 @@ from pathlib import Path
 
 import numpy as np
 
-# Defer faiss import; raise a clear message if missing.
-try:
-    import faiss  # type: ignore
-except ImportError as e:  # pragma: no cover
-    raise SystemExit(
-        "faiss is required for run_calibration.py. Install with "
-        "`pip install faiss-cpu` (CPU build is sufficient)."
-    ) from e
+# faiss is a runtime-only dep. We defer its import to main() so that
+# `import run_calibration` works in environments without faiss installed
+# (e.g. the smoke-imports CI workflow that exercises path resolution).
 
 # run_cliff lives in ../harnesses/.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harnesses"))
@@ -125,6 +120,14 @@ def positive_prediction_precision(vote_frac: np.ndarray, y_true: np.ndarray,
 
 def main(scale: str = "t30", R: int = 1000, k: int = 25,
          seed: int = 20260410) -> dict:
+    try:
+        import faiss  # type: ignore
+    except ImportError as e:
+        raise SystemExit(
+            "faiss is required to run the calibration analysis. Install with "
+            "`pip install faiss-cpu` (CPU build is sufficient)."
+        ) from e
+
     labels, accessions = load_labels()
     emb = load_embeddings(scale)
 
