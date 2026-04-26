@@ -8,8 +8,8 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "README.md": {
-  "bytes": 18682,
-  "sha256": "fd57221a80139bad007b8c90bb5788bb57ff024ef9444e966acf11c1b1cef9d4"
+  "bytes": 19553,
+  "sha256": "b53a02f8765db4ac7e1dbf7dfe349452ab5a434e27c839167af1052fca5cba50"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37846,5 +37846,13 @@
  "scripts/ci/verify_smoke_imports.py": {
   "bytes": 5309,
   "sha256": "0a58b88cf470347509da927d5d8994dc0d4dabda6a5dbbdf94528a098faa39cd"
+ },
+ "scripts/build_summary_figure.py": {
+  "bytes": 10705,
+  "sha256": "b2b3dc2aa7e98d677f491a8b5ec1d09ac0f9b47b9c9c93ffe3b2d6a24c155434"
+ },
+ "figures/cliff_summary.png": {
+  "bytes": 233394,
+  "sha256": "42de619054a2669c37a40e1bf0858e612006037146db23b6e7ad42f1016e992d"
  }
 }
