@@ -388,11 +388,24 @@ Paper 2 abstract item (iv) replacement:
 
 `(iv) A Mapper-biased panel drawn from positive-enriched topological regions of the upstream Mapper graph (per-node member lists truncated to 50 by the graph generator at code/analyses/run_mapper.py:67; see RELEASE_AUDIT_v1.4.5.md Blocker 4) yields a distant-F1 rescue of +0.0018, 95% CI [-0.027, +0.029], consistent with no rescue under the truncated input. We treat this as exploratory rather than as a pre-registered rejection of panel augmentation; rerunning under full membership is deferred.`
 
-README machine-readable index update (line range containing
-`rescues_rejected`):
+README machine-readable index update, line range containing
+`rescues_rejected`:
 
-`"rescues_rejected": ["mahalanobis", "fisher_rao", "cascade"],
-"rescues_exploratory_inconclusive_under_truncation": ["mapper_augmentation"],`
+Minimum schema-change option:
+Remove `"mapper_augmentation"` from `rescues_rejected` and add adjacent
+prose explaining that Mapper augmentation is exploratory under the
+truncation limitation documented in RELEASE_AUDIT_v1.4.5.md Blocker 4.
+
+Optional schema-extension option, maintainer approval required:
+Add a simpler key such as:
+
+`"rescues_exploratory": ["mapper_augmentation"]`
+
+This is a new machine-readable key and should be accepted only if the
+maintainer wants the index to explicitly expose exploratory rescue
+attempts.
+
+Do not introduce the key `rescues_exploratory_inconclusive_under_truncation`.
 
 [/PROPOSED-WORDING-PENDING-APPROVAL]
 
