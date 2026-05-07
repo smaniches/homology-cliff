@@ -37800,8 +37800,8 @@
   "sha256": "1dc4bca4b4b64ae171200a58a6c0175e238fe208fbc9fa3823063fb597e93bcd"
  },
  "CHANGELOG.md": {
-  "bytes": 8992,
-  "sha256": "5fabc69db9fe3242d11a2160b398428de3a2e0b53d1c37066af7e4f32ff04003"
+  "bytes": 10098,
+  "sha256": "66e729cfb590b4dc6cf065f6e1c53d8201e6b9279b3b807f4e5ae8b0111c7f7c"
  },
  "CONTRIBUTING.md": {
   "bytes": 3216,
@@ -37854,5 +37854,9 @@
  "figures/cliff_summary.png": {
   "bytes": 233394,
   "sha256": "42de619054a2669c37a40e1bf0858e612006037146db23b6e7ad42f1016e992d"
+ },
+ "RELEASE_AUDIT_v1.4.5.md": {
+  "bytes": 23873,
+  "sha256": "79733fbebdc1c58ecbadada5b6be06800c6b4d44d08c19c6f65d1faf3b49c9be"
  }
 }
