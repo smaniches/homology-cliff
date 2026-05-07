@@ -4,6 +4,13 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 **Author:** Santiago Maniches, Independent Researcher (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)). **Lab:** TOPOLOGICA LLC (solo research lab, single-person operation).
 
+## [v1.4.5] — 2026-05-07
+### Added
+- `RELEASE_AUDIT_v1.4.5.md` — blocker-verification audit before public adversarial-review outreach. Seven reviewer-facing blockers were re-checked against current `origin/main` (post-v1.4.4). Two were confirmed already fixed in v1.4.4 (B1 calibration artifact, B6 instance 1 `run_cliff.py` docstring). Five remain open and are staged in the PR body for maintainer decision (B2 precision/recall NaN schema fields, B3 stale "F1 near 0.5" wording in `code/analyses/v3_aggregate.py`, B4 Mapper augmentation truncated node membership, B5 missing `PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md`, B7 dataset label-rule auditability overclaim).
+
+### Not changed
+- No code-behavior changes. No experiments rerun. No `README.md`, `DATA_CARD.md`, `PROBLEMS.md`, paper, test, workflow, or metadata edits in this entry. No `MANIFEST.sha256.json` update. No tag. No main push. No GitHub Release. No Zenodo deposit. No DOI action. The five open blockers are deferred to follow-up PRs after maintainer decisions on framing.
+
 ## [v1.4.4] — 2026-04-26
 ### Fixed (raised-bar pre-public audit)
 - **Hardcoded Windows paths in 11 scripts** (Defects R/T/U from the deep-audit pass): `code/harnesses/run_cliff.py`, `run_cliff_fullnull.py`, `run_cascade.py`, `run_fisher.py`, `code/analyses/run_calibration.py`, `run_adversarial_phase1.py`, `run_mapper.py`, `run_mapper_augmentation.py`, `fetch_pfam_v3.py`, and both notebooks. Every script now resolves paths via `Path(__file__).resolve().parents[N]` (with an `HOMOLOGY_CLIFF_REPO_ROOT` env-var override for CI/notebook contexts). The master harness `run_cliff.py` exposes named output directories (`RESULTS_DIR`, `NEGCTRL_DIR`, `FULLNULL_DIR`, `CASCADE_DIR`, `FISHER_DIR`) that map to the public-release `data/cells/{main,negctrl,fullnull,cascade,fisher}/` layout. Previous releases (1.4.0-1.4.3) shipped harnesses that ran only on the author's original workstation; the README's "rerun any single harness" claim was materially false until this fix.
