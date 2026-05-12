@@ -8,8 +8,8 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "README.md": {
-  "bytes": 19725,
-  "sha256": "4f960e3bfb9b1bcfcd09bc249b998fb3f6b0ec5c250abc72499db33f5944841c"
+  "bytes": 19648,
+  "sha256": "59f239f2488203ecbe082df0ec6f224ea2a5ed677698b6979d515de5d278f034"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,

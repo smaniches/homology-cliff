@@ -28,11 +28,6 @@
       "identifier": "https://github.com/smaniches/homology-cliff",
       "relation": "isSupplementTo",
       "resource_type": "software"
-    },
-    {
-      "identifier": "https://orcid.org/0009-0005-6480-1987",
-      "relation": "isIdenticalTo",
-      "resource_type": "other"
     }
   ],
   "communities": []
