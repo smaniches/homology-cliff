@@ -1,0 +1,39 @@
+{
+  "title": "The Homology Cliff in Frozen Protein Language Models: Research Compendium",
+  "description": "Five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval. Contains 9,360 pre-registered per-cell .npz results with SHA256 manifest, four pre-registered rescue attempts (Mahalanobis, Fisher-Rao, stratified cascade, Mapper-augmentation, all rejected at H1), one supervised linear-projection rescue that improves distant-stratum F1 by ~47% relative at the largest scale, calibration collapse analysis (ECE 0.069 -> 0.294 close-to-distant), and Pfam cross-family topology analysis showing 20-of-20 evaluable distant false alarms are cross-family. Methods paper documents the SHA256-locked pre-registration pattern and seed-variance gate. All claims traceable to committed evidence via MANIFEST.sha256.json.",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Maniches, Santiago",
+      "affiliation": "TOPOLOGICA LLC",
+      "orcid": "0009-0005-6480-1987"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "protein language models",
+    "ESM-2",
+    "biosecurity",
+    "pre-registered research",
+    "retrieval",
+    "homology detection",
+    "calibration",
+    "topological data analysis",
+    "Mapper",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/smaniches/homology-cliff",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://orcid.org/0009-0005-6480-1987",
+      "relation": "isIdenticalTo",
+      "resource_type": "other"
+    }
+  ],
+  "communities": []
+}
