@@ -37780,8 +37780,8 @@
   "sha256": "5c04f9ca698020789380abce20ba5b28e94b2c83522e3fc8cf30d429fe69d6a5"
  },
  "CITATION.cff": {
-  "bytes": 608,
-  "sha256": "e9da911ac702b917443eccf07b29c499e04b1c1ce437d0946b1ea2faf3cdb3a2"
+  "bytes": 610,
+  "sha256": "724c9ce2d6cead3e6058de97fcb110491406568c645bee0f01327e39d1e98ef0"
  },
  "codemeta.json": {
   "bytes": 1100,
@@ -37800,8 +37800,8 @@
   "sha256": "1dc4bca4b4b64ae171200a58a6c0175e238fe208fbc9fa3823063fb597e93bcd"
  },
  "CHANGELOG.md": {
-  "bytes": 12043,
-  "sha256": "b5fe120ea957e3e2311198a970e3f31e2fee26d93cf59fb24d2822fd653fd487"
+  "bytes": 12292,
+  "sha256": "23ffbc4c971679d653e778ff8ddd9cf76bb1a126aba8e920ac111970c2b69799"
  },
  "CONTRIBUTING.md": {
   "bytes": 3216,

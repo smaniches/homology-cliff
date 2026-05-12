@@ -8,7 +8,7 @@ authors:
     affiliation: "TOPOLOGICA LLC"
 version: 1.4.7
 date-released: 2026-05-12
-doi: 10.5281/zenodo.20143143
+doi: "10.5281/zenodo.20143143"
 repository-code: "https://github.com/smaniches/homology-cliff"
 license: [MIT, CC-BY-4.0]
 keywords:

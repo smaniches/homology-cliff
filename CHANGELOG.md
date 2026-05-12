@@ -10,8 +10,8 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 - `.zenodo.json`: deposit metadata (title, description, creator + ORCID, license, keywords, `isSupplementTo` repo link) so each Zenodo record gets clean fields instead of only the repo's auto-extracted surface metadata. Originally added in PR #3; this entry records its arrival in the changelog.
 
 ### Changed
-- `README.md`: DOI badge swapped from `shields.io` "DOI: pending" placeholder to the real Zenodo SVG (`https://zenodo.org/badge/1208916400.svg`). Header version stamp bumped `v1.4.4 -> v1.4.7`; added `DOI: 10.5281/zenodo.20143143` to the header line, Machine-Readable Index JSON, and BibTeX block. "Honest limitations" no longer claims the DOI deposit is pending; the "Zenodo DOI (optional)" section now documents the live DOI.
-- `CITATION.cff`: `version: 1.4.4 -> 1.4.7`, `date-released: 2026-04-12 -> 2026-05-12`, added `doi: 10.5281/zenodo.20143143`.
+- `README.md`: header version stamp bumped `v1.4.4 -> v1.4.7`, date `April 12, 2026 -> May 12, 2026`, added `DOI: 10.5281/zenodo.20143143` link to the header line, Machine-Readable Index JSON (`doi`, `doi_url`, `zenodo_metadata` keys), and BibTeX block. "Honest limitations" intro bumped to `v1.4.7` and the *"Zenodo DOI deposit ... pending"* bullet removed. `## Zenodo DOI (optional)` section renamed to `## Zenodo DOI` and rewritten to document the live DOI (concept-vs-version DOI distinction). The DOI badge URL itself was already swapped from the `shields.io` placeholder to the real Zenodo SVG in PR #3 / v1.4.7 release boundary; this PR does not touch the badge line.
+- `CITATION.cff`: `version: 1.4.4 -> 1.4.7`, `date-released: 2026-04-12 -> 2026-05-12`, added `doi: "10.5281/zenodo.20143143"`.
 - `codemeta.json`: `version: 1.4.4 -> 1.4.7`, `dateModified: 2026-04-12 -> 2026-05-12`, added `identifier: https://doi.org/10.5281/zenodo.20143143`.
 - `MANIFEST.sha256.json`: refreshed entries for `README.md`, `CITATION.cff`, `codemeta.json`, `CHANGELOG.md` to match the metadata bump.
 
