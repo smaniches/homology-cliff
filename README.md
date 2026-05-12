@@ -7,7 +7,7 @@
 [![Pre-registered cells](https://img.shields.io/badge/cells-9,360-orange.svg)](./data/cells/)
 [![Tests](https://img.shields.io/badge/tests-pytest-success.svg)](./tests/)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--6480--1987-a6ce39.svg)](https://orcid.org/0009-0005-6480-1987)
-[![DOI](https://img.shields.io/badge/DOI-pending-lightgrey.svg)](https://zenodo.org/) <!-- replace with https://zenodo.org/badge/<repo_id>.svg after first Zenodo deposit -->
+[![DOI](https://zenodo.org/badge/1208916400.svg)](https://zenodo.org/badge/latestdoi/1208916400)
 
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
