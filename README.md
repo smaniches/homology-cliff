@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.4.4 &nbsp;·&nbsp; **Date:** April 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT
+**Version:** v1.4.7 &nbsp;·&nbsp; **Date:** May 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI:** [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -92,14 +92,13 @@ All four pre-registrations were locked on disk, SHA256-computed, and committed *
 
 ## Honest limitations
 
-This is a v1.4.4 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.4.7 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
 - Reference counts are 24 (Paper 1), 25 (Paper 2), 8 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
 - Cross-family partition analyzed at one seed (20260410); 10-seed extension is deferred.
 - ESM-2 t33 (650M) and external PLMs (ProtT5, SaProt, ESM-3) require GPU and are deferred to the PLM benchmark extension. The Colab notebook `code/colab_notebook/plm_benchmark.ipynb` and the execution guide `reproducibility/GPU_EXECUTION_GUIDE.md` make this one-click-runnable.
 - Adversarial phase 2 (BLOSUM-guided edits of the 3 distant true-positive targets P0C1X3, Q6RY98, P13208) is provided as a Kaggle scaffold, not executed.
-- Zenodo DOI deposit requires you to enable GitHub-Zenodo integration and re-push a tag; instructions below.
 - No data card or model card for the dataset-curation rule (what makes a protein "positive"); that rule is held as TOPOLOGICA internal per the dual-use guidance of Urbina et al. 2022.
 
 ## How we addressed the "one solo researcher with AI" trust concern
@@ -119,10 +118,13 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.4.4",
+  "version": "1.4.7",
+  "doi": "10.5281/zenodo.20143143",
+  "doi_url": "https://doi.org/10.5281/zenodo.20143143",
   "orcid": "0009-0005-6480-1987",
   "citation_file": "CITATION.cff",
   "codemeta": "codemeta.json",
+  "zenodo_metadata": ".zenodo.json",
   "manifest": "MANIFEST.sha256.json",
   "papers": [
     {"n": 1, "path": "papers/01_homology_cliff_and_rescue/paper.pdf", "tex": "papers/01_homology_cliff_and_rescue/paper.tex"},
@@ -174,9 +176,9 @@ See `reproducibility/GPU_EXECUTION_GUIDE.md`. Two unfinished but scaffolded expe
 1. **PLM benchmark**: embed ProtT5, ESM-2 t33, SaProt on Colab Pro A100 (≈ 90 min) or Kaggle T4 (≈ 3 h). Notebook at `code/colab_notebook/plm_benchmark.ipynb`. Produces three new scales for the factorial.
 2. **Adversarial phase 2**: BLOSUM-guided edits of the 3 distant TP targets, re-embedded with ESM-2 t30, measure minimum edits to flip prediction. Cells at `code/kaggle_notebooks/adv_cell*.py`. ≈ 5 min GPU.
 
-## Zenodo DOI (optional)
+## Zenodo DOI
 
-Enable GitHub integration at zenodo.org → Settings → GitHub → toggle `smaniches/homology-cliff` to ON. Then `git tag v1.4.4 && git push --tags` will auto-archive to Zenodo and mint a permanent DOI. Update `CITATION.cff` with the DOI once minted, commit, push.
+The compendium is permanently archived at Zenodo with DOI [**10.5281/zenodo.20143143**](https://doi.org/10.5281/zenodo.20143143) (concept DOI; each tagged release mints its own version DOI). Deposit metadata is in `.zenodo.json`; the badge at the top of this README always resolves to the latest version.
 
 ## Files to read in order if you have one hour
 
@@ -195,7 +197,8 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = apr, version = {1.4.4},
+  year = {2026}, month = may, version = {1.4.7},
+  doi = {10.5281/zenodo.20143143},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},
   license = {CC-BY-4.0 (papers), MIT (code)}

@@ -8,8 +8,8 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "README.md": {
-  "bytes": 19648,
-  "sha256": "59f239f2488203ecbe082df0ec6f224ea2a5ed677698b6979d515de5d278f034"
+  "bytes": 19820,
+  "sha256": "28953b79592eb035bb66afc4606544749ab0811cf9e25bab112732c8c2002a0d"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37780,12 +37780,12 @@
   "sha256": "5c04f9ca698020789380abce20ba5b28e94b2c83522e3fc8cf30d429fe69d6a5"
  },
  "CITATION.cff": {
-  "bytes": 579,
-  "sha256": "7f9a38298dc7fe95b68454a67390e7011ddc82f73849b0f3fb7b8cb5c31e5df1"
+  "bytes": 610,
+  "sha256": "724c9ce2d6cead3e6058de97fcb110491406568c645bee0f01327e39d1e98ef0"
  },
  "codemeta.json": {
-  "bytes": 1041,
-  "sha256": "2f50e0bd86cea90be21f70b10886f10ef240b45c7b0c16d5c35ad40b36ed4ec4"
+  "bytes": 1100,
+  "sha256": "0e152f2eda1c19ba14363b666308ff5f4dae95567a57cfb15f8f21c3939afa02"
  },
  "PROBLEMS.md": {
   "bytes": 6315,
@@ -37800,8 +37800,8 @@
   "sha256": "1dc4bca4b4b64ae171200a58a6c0175e238fe208fbc9fa3823063fb597e93bcd"
  },
  "CHANGELOG.md": {
-  "bytes": 10098,
-  "sha256": "66e729cfb590b4dc6cf065f6e1c53d8201e6b9279b3b807f4e5ae8b0111c7f7c"
+  "bytes": 12292,
+  "sha256": "23ffbc4c971679d653e778ff8ddd9cf76bb1a126aba8e920ac111970c2b69799"
  },
  "CONTRIBUTING.md": {
   "bytes": 3216,

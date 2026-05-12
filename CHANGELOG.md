@@ -4,6 +4,24 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 **Author:** Santiago Maniches, Independent Researcher (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)). **Lab:** TOPOLOGICA LLC (solo research lab, single-person operation).
 
+## [v1.4.7] — 2026-05-12
+### Added
+- **Zenodo DOI**: first permanent archive minted at [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143) after the v1.4.7 GitHub Release triggered the Zenodo webhook. README badge resolves; concept DOI tracks all future versions.
+- `.zenodo.json`: deposit metadata (title, description, creator + ORCID, license, keywords, `isSupplementTo` repo link) so each Zenodo record gets clean fields instead of only the repo's auto-extracted surface metadata. Originally added in PR #3; this entry records its arrival in the changelog.
+
+### Changed
+- `README.md`: header version stamp bumped `v1.4.4 -> v1.4.7`, date `April 12, 2026 -> May 12, 2026`, added `DOI: 10.5281/zenodo.20143143` link to the header line, Machine-Readable Index JSON (`doi`, `doi_url`, `zenodo_metadata` keys), and BibTeX block. "Honest limitations" intro bumped to `v1.4.7` and the *"Zenodo DOI deposit ... pending"* bullet removed. `## Zenodo DOI (optional)` section renamed to `## Zenodo DOI` and rewritten to document the live DOI (concept-vs-version DOI distinction). The DOI badge URL itself was already swapped from the `shields.io` placeholder to the real Zenodo SVG in PR #3 / v1.4.7 release boundary; this PR does not touch the badge line.
+- `CITATION.cff`: `version: 1.4.4 -> 1.4.7`, `date-released: 2026-04-12 -> 2026-05-12`, added `doi: "10.5281/zenodo.20143143"`.
+- `codemeta.json`: `version: 1.4.4 -> 1.4.7`, `dateModified: 2026-04-12 -> 2026-05-12`, added `identifier: https://doi.org/10.5281/zenodo.20143143`.
+- `MANIFEST.sha256.json`: refreshed entries for `README.md`, `CITATION.cff`, `codemeta.json`, `CHANGELOG.md` to match the metadata bump.
+
+### Not changed
+- No code-behavior changes. No experiments rerun. No paper, harness, test, or workflow edits. No data file edits. The 9,360-cell evidence base is identical to v1.4.5.
+
+## [v1.4.6] — 2026-05-10
+### Added
+- GitHub Release tag `v1.4.6` cut from the v1.4.5 merge commit (`263e2fe`) as the first public tag. No code/content changes versus v1.4.5; the tag preceded the Zenodo wiring landing on `main`, so this release did not result in a Zenodo deposit. v1.4.7 is the first version with a minted DOI.
+
 ## [v1.4.5] — 2026-05-07
 ### Added
 - `RELEASE_AUDIT_v1.4.5.md` — blocker-verification audit before public adversarial-review outreach. Seven reviewer-facing blockers were re-checked against current `origin/main` (post-v1.4.4). Two were confirmed already fixed in v1.4.4 (B1 calibration artifact, B6 instance 1 `run_cliff.py` docstring). Five remain open and are documented inline in RELEASE_AUDIT_v1.4.5.md as maintainer-decision pending, and summarized in the PR body (B2 precision/recall NaN schema fields, B3 stale "F1 near 0.5" wording in `code/analyses/v3_aggregate.py`, B4 Mapper augmentation truncated node membership, B5 missing `PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md`, B7 dataset label-rule auditability overclaim).
