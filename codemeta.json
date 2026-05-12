@@ -2,9 +2,10 @@
   "@context": "https://w3id.org/codemeta/3.0",
   "@type": "SoftwareSourceCode",
   "name": "Homology Cliff Research Compendium",
-  "version": "1.4.4",
+  "version": "1.4.7",
+  "identifier": "https://doi.org/10.5281/zenodo.20143143",
   "dateCreated": "2026-04-11",
-  "dateModified": "2026-04-12",
+  "dateModified": "2026-05-12",
   "author": [
     {
       "@type": "Person",
