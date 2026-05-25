@@ -44,8 +44,8 @@
   "sha256": "8057d578ef9b0ec7fd8863cd6206b6b53ed03d3d3a603ff8ae41bef6f5f7cc7d"
  },
  "code/harnesses/run_cliff.py": {
-  "bytes": 25395,
-  "sha256": "4f4838072bbb39e1da7580b8964a78bfd790880114777ba4da840ba1287ba084"
+  "bytes": 25402,
+  "sha256": "4db58d8c4a4ce891c5b44f214d2e01aba347e5d175a6688c7815e4d356904376"
  },
  "code/harnesses/run_cliff_fullnull.py": {
   "bytes": 6572,
@@ -37800,8 +37800,8 @@
   "sha256": "1dc4bca4b4b64ae171200a58a6c0175e238fe208fbc9fa3823063fb597e93bcd"
  },
  "CHANGELOG.md": {
-  "bytes": 12292,
-  "sha256": "23ffbc4c971679d653e778ff8ddd9cf76bb1a126aba8e920ac111970c2b69799"
+  "bytes": 12164,
+  "sha256": "0e075ebe59f5e53a4efee1129cab0085c26b14835e40e3b67ffc68b30ea70d55"
  },
  "CONTRIBUTING.md": {
   "bytes": 3216,
@@ -37854,9 +37854,5 @@
  "figures/cliff_summary.png": {
   "bytes": 233394,
   "sha256": "42de619054a2669c37a40e1bf0858e612006037146db23b6e7ad42f1016e992d"
- },
- "RELEASE_AUDIT_v1.4.5.md": {
-  "bytes": 23873,
-  "sha256": "79733fbebdc1c58ecbadada5b6be06800c6b4d44d08c19c6f65d1faf3b49c9be"
  }
 }
