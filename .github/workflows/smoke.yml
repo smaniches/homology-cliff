@@ -5,6 +5,9 @@ name: smoke-imports
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   imports:
     runs-on: ubuntu-latest

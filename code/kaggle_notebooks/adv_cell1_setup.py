@@ -1,5 +1,6 @@
 
-!pip install -q transformers torch biopython
+import subprocess, sys
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'transformers', 'torch', 'biopython'])
 import torch, numpy as np, json, urllib.request
 from transformers import EsmTokenizer, EsmModel
 from Bio.SubsMat.MatrixInfo import blosum62
