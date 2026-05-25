@@ -8,6 +8,9 @@ name: tests
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   pytest:
     runs-on: ubuntu-latest

@@ -1,5 +1,10 @@
 
-!pip install -q transformers torch sentencepiece
+import subprocess
+import sys
+subprocess.check_call([
+    sys.executable, '-m', 'pip', 'install', '-q',
+    'transformers', 'torch', 'sentencepiece'
+])
 
 import torch, numpy as np, json
 from transformers import T5Tokenizer, T5EncoderModel, AutoTokenizer, AutoModel
