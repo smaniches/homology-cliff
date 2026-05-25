@@ -448,8 +448,7 @@ def evaluate_cell(cell: Cell, emb: np.ndarray, labels: np.ndarray,
             continue
         f1_point, lo, hi = bootstrap_f1_ci(
             test_labels[mask], y_pred[mask], seed=cell.seed)
-        # precision and recall recomputed cheaply
-        # TODO: add precision_recall_ci helper
+        # precision/recall left as NaN; only F1 CI is pre-registered
         out[name] = StratumResult(
             n=n, f1=f1_point, precision=float("nan"), recall=float("nan"),
             f1_ci_lo=lo, f1_ci_hi=hi, underpowered=underpowered,
