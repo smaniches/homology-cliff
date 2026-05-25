@@ -56,8 +56,8 @@
   "sha256": "8843398f1e6d65557213e5a32e340d2d74ef5b4924052ddfa8a12692b9eeb002"
  },
  "code/kaggle_notebooks/adv_cell1_setup.py": {
-  "bytes": 1122,
-  "sha256": "8aa41ddba9f8854b94344aa0c371b8bc0de3d66cf68b0de3f76ca7c07ae8ee49"
+  "bytes": 1208,
+  "sha256": "db533bf0fcb2b3364aa4facf810db7df5ec948565c7ce42c7276eded955f87e2"
  },
  "code/kaggle_notebooks/adv_cell2_edits.py": {
   "bytes": 1862,
@@ -68,8 +68,8 @@
   "sha256": "f6478e905605842b7cdf985989ff1bd31ac890d1ee15abea10e68f06d3e2c426"
  },
  "code/kaggle_notebooks/cell1_setup.py": {
-  "bytes": 876,
-  "sha256": "6681995f4ad6ce2600f7d6887cea786cc4e4beca5450b7f791770a66e29da8fd"
+  "bytes": 962,
+  "sha256": "d5505cd9544b9fc97a1f237d8d26fe975c8931702a88dc5ca4b095c02c61be4d"
  },
  "code/kaggle_notebooks/cell2_prot_t5.py": {
   "bytes": 985,
