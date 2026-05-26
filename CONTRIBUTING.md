@@ -28,7 +28,7 @@ git commit -m "feat: <description> (reproduces paper N section M)"
 ## Pull request checklist
 
 - [ ] All `pytest tests/` still pass
-- [ ] If you add data files: update `MANIFEST.sha256.json` via `python code/analyses/update_manifest.py`
+- [ ] If you add data files: update `MANIFEST.sha256.json` via `python scripts/update_manifest.py`
 - [ ] If you add experimental results: include the pre-registration file (.md) with its SHA256 locked before the PR
 - [ ] If you modify a paper: recompile the .pdf and commit both .tex and .pdf
 - [ ] Update `CHANGELOG.md` under an `[Unreleased]` heading

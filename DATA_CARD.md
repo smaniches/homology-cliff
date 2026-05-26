@@ -37,6 +37,31 @@
 ## Ethical considerations (dual-use)
 Following Urbina et al. 2022 on AI-powered drug discovery dual-use concerns, we redistribute public-domain UniProt accessions and sequences only. We do not publish the label curation rule that identifies toxin-relevant proteins from the general UniProt pool; the curation logic is a TOPOLOGICA internal artifact. This restricts downstream misuse while preserving reproducibility for approved researchers who can apply their own curation.
 
+## Public vs. withheld (external verifiability boundary)
+
+| Component | Public? | Externally verifiable? | Notes |
+|---|---|---|---|
+| Protein accessions and sequences | Yes | Yes | Redistributed from UniProt (CC-BY-4.0) |
+| Binary labels (positive/negative) | Yes | Conditional | Labels are committed; the curation rule that produced them is withheld |
+| Label-curation rule | **No** | **No** | Held as TOPOLOGICA internal per Urbina et al. 2022 dual-use guidance |
+| ESM-2 embeddings (t6/t12/t30) | Yes | Yes | Reproducible from sequences using open-weights ESM-2 |
+| Pfam annotations | Yes | Yes | Retrievable from UniProt ID-mapping API |
+| Per-cell .npz results (9,360 cells) | Yes | Yes | Reproducible from embeddings + labels using committed harness code |
+| Aggregate JSON summaries | Yes | Yes | Reproducible from per-cell .npz files using committed analysis scripts |
+| Pre-registration files | Yes | Yes (hash-locked) | SHA256 verified by CI and by harness at runtime |
+| SHA256 manifest | Yes | Yes | Verified by CI on every push |
+
+**Which claims require trust in the committed labels:**
+
+All claims about absolute F1, precision, ECE values, and the cross-family partition depend on the committed labels being correct. The label-curation rule is not published; a reviewer who does not trust the labels can still verify:
+- That the .npz schema and cell counts are correct
+- That the full-null permutation eliminates the gap (labels permuted, geometric stratification preserved)
+- That the aggregation arithmetic is correct from cells to tables
+- That the pre-registration hashes match
+- That the cross-family partition logic is correct given Pfam annotations
+
+An independent researcher who applies their own curation rule to the same UniProt accessions can reproduce the entire methodology on their own labeled set. See `SECURITY.md` for the dual-use rationale.
+
 ## Files in this repository
 - `data/sequences/proteins_25k_sequences.json` (8.2 MB) — accessions, sequences, lengths, labels
 - `data/annotations/proteins_25k_pfam.json` (13.5 MB) — Pfam IDs, organism, lineage, taxonomy

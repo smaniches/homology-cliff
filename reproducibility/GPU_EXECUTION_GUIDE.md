@@ -17,10 +17,10 @@ Neither of these can run on your local i7 (no GPU). Both are set up for one-clic
    - `embeddings_prot_t5.npy` (~100 MB, 1024d)
    - `embeddings_t33.npy` (~127 MB, 1280d)
    - `embeddings_saprot.npy` (~127 MB, 1280d)
-6. Download all three to your local `C:\TOPOLOGICA_BIOSECURITY\homology_cliff_repo\data\embeddings\`
+6. Download all three to your local repo clone under `data/embeddings/`
 7. Back on your local machine: run the factorial for the new scales:
-   ```powershell
-   cd C:\TOPOLOGICA_BIOSECURITY\homology_cliff_repo
+   ```bash
+   cd <repo_root>
    python code/harnesses/run_cliff.py --scale prot_t5 --resume
    python code/harnesses/run_cliff.py --scale t33 --resume
    python code/harnesses/run_cliff.py --scale saprot --resume
@@ -32,10 +32,10 @@ Neither of these can run on your local i7 (no GPU). Both are set up for one-clic
 2. Paste the three cells from `code/kaggle_notebooks/adv_cell*.py` sequentially
 3. **Runtime → Run all**
 4. Wait approximately 5 minutes
-5. Download `/content/adversarial_edits.json` (approximately 200 KB) to `C:\TOPOLOGICA_BIOSECURITY\homology_cliff_repo\data\results_summaries\`
+5. Download `/content/adversarial_edits.json` (approximately 200 KB) to `data/results_summaries/` in your local repo clone
 6. On your local machine, analyze:
-   ```powershell
-   python code/analyses/run_adversarial_phase2_local.py data\results_summaries\adversarial_edits.json
+   ```bash
+   python code/analyses/run_adversarial_phase2_local.py data/results_summaries/adversarial_edits.json
    ```
    Outputs: minimum BLOSUM-favorable edits to flip each of the 3 distant-TP targets (P0C1X3, Q6RY98, P13208) from predicted-negative to predicted-positive.
 
@@ -52,7 +52,7 @@ Neither of these can run on your local i7 (no GPU). Both are set up for one-clic
 5. **Save Version → Save & Run All**
 6. Wait approximately 3 hours (T4 is slower; session has 12h limit so plan accordingly)
 7. Once the notebook completes, the `.npy` outputs appear in `/kaggle/working/` — right sidebar → Output → download each file
-8. Copy to local `_embeddings/` and proceed with the local re-run of the factorial
+8. Copy to your local repo clone under `data/embeddings/` and proceed with the local re-run of the factorial
 
 ## If anything fails
 - ProtT5 OOM on T4: reduce `BATCH` to 2 in cell 2
@@ -62,7 +62,7 @@ Neither of these can run on your local i7 (no GPU). Both are set up for one-clic
 
 ## Verification checklist (after either path)
 - [ ] Three new .npy files in `data/embeddings/` each ~100-130 MB
-- [ ] SHA256 manifest updated: `python code/analyses/update_manifest.py`
+- [ ] SHA256 manifest updated: `python scripts/update_manifest.py`
 - [ ] Factorial re-run produces new cells in `data/cells/main/cell_{prot_t5,t33,saprot}_*.npz`
 - [ ] v3_aggregate.py regenerates `v3_final.txt` with 5 scales not 3
 - [ ] Paper 1 Figure 1 (cliff_surface) re-rendered with 5 scale curves

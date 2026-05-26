@@ -1,0 +1,23 @@
+name: evidence-spot-checks
+# Spot-checks headline numerical claims against committed JSON summaries.
+# Does NOT require LFS payload -- reads only from data/results_summaries/
+# which are small committed JSON/text files. Also verifies that all paper
+# PDFs exist and that the claims-to-evidence traceability document is present.
+# Logic lives in scripts/ci/verify_evidence.py for local reproducibility.
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {lfs: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+
+      - name: verify headline evidence
+        run: python scripts/ci/verify_evidence.py
