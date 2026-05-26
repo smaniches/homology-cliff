@@ -103,7 +103,7 @@ def check_mapper_augmentation() -> bool:
     ci_lo = d.get("rescue_ci_lo", d.get("ci_lo", None))
     ci_hi = d.get("rescue_ci_hi", d.get("ci_hi", None))
     if ci_lo is not None and ci_hi is not None:
-        if not (ci_lo < 0 < ci_hi):
+        if not (ci_lo <= 0 <= ci_hi):
             fail(f"rescue CI [{ci_lo}, {ci_hi}] does not include zero")
             ok = False
         else:

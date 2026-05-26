@@ -37864,8 +37864,8 @@
   "sha256": "a6c78f0fdb7747d5006754948b5bc1d805917243dcc39296904b1b41e4d8cc87"
  },
  "scripts/ci/verify_evidence.py": {
-  "bytes": 6233,
-  "sha256": "870ee9284a230b306f81ad38fec0927fce3b9f01a4d3618ad439dfaba72879b6"
+  "bytes": 6235,
+  "sha256": "121e0e81631654cf64bccc145000f66c704516c8b0d71694da3f51b3ab12feb6"
  },
  "scripts/ci/verify_manifest.py": {
   "bytes": 3607,
@@ -37880,8 +37880,8 @@
   "sha256": "0a58b88cf470347509da927d5d8994dc0d4dabda6a5dbbdf94528a098faa39cd"
  },
  "scripts/update_manifest.py": {
-  "bytes": 3245,
-  "sha256": "a05e33bd31f69e4cc896e69a26fa8b27ec710c8a2b0b94873904ce50552a378a"
+  "bytes": 3317,
+  "sha256": "5e146d5a609d5961081c9c327c298e472364d0584de1227e30f5794b55994232"
  },
  "tests/__init__.py": {
   "bytes": 0,

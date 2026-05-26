@@ -90,11 +90,13 @@ def main() -> int:
                 lfs_preserved += 1
             continue
 
+        sha256 = hashlib.sha256()
         with open(path, "rb") as fh:
-            content = fh.read()
+            while chunk := fh.read(65536):
+                sha256.update(chunk)
         manifest[rel_path] = {
-            "bytes": len(content),
-            "sha256": hashlib.sha256(content).hexdigest(),
+            "bytes": path.stat().st_size,
+            "sha256": sha256.hexdigest(),
         }
         real += 1
 
