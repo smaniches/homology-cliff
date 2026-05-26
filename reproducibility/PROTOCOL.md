@@ -8,8 +8,8 @@ To reproduce all 9,360 per-cell outputs + the five papers in this compendium:
 - MiKTeX or TeXLive for compiling LaTeX papers
 
 ## 2. Data + embeddings (not committed, too large)
-- Place `experiment2_proteins_25k_filtered.json` (24,885 proteins, 7,133 positive) at `_data/data_25k/`
-- Compute ESM-2 t6/t12/t30 embeddings (or obtain from author) and place at `_embeddings/embeddings_25k_{t6,t12,t30}/test_embeddings_25k_{scale}.npy`
+- The shipped dataset is at `data/sequences/proteins_25k_sequences.json` (24,885 proteins, 7,133 positive). The pre-registration refers to this file by its working ID `experiment2_proteins_25k_filtered.json`; the harness accepts either name.
+- The shipped ESM-2 embeddings are at `data/embeddings/embeddings_{t6,t12,t30}.npy`. These are LFS-tracked; run `git lfs pull` to fetch them.
 - L2-normalize all embeddings (verification: `np.linalg.norm(emb, axis=1).mean() ≈ 1.0`)
 
 ## 3. Execute (in order)
@@ -46,4 +46,4 @@ The harnesses abort if pre-reg file hashes have drifted. Expected:
 - full-null addendum: `f3864d097a0c611d790e6fb15a42e7efb36b2d1b103be4ec1c4f28f99d1004dc`
 
 ## 7. Optional: PLM benchmark extension (requires GPU)
-Open `code/colab_notebook/plm_benchmark.ipynb` in Google Colab (T4 free / A100 Pro), upload the proteins JSON, Run All, download `.npy` files to `_embeddings/`. Then rerun the main factorial with new scale names.
+Open `code/colab_notebook/plm_benchmark.ipynb` in Google Colab (T4 free / A100 Pro), upload the proteins JSON, Run All, download `.npy` files to `data/embeddings/`. Then rerun the main factorial with new scale names.
