@@ -22,6 +22,8 @@
 
 10. **Overclaim softening across Papers 1, 2, 3, 5** — caught in the same audit pass and fixed in v1.4.4. Phrases like "ruling out within-family distant-homology as the mechanism", "Panel expansion is not a rescue", "rules out the within-family hypothesis entirely", and "panel augmentation is ruled out" overstated the evidence given the n=20 evaluable sample size (Wilson 95\% CI lower bound on the population within-family rate is approximately 83\%, not 100\%). Replaced with consistent "consistent with / inconsistent with / disfavors / Wilson 95\% CI [0\%, 17\%]" framing throughout. The empirical observation (20 of 20 evaluable cases cross-family) is unchanged; only the inferential strength is calibrated.
 
+11. **Precision/recall fields are intentionally unpopulated (NaN) in every committed cell** (audit blocker B2) — disclosed at v1.4.7+. The `.npz` `StratumResult` schema declares `precision` and `recall`, but only `f1` and its 10,000-resample bootstrap CI are pre-registered and populated; `precision`/`recall` are written as `NaN` in all 9,360 cells. This is now documented at the `StratumResult` declaration and at the assignment site in `code/harnesses/run_cliff.py`. Downstream consumers should treat the two fields as intentionally absent. Populating them for newly written cells would create a pre/post discontinuity with the committed cells and is deferred.
+
 ## Things not yet verified
 
 1. **t33 (650M) scale** — committed in the pre-registration but requires GPU embedding. Colab notebook provided; user must execute.
@@ -29,6 +31,7 @@
 3. **Adversarial phase 2** — only 3 target proteins exist (precision-not-recall finding); BLOSUM-edit attack needs GPU for ESM re-embedding. Kaggle notebook provided.
 4. **Learned-projection calibration** — main factorial measured F1 only; calibration of the learned metric on distant stratum is unmeasured.
 5. ~~Cross-family (Pfam-partitioned) analysis~~ — COMPLETED v1.0.1. Result: 100% of evaluable distant false alarms are cross-family (zero Pfam overlap with voters). Paper 5 updated from v0.9 stub to full v1.0 with this result.
+6. **Mapper augmentation under full node membership** (audit blocker B4) — the committed Mapper-augmentation result (Paper 2, Attempt 4) draws its biased pool from node member lists truncated to 50/node (`run_mapper.py`), accumulated across multiple positive-enriched nodes up to 3,000 members. This also differs from Paper 2's prose, which describes a single top node (1,131 positives in bin (7,4)). Whether the H1 rejection (rescue +0.0018, 95% CI [−0.027, +0.029]) is robust to full node membership is untested. A non-destructive robustness harness is provided (`code/analyses/run_mapper_augmentation_robustness.py`, `docs/MAPPER_AUGMENTATION_ROBUSTNESS.md`); execution requires `git lfs pull` of the t30 embeddings and was not possible in the authoring environment.
 
 ## Things deferred to v1.1+
 

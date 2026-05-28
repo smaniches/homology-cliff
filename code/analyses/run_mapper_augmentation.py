@@ -10,7 +10,14 @@ Compare two panels of R=1000 each:
 Measure distant-stratum F1 under cosine kNN at k=25 for each panel, 10 seeds,
 t30. Bootstrap 95% CI on the rescue: F1_biased - F1_uniform.
 
-Pre-reg: PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md
+Provenance: follows the Paper 1 pre-registered factorial (same 24,885-protein
+test set, stratification cuts, and seeds). Unlike the Mahalanobis and cascade
+attempts, this analysis has NO dedicated SHA256-locked pre-registration file
+(there is no PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md; Paper 2 locks only
+Mahalanobis and cascade via SHA256). Treat the H1 below as a stated hypothesis,
+not a SHA256-locked pre-registration. The committed result uses the truncated
+node membership (50/node, run_mapper.py); a full-membership robustness check is
+described in docs/MAPPER_AUGMENTATION_ROBUSTNESS.md.
 H1: mapper-biased panel distant F1 > uniform distant F1 by at least +0.02
     with 95% CI excluding zero across 10 seeds.
 """

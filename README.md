@@ -36,7 +36,7 @@ We characterize the cliff across a 3,000-cell pre-registered factorial, show it 
 - **Protein language model researchers**: start with Paper 1 then Paper 4 (methods). The factorial harness, the seed-variance gate, and the SHA256-locked pre-registration pattern generalize to any PLM retrieval study. All 9,360 per-cell .npz results are here for reanalysis.
 - **Reviewers and journal editors**: all claims are traceable to committed evidence via `MANIFEST.sha256.json`. All hypotheses were pre-registered with SHA256 locks before execution; harnesses abort if hashes drift. See `PROBLEMS.md` for the self-audited list of errors caught during authoring and items deferred.
 - **LLM agents and automated analysis systems**: the schema is stable, every paper has machine-parseable metadata (`CITATION.cff`, `codemeta.json`), cell outputs use a single documented .npz schema across all 9,360 files, and `data/results_summaries/` contains aggregated JSON for the headline numbers. Section **Machine-Readable Index** below gives the canonical map.
-- **Independent scientists working solo**: this compendium is produced by one person with AI collaboration. The standard concern "was this actually done or did the AI hallucinate it" is addressed by: SHA256-locked pre-registrations that the running code verifies, all 9,360 experimental outputs committed as .npz files with bootstrap confidence intervals, and an auditable git history showing each finding's commit. Clone the repo, run `pytest tests/`, rerun any single harness. Every number in every paper has an artifact on disk.
+- **Independent scientists working solo**: this compendium is produced by one person with AI collaboration. The standard concern "was this actually done or did the AI hallucinate it" is addressed by: SHA256-locked pre-registrations that the running code verifies, all 9,360 experimental outputs committed as .npz files with bootstrap confidence intervals, and an auditable git history showing each finding's commit. Clone the repo, run `pytest tests/`, rerun any single harness. Every numeric claim in every paper is reproducible from a committed artifact on disk, conditional on the committed labels being trusted. The label-curation rule that maps UniProt entries to positive/negative is held as TOPOLOGICA internal per Urbina et al. 2022 dual-use guidance (see `DATA_CARD.md` and `PROBLEMS.md`); independent re-derivation requires an approved researcher applying their own curation.
 
 ## The five papers
 
@@ -57,7 +57,7 @@ git clone https://github.com/smaniches/homology-cliff.git
 cd homology-cliff
 git lfs pull                              # fetches 188 MB of binary evidence
 pytest tests/ -v                          # schema and invariant checks on committed cells
-python code/analyses/v3_aggregate.py      # regenerates the headline numbers table from 9,360 .npz files
+python code/analyses/v3_aggregate.py      # regenerates the headline numbers table (requires the git lfs pull above; otherwise the .npz cells are LFS-pointer placeholders and the table is empty)
 ls papers/*/paper.pdf                     # the five papers
 ```
 
@@ -77,7 +77,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,464 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,475 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
