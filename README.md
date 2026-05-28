@@ -155,6 +155,8 @@ For LLM agents and automated systems: the canonical entry points are
 
 ## Reproducing any single number in any paper
 
+> The `.npz`-based one-liners below read Git LFS-tracked evidence — run `git lfs pull` first (see the 15-minute recipe above), or the cells are pointer stubs and `np.load` errors instead of printing a number. The cross-family JSON check needs no LFS.
+
 ```bash
 # Headline cliff number:
 python -c "import numpy as np; d=np.load('data/cells/main/cell_t30_1000_25_cosine_20260410.npz', allow_pickle=True); print('close F1:', d['close'].item()['f1'], 'distant F1:', d['distant'].item()['f1'])"
