@@ -37727,6 +37727,10 @@
   "bytes": 3560,
   "sha256": "c2cac853318d32def494dfe548c05af684b1bb9978bbf26764d372cac534f6cc"
  },
+ "docs/.nojekyll": {
+  "bytes": 0,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
  "docs/CLAIMS_TO_EVIDENCE.md": {
   "bytes": 10941,
   "sha256": "4cd70d6cbdacba14eff8a8a801a02e4ba697f202b63dbead7a5b861b7ba11896"
@@ -37734,6 +37738,10 @@
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 5000,
   "sha256": "54bcc2b5fb22c381be67ff230a43fecdec9cccb567d4db1b08759f8a049756b2"
+ },
+ "docs/index.html": {
+  "bytes": 13695,
+  "sha256": "d1693b2d5ba66b0a44ac83e7891f25746144174ece0e2d56760698202564d787"
  },
  "figures/cliff_summary.png": {
   "bytes": 233394,
