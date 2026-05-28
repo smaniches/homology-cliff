@@ -52,8 +52,8 @@
   "sha256": "221cae4b1f1a69d6bf012779853fabc86053c894cf381875f909f896050a025d"
  },
  "CHANGELOG.md": {
-  "bytes": 12164,
-  "sha256": "0e075ebe59f5e53a4efee1129cab0085c26b14835e40e3b67ffc68b30ea70d55"
+  "bytes": 15198,
+  "sha256": "139ce34ede245fa8ec41fc130330d879b674d79be1557c7ad45d6ad23cfb86a0"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -88,12 +88,12 @@
   "sha256": "d763b75f1e9224ba4dab02e17c4da8ab00f9e80a4076edfd123d8699586f7b4b"
  },
  "PROBLEMS.md": {
-  "bytes": 6315,
-  "sha256": "6bcd65b08651bfd72cc9083a70d3fdf712a2cc60c8ac4bc0a9e104d6bc2b9d85"
+  "bytes": 7756,
+  "sha256": "22411163ecaa1a2c2b2c248f4dc61b38746bb72dcaf4a0a6bf2c7c97c6b9b514"
  },
  "README.md": {
-  "bytes": 19820,
-  "sha256": "28953b79592eb035bb66afc4606544749ab0811cf9e25bab112732c8c2002a0d"
+  "bytes": 20264,
+  "sha256": "3f0ce8d03053d3456081f61ee922bdc03a13d834316732f2821efa8729d51cb9"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -101,15 +101,15 @@
  },
  "REVIEWER.md": {
   "bytes": 4299,
-  "sha256": "b9935457b5223f4676f01ebb7896d2706ec1f7592492522edcf32e15a41e8b8b"
+  "sha256": "41ad0c339a5b8ef83c34cbb1ecde4862ec96e0f9205fc9ad47c5469be2dd4306"
  },
  "SECURITY.md": {
   "bytes": 3279,
   "sha256": "cc8a0d73bf58fda95ee0fb89684ff8c475a4c72fb253ca5d7af8211bfbf50c6d"
  },
  "STATUS.md": {
-  "bytes": 4237,
-  "sha256": "55d3c1a686da686ce001d2b8be2a579d3beb6d978e1efdfee8846ddd5de4903e"
+  "bytes": 5019,
+  "sha256": "0ba1ff8eef76b9a35588dcd488c82af576fb20e80ef3c1a9c69148084a8fd536"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -132,12 +132,16 @@
   "sha256": "9894a89f47aa7017bfd9f91513715ce104f651818c4559492b53c81c4588f098"
  },
  "code/analyses/run_mapper_augmentation.py": {
-  "bytes": 4931,
-  "sha256": "2eff76485fc9b31157e524770973b55e169741ee2f2d023308bfe85eadc91f42"
+  "bytes": 5479,
+  "sha256": "5ea4b9581fc2e34f5e1ba77c0f949aa56d3148fb6d76d1e672be1e20b816074a"
+ },
+ "code/analyses/run_mapper_augmentation_robustness.py": {
+  "bytes": 12582,
+  "sha256": "00c9d05d158da2400e909e09a11cd62f5d57c9e8150b6d9701f4058444bdd627"
  },
  "code/analyses/v3_aggregate.py": {
-  "bytes": 5382,
-  "sha256": "d95f561abd868078c9eab4baffc8b9110cafd3790a47329a826d84526612895f"
+  "bytes": 5555,
+  "sha256": "66d7ac2b7e3a5a5bdb934b3cb377382f5f645adac61f7f6bae26f96ccbf8774b"
  },
  "code/colab_notebook/plm_benchmark.ipynb": {
   "bytes": 5446,
@@ -148,8 +152,8 @@
   "sha256": "8057d578ef9b0ec7fd8863cd6206b6b53ed03d3d3a603ff8ae41bef6f5f7cc7d"
  },
  "code/harnesses/run_cliff.py": {
-  "bytes": 25402,
-  "sha256": "4db58d8c4a4ce891c5b44f214d2e01aba347e5d175a6688c7815e4d356904376"
+  "bytes": 25707,
+  "sha256": "1d6e2fb79a5353fee759b6d9840a719a9a82dca41fe4900577a75dd764a523b0"
  },
  "code/harnesses/run_cliff_fullnull.py": {
   "bytes": 6572,
@@ -37726,6 +37730,10 @@
  "docs/CLAIMS_TO_EVIDENCE.md": {
   "bytes": 10941,
   "sha256": "4cd70d6cbdacba14eff8a8a801a02e4ba697f202b63dbead7a5b861b7ba11896"
+ },
+ "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
+  "bytes": 4918,
+  "sha256": "905e055f9a70ec3229967545a5f344aa250042b7768c7b3416674ed82f206d8a"
  },
  "figures/cliff_summary.png": {
   "bytes": 233394,

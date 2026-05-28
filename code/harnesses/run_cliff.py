@@ -121,6 +121,10 @@ class Cell:
 class StratumResult:
     n: int
     f1: float
+    # precision/recall are part of the schema but are intentionally left
+    # unpopulated (NaN) in every committed cell: only F1 and its bootstrap CI
+    # are pre-registered. See the assignment site below and PROBLEMS.md item 11
+    # (B2). Downstream consumers should not expect populated values here.
     precision: float
     recall: float
     f1_ci_lo: float

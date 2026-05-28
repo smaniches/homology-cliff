@@ -36,7 +36,7 @@ print(f"fullnull groups: {len(groups_full)}  cells: {sum(len(v) for v in groups_
 
 # Full-null table: the real pre-reg-compliant null
 print("\n=== FULL-NULL close/moderate/distant F1 (labels fully randomized) ===")
-print("   Should ALL be near 0.5 per addendum pre-reg if cliff is real.")
+print("   Per addendum pre-reg, operationalized criterion is gap-near-zero across 10 seeds; per-stratum F1 collapses toward 0 under full-pool permutation, not toward 0.5 (the 0.5 framing was inherited from the deprecated v1 panel-shuffle null).")
 print(f"{'scale':<4} {'R':>5} {'k':>3} {'metric':<12} {'close':>7} {'mod':>7} {'dist':>7} {'gap':>7} {'gap_std':>7}")
 for scale in ['t6','t12','t30']:
     for r in [50,100,250,500,1000]:

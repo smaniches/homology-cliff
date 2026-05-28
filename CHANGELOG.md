@@ -4,6 +4,24 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 **Author:** Santiago Maniches, Independent Researcher (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)). **Lab:** TOPOLOGICA LLC (solo research lab, single-person operation).
 
+## [Unreleased]
+### Added
+- `REVIEWER.md` — orientation guide for external adversarial reviewers (PRs #5–#7).
+- `docs/CLAIMS_TO_EVIDENCE.md` — claim-to-evidence traceability map linking each headline number to its committed artifact (PRs #5–#7).
+- `.github/workflows/evidence.yml` + `scripts/ci/verify_evidence.py` — CI spot-checks that headline numbers in the committed JSON summaries match expected values and that all five paper PDFs and the claims doc exist (PRs #5–#7).
+- `code/analyses/run_mapper_augmentation_robustness.py` + `docs/MAPPER_AUGMENTATION_ROBUSTNESS.md` — non-destructive full-membership robustness re-run of the Mapper panel-augmentation attempt (Paper 2 Attempt 4 / audit blocker B4). Authored but **not executed** in this environment (requires `git lfs pull` of the t30 embeddings); the harness writes to new artifacts and leaves the committed truncated result untouched.
+
+### Changed
+- `code/analyses/v3_aggregate.py` (audit blocker B3): corrected the full-null print banner that claimed per-stratum F1 should be "near 0.5". Under full-pool label permutation F1 collapses toward 0; the addendum's operationalized criterion is gap-near-zero across 10 seeds. The "0.5" framing was inherited from the deprecated v1 panel-shuffle null.
+- `README.md` (audit blockers B6, B7): softened the unconditional "every number has an artifact on disk" statement to state explicitly that reproducibility is conditional on trusting the withheld label-curation rule; qualified the `v3_aggregate.py` 15-minute recipe step to note it requires `git lfs pull`.
+- `code/harnesses/run_cliff.py` (audit blocker B2): documented at the `StratumResult` declaration that `precision`/`recall` are intentionally unpopulated (NaN) in every committed cell — only F1 and its bootstrap CI are pre-registered.
+- `code/analyses/run_mapper_augmentation.py` (audit blocker B5): corrected the docstring's dangling reference to a non-existent `PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md`; the docstring now states accurate provenance (follows Paper 1's pre-registered factorial; only Mahalanobis and cascade are SHA256-locked).
+- PEP 8 formatting pass; CodeQL alert resolution (workflow permissions, Python syntax); `scripts/update_manifest.py` chunked hashing and CI boundary check (PRs #5–#7).
+
+### Notes
+- No experiments rerun; no committed `.npz`/`.json` evidence changed; no SHA256-locked pre-registration file touched; no paper `.tex`/`.pdf` edited. The 9,360-cell evidence base is byte-identical to v1.4.7.
+- Open for maintainer decision: blocker B4 (whether the Mapper rejection is robust to full node membership) and a newly documented discrepancy between Paper 2 §Attempt 4's prose (single top node, 1,131 positives) and the committed `run_mapper_augmentation.py` (multi-node accumulation to 3,000 with 50-member-per-node truncation). Resolving these requires executing the robustness re-run with LFS data and, if the result changes, a Paper 2 text revision + PDF recompile. See `docs/MAPPER_AUGMENTATION_ROBUSTNESS.md`.
+
 ## [v1.4.7] — 2026-05-12
 ### Added
 - **Zenodo DOI**: first permanent archive minted at [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143) after the v1.4.7 GitHub Release triggered the Zenodo webhook. README badge resolves; concept DOI tracks all future versions.
