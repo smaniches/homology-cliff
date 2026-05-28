@@ -167,9 +167,10 @@ def is_lfs_stub(path) -> bool:
     """True if `path` is a Git LFS pointer stub rather than its real content.
 
     LFS-tracked evidence (.npy/.npz and the large data/*.json files) appears as
-    a ~130-byte text stub on a clone that has not run `git lfs pull`. Loading
-    such a stub with numpy/json raises a cryptic error, so the loaders below
-    check for it first and emit a clear, actionable message instead.
+    a ~130-byte text stub on a clone that has not run `git lfs pull`. Loading a
+    pointer stub with numpy or json raises an uninformative low-level parsing
+    error; the loaders below detect this case and raise an explicit message
+    identifying the required `git lfs pull` step.
     """
     try:
         with open(path, "rb") as fh:

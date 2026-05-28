@@ -136,12 +136,12 @@
   "sha256": "5ea4b9581fc2e34f5e1ba77c0f949aa56d3148fb6d76d1e672be1e20b816074a"
  },
  "code/analyses/run_mapper_augmentation_robustness.py": {
-  "bytes": 12582,
-  "sha256": "00c9d05d158da2400e909e09a11cd62f5d57c9e8150b6d9701f4058444bdd627"
+  "bytes": 12639,
+  "sha256": "05cb6d0f07de0c748d3d40f26a0c0694ae988b10db3dc322e5dac5fa9649f74c"
  },
  "code/analyses/v3_aggregate.py": {
-  "bytes": 6117,
-  "sha256": "d92aa761bb587d01c3ac00a3eac290187ec8ccb855c7933a4358cc88a3da0b17"
+  "bytes": 6150,
+  "sha256": "ee90a03918c62403dccaebb7eb1940f07af5a6c23ada2a5cfd9334731b95eb02"
  },
  "code/colab_notebook/plm_benchmark.ipynb": {
   "bytes": 5446,
@@ -152,8 +152,8 @@
   "sha256": "8057d578ef9b0ec7fd8863cd6206b6b53ed03d3d3a603ff8ae41bef6f5f7cc7d"
  },
  "code/harnesses/run_cliff.py": {
-  "bytes": 26755,
-  "sha256": "369cb94145797aaaec177b2e775ebd58abd76e851106cb42f34fc4fa1b6026a9"
+  "bytes": 26815,
+  "sha256": "db19ac3bc1b3678957922a7e908de3a3ee0446475465923d656430279d5554e8"
  },
  "code/harnesses/run_cliff_fullnull.py": {
   "bytes": 6572,
@@ -37732,8 +37732,8 @@
   "sha256": "4cd70d6cbdacba14eff8a8a801a02e4ba697f202b63dbead7a5b861b7ba11896"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
-  "bytes": 4918,
-  "sha256": "905e055f9a70ec3229967545a5f344aa250042b7768c7b3416674ed82f206d8a"
+  "bytes": 5000,
+  "sha256": "54bcc2b5fb22c381be67ff230a43fecdec9cccb567d4db1b08759f8a049756b2"
  },
  "figures/cliff_summary.png": {
   "bytes": 233394,
