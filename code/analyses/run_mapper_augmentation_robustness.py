@@ -1,48 +1,49 @@
 """Robustness re-run of the Mapper panel-augmentation attempt (Paper 2, Attempt 4).
 
-WHY THIS EXISTS
----------------
-The committed Mapper-augmentation result (`mapper_augmentation_results.json`,
-rescue +0.0018, 95% CI [-0.027, +0.029], H1 rejected) was produced from a
-biased pool built out of Mapper-node member lists that `run_mapper.py` caps at
-50 entries per node (`members[:50]  # cap to keep JSON small`). Audit blocker
-B4 asks whether that H1 rejection is an artifact of the truncation.
+Motivation
+----------
+The committed Mapper-augmentation result (`mapper_augmentation_results.json`:
+rescue +0.0018, 95% CI [-0.027, +0.029], H1 rejected) was produced from a biased
+pool assembled from Mapper-node member lists that `run_mapper.py` truncates to 50
+entries per node (`members[:50]`). Audit blocker B4 concerns whether the H1
+rejection is an artifact of that truncation.
 
-A second, independent issue surfaced during the audit: Paper 2 §Attempt 4
-describes the biased pool as drawn from "the top positive-enriched Mapper node
-(1,131 positives available in bin (7,4), pos_frac=0.885)" — a SINGLE node — but
-the committed `run_mapper_augmentation.py` actually accumulates members across
-MANY positive-enriched nodes until the pool reaches 3,000 entries. The prose and
-the code disagree about the method.
+A separate discrepancy was identified during the audit: Paper 2, Attempt 4
+describes the biased pool as drawn from a single top positive-enriched Mapper node
+(1,131 positives available, bin (7,4), pos_frac=0.885), whereas the committed
+`run_mapper_augmentation.py` accumulates members across multiple positive-enriched
+nodes until the pool reaches 3,000 entries. The published description and the
+committed implementation therefore specify different sampling methods.
 
-WHAT THIS SCRIPT DOES (non-destructive)
----------------------------------------
-It regenerates the Mapper graph in memory with FULL node membership (no 50-cap),
-replicating `run_mapper.py`'s lens/cover/clustering exactly, and then evaluates
-the augmentation under three configurations:
+Method (non-destructive)
+------------------------
+The Mapper graph is regenerated in memory with full node membership (no 50-entry
+cap), replicating the lens, cover, and clustering of `run_mapper.py` exactly. The
+augmentation is then evaluated under three configurations:
 
-  1. truncated-multinode  — cap=50, multi-node accumulation to 3,000.
-                            This reproduces the committed pipeline and is used as
-                            a self-check against `mapper_augmentation_results.json`.
-  2. full-multinode       — no cap, multi-node accumulation to 3,000.
-                            Robustness of the committed method to truncation.
-  3. full-single-node     — no cap, single node with the most positives.
-                            Matches Paper 2's prose description of the method.
+  1. truncated-multinode  cap=50, multi-node accumulation to 3,000. Reproduces the
+                          committed pipeline and serves as a self-consistency
+                          check against `mapper_augmentation_results.json`.
+  2. full-multinode       no cap, multi-node accumulation to 3,000. Tests the
+                          robustness of the committed method to truncation.
+  3. full-single-node     no cap, single node with the most positives.
+                          Corresponds to the method described in Paper 2's prose.
 
-For each configuration it runs the same 10-seed (20260410..20260419) cosine-kNN
-(k=25, R=1000, t30) comparison of a Mapper-biased panel vs. a uniform panel, with
-the identical 5,000-resample rescue CI used by the committed harness.
+Each configuration runs the same 10-seed (20260410-20260419) cosine-kNN comparison
+(k=25, R=1000, t30) of a Mapper-biased panel against a uniform panel, using the
+same 5,000-resample rescue confidence interval as the committed harness.
 
-OUTPUT (new files only; committed artifacts are never overwritten):
+Output (new files only; committed artifacts are never modified):
   data/results_summaries/mapper_augmentation_robustness.json
 
-H1 (per attempt): biased distant F1 > uniform distant F1 by >= +0.02 with a
-95% CI excluding zero across the 10 seeds. This is a post-hoc robustness check,
-NOT a pre-registration.
+H1 (per configuration): biased distant F1 exceeds uniform distant F1 by at least
++0.02, with a 95% confidence interval excluding zero across the 10 seeds. This is
+a post-hoc robustness check, not a pre-registration.
 
-REQUIREMENTS: `git lfs pull` must have fetched data/embeddings/embeddings_t30.npy
-and data/sequences/proteins_25k_sequences.json. Deterministic (PCA random_state=0,
-DBSCAN, numpy default_rng, random.seed) so re-runs are byte-stable.
+Requirements: `git lfs pull` must have fetched data/embeddings/embeddings_t30.npy
+and data/sequences/proteins_25k_sequences.json. The procedure is deterministic
+(PCA random_state=0, DBSCAN, numpy default_rng, fixed random seed), so re-runs are
+byte-stable.
 """
 import json
 import random

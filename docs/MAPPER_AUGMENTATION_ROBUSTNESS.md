@@ -5,7 +5,7 @@ could not fetch the t30 embeddings via `git lfs pull`). This document states the
 question, the method, and how to run it. Results are appended once the harness
 runs where the LFS payload is available.
 
-## The question
+## Question under test
 
 Paper 2's fourth rescue attempt (Mapper-biased panel augmentation) reports a
 distant-stratum rescue of **+0.0018, 95% CI [−0.027, +0.029]**, with H1
@@ -19,7 +19,7 @@ lists that `code/analyses/run_mapper.py:67` **truncates to 50 entries per node**
 rejection an artifact of that truncation, or does it hold under full node
 membership?**
 
-## A second issue: prose vs. code disagree on the method
+## Methodological discrepancy: published prose vs. committed code
 
 While preparing this re-run we found that Paper 2 §Attempt 4 and the committed
 script describe **different sampling methods**:
@@ -37,7 +37,7 @@ These are not the same experiment. The committed `.json` reflects the
 multi-node code path, not the single-node prose. Both interpretations are
 therefore tested below.
 
-## What the harness does
+## Method
 
 `code/analyses/run_mapper_augmentation_robustness.py` is **non-destructive**: it
 regenerates the Mapper graph *in memory* (replicating `run_mapper.py`'s PCA-2
@@ -75,7 +75,7 @@ Output: `data/results_summaries/mapper_augmentation_robustness.json` (new file).
 Wall time is dominated by the Mapper regeneration (full membership) and 60
 kNN evaluations; expect a few minutes of CPU. Re-running is byte-stable.
 
-## How to read the result
+## Interpretation
 
 - **If both `full_*` arms still reject H1** (rescue near zero, CI spans zero):
   the published Paper 2 conclusion is **robust** to the truncation, and the
@@ -83,11 +83,12 @@ kNN evaluations; expect a few minutes of CPU. Re-running is byte-stable.
   No scientific claim changes.
 - **If a `full_*` arm now supports H1** (rescue ≥ +0.02, CI above zero): the
   published rejection was **truncation-dependent**, and Paper 2's Attempt-4
-  conclusion needs revision (text + PDF recompile + a new Zenodo version).
-  Treat this as a material finding, not a copy-edit.
+  conclusion requires revision (text, PDF recompilation, and a new Zenodo
+  version). This is a substantive scientific correction, not an editorial one.
 
-Either outcome is recorded honestly here and in `PROBLEMS.md`. The point of the
-re-run is to find out, not to defend the existing claim.
+Both outcomes are recorded here and in `PROBLEMS.md`. The purpose of the re-run
+is to determine empirically whether the rejection holds under full node
+membership, independent of the committed result.
 
 ## Provenance note
 
