@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Homology Cliff in Frozen Protein Language Models</title>
 <meta name="description" content="A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered results and a deployable rescue.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Homology Cliff in Frozen Protein Language Models">
+<meta property="og:description" content="A five-paper compendium on a systematic failure mode of ESM-2 biosecurity retrieval — 9,360 pre-registered results and a deployable rescue.">
+<meta property="og:image" content="https://raw.githubusercontent.com/smaniches/homology-cliff/main/figures/cliff_summary.png">
+<meta property="og:url" content="https://smaniches.github.io/homology-cliff/">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
     --ink:#1a202c; --muted:#586575; --accent:#15527e; --accent-soft:#e8f0f7;
@@ -149,6 +155,17 @@ python -c "import json; d=json.load(open('data/results_summaries/cross_family_pa
 pytest tests/ -v                          <span class="c"># schema + invariant checks</span>
 python code/analyses/v3_aggregate.py      <span class="c"># regenerates the headline table</span></pre>
     <p class="note">Integrity is machine-checked on every push: a SHA256 manifest over 9,475 files, two byte-locked pre-registration hashes, and headline-number spot-checks all run in CI. See <a href="https://github.com/smaniches/homology-cliff/blob/main/REVIEWER.md">REVIEWER.md</a> for the full five-command verification.</p>
+  </div>
+</section>
+
+<section id="adopt">
+  <div class="wrap">
+    <h2>Adopting the rescue</h2>
+    <p>If you operate a frozen-PLM screen, the actionable result is small and self-contained: fit the panel-only linear projection on your own panel (seconds of CPU), apply it before retrieval, and route every distant-stratum positive to human review. A minimal, dependency-light reference implementation and the deployment scope are committed:</p>
+    <div class="grid2">
+      <div class="card"><h3>Reference implementation</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/deployment_example/deploy_cliff_rescue.py">deployment_example/deploy_cliff_rescue.py</a> &mdash; the learned panel-only projection as a drop-in rescue.</p></div>
+      <div class="card"><h3>Deployment scope</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/MODEL_CARD.md">MODEL_CARD.md</a> &mdash; where the rescue applies, its limits, and the human-review requirement.</p></div>
+    </div>
   </div>
 </section>
 
