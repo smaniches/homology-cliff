@@ -15,6 +15,16 @@ _npz_paths = (
     + sorted(glob.glob(str(CELLS_DIR / "negctrl" / "*.npz")))
     + sorted(glob.glob(str(CELLS_DIR / "fullnull" / "*.npz")))
 )
+# Fail clearly if the cells are Git LFS pointer stubs (no `git lfs pull`),
+# instead of crashing with a cryptic UnpicklingError on the first np.load.
+if _npz_paths:
+    with open(_npz_paths[0], "rb") as _fh:
+        if _fh.read(64).startswith(b"version https://git-lfs.github.com/spec/v1"):
+            raise SystemExit(
+                "data/cells/*.npz are Git LFS pointer stubs in this clone. "
+                "Run `git lfs pull` to fetch the cell archives, then re-run; "
+                "otherwise this aggregation has no real data to read."
+            )
 for f in _npz_paths:
     m = PAT.search(f)
     if not m: continue

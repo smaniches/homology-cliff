@@ -163,6 +163,21 @@ def verify_prereg_hash() -> None:
         )
 
 
+def is_lfs_stub(path) -> bool:
+    """True if `path` is a Git LFS pointer stub rather than its real content.
+
+    LFS-tracked evidence (.npy/.npz and the large data/*.json files) appears as
+    a ~130-byte text stub on a clone that has not run `git lfs pull`. Loading
+    such a stub with numpy/json raises a cryptic error, so the loaders below
+    check for it first and emit a clear, actionable message instead.
+    """
+    try:
+        with open(path, "rb") as fh:
+            return fh.read(64).startswith(b"version https://git-lfs.github.com/spec/v1")
+    except OSError:
+        return False
+
+
 def load_labels() -> tuple[np.ndarray, list[str]]:
     """Return (binary_labels, accessions) from the filtered 25k set.
 
@@ -171,6 +186,11 @@ def load_labels() -> tuple[np.ndarray, list[str]]:
             {"uniprot_acc": str, "name": str, "sequence": str,
              "sequence_length": int, "true_label": 0|1}, ...]}
     """
+    if is_lfs_stub(PROTEINS_JSON):
+        raise SystemExit(
+            f"{PROTEINS_JSON} is a Git LFS pointer stub, not the real dataset. "
+            f"Run `git lfs pull` to fetch the binary evidence, then re-run."
+        )
     with open(PROTEINS_JSON, "r", encoding="utf-8") as f:
         doc = json.load(f)
     entries = doc["test_set"]
@@ -206,6 +226,11 @@ def load_embeddings(scale: str) -> np.ndarray:
             f"No embeddings found for scale {scale}. Tried: {candidates}. "
             f"If the .npy files appear small (<1KB) they are likely Git LFS "
             f"pointer stubs - run `git lfs pull` to fetch the real arrays.")
+    if is_lfs_stub(path):
+        raise SystemExit(
+            f"{path} is a Git LFS pointer stub, not the real embedding array. "
+            f"Run `git lfs pull` to fetch the binary evidence, then re-run."
+        )
     emb = np.load(path).astype(np.float32)
     assert emb.shape[0] == 24885, (
         f"scale {scale}: expected 24885 rows, got {emb.shape[0]} from {path}")

@@ -92,8 +92,8 @@
   "sha256": "22411163ecaa1a2c2b2c248f4dc61b38746bb72dcaf4a0a6bf2c7c97c6b9b514"
  },
  "README.md": {
-  "bytes": 20264,
-  "sha256": "3f0ce8d03053d3456081f61ee922bdc03a13d834316732f2821efa8729d51cb9"
+  "bytes": 20518,
+  "sha256": "665c2c6c13d9c1bb20b3b390040b6e9599c4548ffc98ac6924bf2ee288232d6b"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -140,8 +140,8 @@
   "sha256": "00c9d05d158da2400e909e09a11cd62f5d57c9e8150b6d9701f4058444bdd627"
  },
  "code/analyses/v3_aggregate.py": {
-  "bytes": 5555,
-  "sha256": "66d7ac2b7e3a5a5bdb934b3cb377382f5f645adac61f7f6bae26f96ccbf8774b"
+  "bytes": 6117,
+  "sha256": "d92aa761bb587d01c3ac00a3eac290187ec8ccb855c7933a4358cc88a3da0b17"
  },
  "code/colab_notebook/plm_benchmark.ipynb": {
   "bytes": 5446,
@@ -152,8 +152,8 @@
   "sha256": "8057d578ef9b0ec7fd8863cd6206b6b53ed03d3d3a603ff8ae41bef6f5f7cc7d"
  },
  "code/harnesses/run_cliff.py": {
-  "bytes": 25707,
-  "sha256": "1d6e2fb79a5353fee759b6d9840a719a9a82dca41fe4900577a75dd764a523b0"
+  "bytes": 26755,
+  "sha256": "369cb94145797aaaec177b2e775ebd58abd76e851106cb42f34fc4fa1b6026a9"
  },
  "code/harnesses/run_cliff_fullnull.py": {
   "bytes": 6572,
