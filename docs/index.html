@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Homology Cliff in Frozen Protein Language Models</title>
-<meta name="description" content="A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered results and a deployable rescue.">
+<meta name="description" content="A pre-registered characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval, with 9,360 committed results, a candidate rescue, and explicit limitations.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Homology Cliff in Frozen Protein Language Models">
-<meta property="og:description" content="A five-paper compendium on a systematic failure mode of ESM-2 biosecurity retrieval — 9,360 pre-registered results and a deployable rescue.">
+<meta property="og:description" content="A pre-registered characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval — 9,360 committed results, a candidate rescue, and stated limitations.">
 <meta property="og:image" content="https://raw.githubusercontent.com/smaniches/homology-cliff/main/figures/cliff_summary.png">
 <meta property="og:url" content="https://smaniches.github.io/homology-cliff/">
 <meta name="twitter:card" content="summary_large_image">
@@ -18,7 +18,7 @@
     --good:#2f8f4e; --warn:#b54708;
   }
   *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
   body{
     margin:0; color:var(--ink); background:var(--bg);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -32,7 +32,7 @@
     color:#fff; padding:54px 0 40px;
   }
   header.hero h1{font-size:33px; line-height:1.2; margin:0 0 10px; font-weight:700; letter-spacing:-.3px}
-  header.hero p.lead{font-size:18px; margin:0 0 20px; color:#dce8f2; max-width:680px}
+  header.hero p.lead{font-size:18px; margin:0 0 20px; color:#dce8f2; max-width:700px}
   .meta{font-size:14.5px; color:#cfe0ee; display:flex; flex-wrap:wrap; gap:6px 16px}
   .meta b{color:#fff; font-weight:600}
   .badges{margin-top:18px; display:flex; flex-wrap:wrap; gap:9px}
@@ -41,6 +41,9 @@
     padding:5px 11px; border-radius:6px; font-size:13.5px; font-weight:500;
   }
   .badges a:hover{background:rgba(255,255,255,.24); text-decoration:none}
+  nav.toc{background:var(--soft); border-bottom:1px solid var(--border); font-size:14px}
+  nav.toc .wrap{display:flex; flex-wrap:wrap; gap:4px 20px; padding-top:11px; padding-bottom:11px}
+  nav.toc a{color:var(--muted); font-weight:500}
   section{padding:34px 0; border-bottom:1px solid var(--border)}
   section:last-of-type{border-bottom:none}
   h2{font-size:22px; margin:0 0 14px; letter-spacing:-.2px}
@@ -64,6 +67,10 @@
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
   .card{background:var(--soft); border:1px solid var(--border); border-radius:9px; padding:16px}
   .card h3{margin-top:0}
+  .card.aff{border-left:4px solid var(--good)}
+  .card.lim{border-left:4px solid var(--warn)}
+  .card ul{margin:8px 0 0; padding-left:20px}
+  .card li{margin:6px 0; font-size:15px}
   ul.papers{list-style:none; padding:0; margin:0}
   ul.papers li{padding:11px 0; border-bottom:1px solid var(--border)}
   ul.papers li:last-child{border-bottom:none}
@@ -71,6 +78,8 @@
   ul.papers .pd{font-size:14.5px; color:var(--muted)}
   .note{background:var(--accent-soft); border:1px solid #cfe0ef; border-left:4px solid var(--accent);
         border-radius:7px; padding:14px 16px; font-size:15px}
+  ol.steps{margin:6px 0; padding-left:22px}
+  ol.steps li{margin:9px 0}
   footer{padding:28px 0 40px; color:var(--muted); font-size:14px}
   code.inline{background:var(--soft); border:1px solid var(--border); border-radius:5px; padding:1px 6px;
         font-family:ui-monospace,Menlo,Consolas,monospace; font-size:14px}
@@ -84,7 +93,7 @@
 <header class="hero">
   <div class="wrap">
     <h1>The Homology Cliff in Frozen Protein Language Models</h1>
-    <p class="lead">A five-paper research compendium on a systematic, safety-critical failure mode of ESM-2 biosecurity retrieval — with 9,360 pre-registered experimental results and a deployable rescue.</p>
+    <p class="lead">A pre-registered characterization of a systematic, safety-relevant failure mode in frozen ESM-2 biosecurity retrieval &mdash; with 9,360 committed experimental results, a candidate rescue, and its limitations stated plainly.</p>
     <div class="meta">
       <span><b>Santiago Maniches</b>, Independent Researcher</span>
       <span>ORCID <a href="https://orcid.org/0009-0005-6480-1987" style="color:#fff">0009-0005-6480-1987</a></span>
@@ -96,39 +105,104 @@
       <a href="https://doi.org/10.5281/zenodo.20143143">DOI 10.5281/zenodo.20143143</a>
       <a href="#papers">Five papers</a>
       <a href="#reproduce">Reproduce it</a>
+      <a href="#scope">Scope &amp; limits</a>
     </div>
   </div>
 </header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#problem">Problem</a>
+    <a href="#results">Results</a>
+    <a href="#rigor">How it was established</a>
+    <a href="#scope">What this is &amp; is not</a>
+    <a href="#rescue">The rescue</a>
+    <a href="#reproduce">Reproduce</a>
+    <a href="#papers">Papers</a>
+    <a href="#cite">Cite</a>
+  </div>
+</nav>
 
 <section>
   <div class="wrap">
     <div class="fig">
       <img src="https://raw.githubusercontent.com/smaniches/homology-cliff/main/figures/cliff_summary.png"
-           alt="Four-panel summary: the cliff grows with scale and panel size; the full-pool null gaps cluster at zero while main gaps do not; calibration collapses on the distant stratum; and a learned projection is the only rescue that helps the distant stratum.">
+           alt="Four-panel summary: the cliff grows with model scale and panel size; full-pool null gaps cluster at zero while main gaps do not; calibration collapses on the distant stratum; and a learned projection is the only rescue that helps the distant stratum.">
     </div>
     <p class="cap">The compendium in one figure. <b>(a)</b> The close&minus;distant F<sub>1</sub> gap grows with both ESM-2 scale and panel size. <b>(b)</b> Full-pool permutation-null gaps cluster at zero while main-factorial gaps do not &mdash; the cliff is not a stratification artifact. <b>(c)</b> Expected Calibration Error rises 4.3&times; from close to distant. <b>(d)</b> Of five rescues tested, only a learned panel-only projection improves the distant stratum. Generated by <code class="inline">scripts/build_summary_figure.py</code> from committed evidence.</p>
   </div>
 </section>
 
-<section>
+<section id="problem">
   <div class="wrap">
     <h2>The problem, in one paragraph</h2>
-    <p>You are building a biosecurity screen: a panel of a few hundred to a thousand known toxin proteins, frozen-PLM embeddings, cosine <i>k</i>-nearest-neighbor retrieval, and a vote. Recent literature shows this works well on average. This compendium shows that <b>on the queries that matter most &mdash; those most distant from any panel member, exactly where novel threats live &mdash; the pipeline fails systematically, while still looking confident from the outside.</b> At the largest scale tested, with a panel of 1,000, close-stratum F<sub>1</sub> is 0.866 while distant-stratum F<sub>1</sub> is 0.120. The cliff grows with model scale and panel size. We call this the homology cliff.</p>
+    <p>You are building a biosecurity screen: a panel of a few hundred to a thousand known toxin proteins, frozen protein-language-model embeddings, cosine <i>k</i>-nearest-neighbor retrieval, and a vote. Recent literature shows this performs well on average. This work shows that <b>on the queries that matter most &mdash; those most distant from any panel member, exactly where a novel threat would sit &mdash; the pipeline fails systematically, while still appearing confident from the outside.</b> At the largest scale studied here, with a panel of 1,000, close-stratum F<sub>1</sub> is 0.866 while distant-stratum F<sub>1</sub> is 0.120. Within the studied range, the gap grows with model scale and panel size. We call this the homology cliff.</p>
   </div>
 </section>
 
-<section>
+<section id="results">
   <div class="wrap">
     <h2>Key results</h2>
     <div class="stats">
       <div class="stat"><div class="n bad">+0.745</div><div class="l">close &minus; distant F<sub>1</sub> gap (t30, R=1000, k=25)</div></div>
       <div class="stat"><div class="n bad">3 / 44</div><div class="l">distant high-confidence positive-prediction precision = 0.068</div></div>
       <div class="stat"><div class="n bad">0.069 &rarr; 0.294</div><div class="l">Expected Calibration Error, close &rarr; distant (4.3&times;)</div></div>
-      <div class="stat"><div class="n">20 / 20</div><div class="l">evaluable distant false alarms are cross-family</div></div>
-      <div class="stat"><div class="n good">+47%</div><div class="l">relative distant F<sub>1</sub> from the learned projection rescue</div></div>
+      <div class="stat"><div class="n">20 / 20</div><div class="l">evaluable distant false alarms are cross-family (one seed)</div></div>
+      <div class="stat"><div class="n good">+47%</div><div class="l">relative distant F<sub>1</sub> from the learned-projection rescue</div></div>
       <div class="stat"><div class="n">300 / 300</div><div class="l">full-pool null groups pass the gap-near-zero criterion</div></div>
     </div>
-    <p style="margin-top:16px">Four pre-registered rescues &mdash; Mahalanobis whitening, Fisher-Rao whitening, a stratified metric cascade, and Mapper-biased panel augmentation &mdash; are rejected at their pre-registered hypotheses. One rescue survives: a cheap, panel-only supervised linear projection of the embedding space, fit in seconds of CPU time. The deployment consequence is direct: apply the projection, and even then route every distant-stratum positive to human review.</p>
+    <p style="margin-top:16px">The distant-stratum failure is not merely lower accuracy: the classifier is <b>confidently wrong</b> there. Expected Calibration Error quadruples, and in the highest-confidence distant bin the positive-prediction precision is 3 of 44. A downstream filter that routes high-confidence positives to automated action would route false alarms to automation precisely where human review is most needed.</p>
+  </div>
+</section>
+
+<section id="rigor">
+  <div class="wrap">
+    <h2>How the cliff was established</h2>
+    <p>The central question a careful reader asks is: <i>is this a real effect, or an artifact of how the data was sliced?</i> The study was designed to answer that before it was run.</p>
+    <ul class="card" style="list-style:none; background:var(--soft)">
+      <li><b>Pre-registered factorial.</b> 3,000 cells &mdash; 3 ESM-2 scales (t6/t12/t30) &times; 5 panel sizes &times; 5 values of <i>k</i> &times; 4 metrics &times; 10 seeds &mdash; each with bootstrap confidence intervals, on a 24,885-protein test set.</li>
+      <li><b>A full-pool permutation null.</b> A matching 3,000-cell experiment permutes labels across all 24,885 proteins. With no real signal, the close&minus;distant gap should vanish &mdash; and it does: 300 of 300 groups pass the gap-near-zero criterion (panel b). The cliff is therefore not produced by the stratification itself.</li>
+      <li><b>Label-free stratification.</b> Queries are split by maximum cosine similarity to the panel (close &ge; 0.95, distant &lt; 0.90), independent of their labels.</li>
+      <li><b>A seed-variance gate</b> voids underpowered cells, so reported effects are not driven by small strata.</li>
+      <li><b>SHA256-locked pre-registrations.</b> Each hypothesis and success criterion was committed and hashed before the experiment ran; the harness recomputes the hash at runtime and aborts if it has drifted.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="wrap">
+    <h2>What this is &mdash; and what it is not</h2>
+    <p>Stated plainly, so the claims are not mistaken for more than the evidence supports.</p>
+    <div class="grid2">
+      <div class="card aff">
+        <h3>What it is</h3>
+        <ul>
+          <li>A reproducible characterization of a failure mode in frozen <b>ESM-2 (t6/t12/t30, up to 150M parameters)</b> cosine <i>k</i>-NN biosecurity retrieval.</li>
+          <li>A controlled demonstration that the effect is <b>not a stratification artifact</b> (full-pool permutation null).</li>
+          <li>A <b>candidate rescue</b> and an explicit deployment recommendation.</li>
+          <li>Fully <b>traceable to committed evidence</b> &mdash; 9,360 per-cell results, a SHA256 manifest, pre-registration locks, and CI.</li>
+        </ul>
+      </div>
+      <div class="card lim">
+        <h3>What it is not (yet)</h3>
+        <ul>
+          <li>Not a claim about <b>all</b> protein language models or scales: ESM-2 650M, ProtT5, SaProt, and ESM-3 are scaffolded but <b>not yet run</b> (this study is CPU-only).</li>
+          <li>Not <b>independently replicated</b>: a single-author, AI-assisted compendium; no third-party replication is on file yet.</li>
+          <li>Not a <b>finished product</b>: the rescue ships as a reference implementation, not a packaged tool.</li>
+          <li>The cross-family mechanism is at <b>n=20</b> evaluable cases at one seed (Wilson 95% CI on the within-family rate [0%, 17%]) &mdash; suggestive, not definitive.</li>
+          <li>The dataset's <b>label-curation rule is withheld</b> per dual-use guidance.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">The open items are tracked in the open: see <a href="https://github.com/smaniches/homology-cliff/blob/main/PROBLEMS.md">PROBLEMS.md</a> (self-audited errors and deferrals) and <a href="https://github.com/smaniches/homology-cliff/blob/main/STATUS.md">STATUS.md</a> (current verification state). One scientific item &mdash; a robustness re-run of the Mapper-augmentation attempt under untruncated node membership &mdash; ships with a ready-to-run harness.</p>
+  </div>
+</section>
+
+<section id="rescue">
+  <div class="wrap">
+    <h2>The rescue, and the deployment recommendation</h2>
+    <p>Four rescues were pre-registered and rejected at their stated hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 18 of 18 factorial groups and improves distant-stratum F<sub>1</sub> by about 47% relative at the largest scale studied.</p>
+    <p class="note">The honest operational consequence: apply the projection, and <b>even then route every distant-stratum positive to human review.</b> The rescue narrows the gap; it does not make the distant stratum trustworthy on its own.</p>
   </div>
 </section>
 
@@ -161,7 +235,7 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
 <section id="adopt">
   <div class="wrap">
     <h2>Adopting the rescue</h2>
-    <p>If you operate a frozen-PLM screen, the actionable result is small and self-contained: fit the panel-only linear projection on your own panel (seconds of CPU), apply it before retrieval, and route every distant-stratum positive to human review. A minimal, dependency-light reference implementation and the deployment scope are committed:</p>
+    <p>If you operate a frozen-PLM screen, the actionable result is small and self-contained: fit the panel-only projection on your own panel, apply it before retrieval, and route distant-stratum positives to human review. A minimal, dependency-light reference implementation and the deployment scope are committed:</p>
     <div class="grid2">
       <div class="card"><h3>Reference implementation</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/deployment_example/deploy_cliff_rescue.py">deployment_example/deploy_cliff_rescue.py</a> &mdash; the learned panel-only projection as a drop-in rescue.</p></div>
       <div class="card"><h3>Deployment scope</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/MODEL_CARD.md">MODEL_CARD.md</a> &mdash; where the rescue applies, its limits, and the human-review requirement.</p></div>
@@ -182,24 +256,7 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <h2>Evidence and integrity</h2>
-    <div class="grid2">
-      <div class="card">
-        <h3>Committed, not just claimed</h3>
-        <p style="margin:0">9,360 per-cell results as <code class="inline">.npz</code> files with bootstrap confidence intervals; ESM-2 t6/t12/t30 embeddings; Pfam annotations; aggregated summaries. Every file has a SHA256 entry in the manifest.</p>
-      </div>
-      <div class="card">
-        <h3>Pre-registered before execution</h3>
-        <p style="margin:0">Hypotheses and success criteria were committed and SHA256-locked before the corresponding experiments ran; the harness recomputes the hash at runtime and aborts on drift.</p>
-      </div>
-    </div>
-    <p class="note" style="margin-top:16px"><b>Honest scope.</b> This is a v1.4.7 release with a transparent self-audit (<a href="https://github.com/smaniches/homology-cliff/blob/main/PROBLEMS.md">PROBLEMS.md</a>, <a href="https://github.com/smaniches/homology-cliff/blob/main/STATUS.md">STATUS.md</a>). One open item is documented in full: a robustness re-run of the Mapper-augmentation attempt under untruncated node membership, with a ready-to-run harness. Open limitations are stated, not hidden &mdash; the same pre-registration discipline applies to what remains.</p>
-  </div>
-</section>
-
-<section>
+<section id="cite">
   <div class="wrap">
     <h2>Citation</h2>
 <pre>@software{maniches_homology_cliff_2026,
@@ -210,6 +267,7 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
   doi     = {10.5281/zenodo.20143143},
   url     = {https://github.com/smaniches/homology-cliff}
 }</pre>
+    <p style="margin-top:8px">Archived at Zenodo: <a href="https://doi.org/10.5281/zenodo.20143143">10.5281/zenodo.20143143</a>. Citation metadata: <a href="https://github.com/smaniches/homology-cliff/blob/main/CITATION.cff">CITATION.cff</a>.</p>
   </div>
 </section>
 
