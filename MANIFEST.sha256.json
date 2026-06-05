@@ -192,8 +192,8 @@
   "sha256": "e13274c3a1a72e17beb621c69e1be1d1d1a89ff35485ed2e7f83d38f25a494c6"
  },
  "codemeta.json": {
-  "bytes": 1100,
-  "sha256": "0e152f2eda1c19ba14363b666308ff5f4dae95567a57cfb15f8f21c3939afa02"
+  "bytes": 1167,
+  "sha256": "3af3e52d80978ccb86e090e9509fcbc038a3355bbed9c7df071d986f62253f04"
  },
  "data/annotations/proteins_25k_pfam.json": {
   "bytes": 14117086,
