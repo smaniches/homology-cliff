@@ -4,6 +4,7 @@
   "name": "Homology Cliff Research Compendium",
   "version": "1.4.7",
   "identifier": "https://doi.org/10.5281/zenodo.20143143",
+  "codeRepository": "https://github.com/smaniches/homology-cliff",
   "dateCreated": "2026-04-11",
   "dateModified": "2026-05-12",
   "author": [
