@@ -40,8 +40,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Claim | Learned linear projection achieves pooled F1 of 0.891 at t30 |
 | Papers | Paper 1 abstract, Section 4 |
 | Source artifact | `data/cells/cascade/cascade_t30_1000_25_*.npz` (10 seeds), field `learned_pooled_f1` (the global confusion-matrix F1; the per-stratum `data/cells/main/*` cells do not store a pooled value) |
-| Aggregate artifact | `data/results_summaries/v3_final.txt` |
-| Reproducing command | `python -c "import numpy as np, glob; fs=sorted(glob.glob('data/cells/cascade/cascade_t30_1000_25_*.npz')); vals=[float(np.load(f, allow_pickle=True)['learned_pooled_f1']) for f in fs]; print(f'pooled F1 (10-seed mean): {sum(vals)/len(vals):.4f}')"` |
+| Reproducing command | `python -c "import numpy as np, glob; fs=sorted(glob.glob('data/cells/cascade/cascade_t30_1000_25_*.npz')); assert fs, 'Git LFS files not pulled - run: git lfs pull'; vals=[float(np.load(f, allow_pickle=True)['learned_pooled_f1']) for f in fs]; print(f'pooled F1 (10-seed mean): {sum(vals)/len(vals):.4f}')"` |
 | Expected output | pooled F1 (10-seed mean): 0.8905 |
 | Tolerance | 0.8905 is the 10-seed group mean; individual seeds vary within the stored bootstrap CI |
 | Requires LFS | Yes |
@@ -149,7 +148,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Claim | Learned projection wins pooled F1 in 16 of 18 factorial groups (12/12 at t12 and t30; the two misses are at the smallest t6/8M scale at k=5) |
 | Papers | Paper 1, Section 4; MODEL_CARD.md |
 | Source artifact | `data/cells/cascade/cascade_*.npz` (3 scales x 6 (R,k) pairs x 10 seeds), fields `learned_pooled_f1` and `cosine_pooled_f1` (global confusion-matrix F1; the per-stratum `data/cells/main/*` cells do not store a pooled value) |
-| Reproducing command | `python -c "import numpy as np, glob, collections; g=collections.defaultdict(lambda:[[],[]]); [ (lambda d: (g[(str(d['scale']),int(d['R']),int(d['k']))][0].append(float(d['learned_pooled_f1'])), g[(str(d['scale']),int(d['R']),int(d['k']))][1].append(float(d['cosine_pooled_f1']))))(np.load(f, allow_pickle=True)) for f in glob.glob('data/cells/cascade/cascade_*.npz')]; wins=sum(1 for k in g if np.mean(g[k][0])>np.mean(g[k][1])); print(f'learned wins {wins}/{len(g)} groups')"` |
+| Reproducing command | `python -c "import numpy as np, glob, collections; files=glob.glob('data/cells/cascade/cascade_*.npz'); assert files, 'Git LFS files not pulled - run: git lfs pull'; g=collections.defaultdict(lambda:[[],[]]); [ (lambda d: (g[(str(d['scale']),int(d['R']),int(d['k']))][0].append(float(d['learned_pooled_f1'])), g[(str(d['scale']),int(d['R']),int(d['k']))][1].append(float(d['cosine_pooled_f1']))))(np.load(f, allow_pickle=True)) for f in files]; wins=sum(1 for k in g if np.mean(g[k][0])>np.mean(g[k][1])); print(f'learned wins {wins}/{len(g)} groups')"` |
 | Expected output | learned wins 16/18 groups |
 | Tolerance | "16/18" means: for each of the 18 (scale, R, k) groups, the 10-seed mean of `learned_pooled_f1` exceeds the 10-seed mean of `cosine_pooled_f1`. The two non-winning groups (cosine higher) are t6 R=100 k=5 (0.8200 vs 0.8262) and t6 R=1000 k=5 (0.8773 vs 0.8792). |
 | Requires LFS | Yes |

@@ -37732,8 +37732,8 @@
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
  },
  "docs/CLAIMS_TO_EVIDENCE.md": {
-  "bytes": 12337,
-  "sha256": "fb4159d240d29cb97d3e18a7f7589d102c6107356d76ee3caaf873eb4308c82e"
+  "bytes": 12408,
+  "sha256": "2b6ca4d515c6b5a22f93966ad9844344504a2764c2cb2d6a7b7bbfecf91b0a3e"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 5000,
@@ -37776,8 +37776,8 @@
   "sha256": "eb2f65ebf59410cd8192d7ce4fdb43fd9a13ee3c09739f3e2f0edfe1570d1187"
  },
  "papers/02_three_failed_rescues/_source_cascade.tex": {
-  "bytes": 5307,
-  "sha256": "53d1c809cb3648edf6df52f43a0f543436a68c63e4a50390720ade48caaeeaf0"
+  "bytes": 5367,
+  "sha256": "345a917385d0b9835e631dcde993f0d3d1cfc8a7971fdf7fbb7c521aa95418b1"
  },
  "papers/02_three_failed_rescues/_source_fisher.tex": {
   "bytes": 5733,
