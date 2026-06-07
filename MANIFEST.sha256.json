@@ -37743,6 +37743,14 @@
   "bytes": 19836,
   "sha256": "02838f53b56c46f72d0bd5f448b4943b8a97a1f142b30cfe70ec68de40f60536"
  },
+ "docs/robots.txt": {
+  "bytes": 88,
+  "sha256": "c3b8a3f7da6e3f05acbca74f63b7e29acb888759ac1b783a2124d1653246c22c"
+ },
+ "docs/sitemap.xml": {
+  "bytes": 220,
+  "sha256": "ebe839db9bb28795e236c682a014857f92105e7a2f07df71b2cccd4de903d384"
+ },
  "figures/cliff_summary.png": {
   "bytes": 233394,
   "sha256": "42de619054a2669c37a40e1bf0858e612006037146db23b6e7ad42f1016e992d"
