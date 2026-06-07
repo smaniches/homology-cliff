@@ -39,11 +39,10 @@ All paths are repo-relative. All commands assume a fresh clone with
 |---|---|
 | Claim | Learned linear projection achieves pooled F1 of 0.891 at t30 |
 | Papers | Paper 1 abstract, Section 4 |
-| Source artifact | `data/cells/main/cell_t30_1000_25_learned_*.npz` (10 seeds) |
-| Aggregate artifact | `data/results_summaries/v3_final.txt` (MAIN gap table, row t30/1000/25/learned) |
-| Reproducing command | `python -c "import numpy as np; d=np.load('data/cells/main/cell_t30_1000_25_learned_20260410.npz', allow_pickle=True); c=d['close'].item(); m=d['moderate'].item(); di=d['distant'].item(); total_n=c['n']+m['n']+di['n']; pooled=(c['f1']*c['n']+m['f1']*m['n']+di['f1']*di['n'])/total_n; print(f'pooled F1: {pooled:.3f}')"` |
-| Expected output | Pooled F1 approximately 0.891 |
-| Tolerance | Varies by seed within bootstrap CI |
+| Source artifact | `data/cells/cascade/cascade_t30_1000_25_*.npz` (10 seeds), field `learned_pooled_f1` (the global confusion-matrix F1; the per-stratum `data/cells/main/*` cells do not store a pooled value) |
+| Reproducing command | `python -c "import numpy as np, glob; fs=sorted(glob.glob('data/cells/cascade/cascade_t30_1000_25_*.npz')); assert fs, 'Git LFS files not pulled - run: git lfs pull'; vals=[float(np.load(f, allow_pickle=True)['learned_pooled_f1']) for f in fs]; print(f'pooled F1 (10-seed mean): {sum(vals)/len(vals):.4f}')"` |
+| Expected output | pooled F1 (10-seed mean): 0.8905 |
+| Tolerance | 0.8905 is the 10-seed group mean; individual seeds vary within the stored bootstrap CI |
 | Requires LFS | Yes |
 
 ### 3. distant_precision_t30_cosine = 0.068
@@ -146,21 +145,24 @@ All paths are repo-relative. All commands assume a fresh clone with
 
 | Field | Value |
 |---|---|
-| Claim | Learned projection wins pooled F1 in 18 of 18 factorial groups |
+| Claim | Learned projection wins pooled F1 in 16 of 18 factorial groups (12/12 at t12 and t30; the two misses are at the smallest t6/8M scale at k=5) |
 | Papers | Paper 1, Section 4; MODEL_CARD.md |
-| Source artifact | `data/cells/main/cell_*_learned_*.npz` (across 3 scales x 6 (R,k) pairs) |
-| Reproducing command | `python code/analyses/v3_aggregate.py 2>/dev/null \| grep learned` (learned rows in MAIN gap table) |
-| Tolerance | "18/18" means: for each of the 18 (scale, R, k) groups where both cosine and learned were run, the 10-seed mean pooled F1 of learned exceeds cosine |
+| Source artifact | `data/cells/cascade/cascade_*.npz` (3 scales x 6 (R,k) pairs x 10 seeds), fields `learned_pooled_f1` and `cosine_pooled_f1` (global confusion-matrix F1; the per-stratum `data/cells/main/*` cells do not store a pooled value) |
+| Reproducing command | `python -c "import numpy as np, glob, collections; files=glob.glob('data/cells/cascade/cascade_*.npz'); assert files, 'Git LFS files not pulled - run: git lfs pull'; g=collections.defaultdict(lambda:[[],[]]); [ (lambda d: (g[(str(d['scale']),int(d['R']),int(d['k']))][0].append(float(d['learned_pooled_f1'])), g[(str(d['scale']),int(d['R']),int(d['k']))][1].append(float(d['cosine_pooled_f1']))))(np.load(f, allow_pickle=True)) for f in files]; wins=sum(1 for k in g if np.mean(g[k][0])>np.mean(g[k][1])); print(f'learned wins {wins}/{len(g)} groups')"` |
+| Expected output | learned wins 16/18 groups |
+| Tolerance | "16/18" means: for each of the 18 (scale, R, k) groups, the 10-seed mean of `learned_pooled_f1` exceeds the 10-seed mean of `cosine_pooled_f1`. The two non-winning groups (cosine higher) are t6 R=100 k=5 (0.8200 vs 0.8262) and t6 R=1000 k=5 (0.8773 vs 0.8792). |
 | Requires LFS | Yes |
 
-### 12. Distant F1 relative improvement approximately 47-48%
+### 12. Distant F1 relative improvement 47% at t30
 
 | Field | Value |
 |---|---|
-| Claim | Learned projection improves distant-stratum F1 by approximately 47-48% relative at t30 |
-| Papers | Paper 1 abstract; README body (48%); figure caption (~47%); MODEL_CARD.md (+48%) |
-| Computation | (0.177 - 0.120) / 0.120 = 0.475, i.e., 47.5% relative improvement |
-| Note | README body text says "48%", figure caption says "~47%", MODEL_CARD says "+48%". The precise value is 47.5%; all three are within rounding. |
+| Claim | Learned projection improves distant-stratum F1 by 47% relative at t30 R=1000 k=25 |
+| Papers | Paper 1 abstract, Section 4, figure caption; README body; MODEL_CARD.md; docs/index.html |
+| Source artifact | `data/cells/cascade/cascade_t30_1000_25_*.npz`, fields `learned_dist_f1` and `cosine_dist_f1` |
+| Reproducing command | `python -c "import numpy as np, glob; fs=sorted(glob.glob('data/cells/cascade/cascade_t30_1000_25_*.npz')); L=np.mean([float(np.load(f, allow_pickle=True)['learned_dist_f1']) for f in fs]); C=np.mean([float(np.load(f, allow_pickle=True)['cosine_dist_f1']) for f in fs]); print(f'learned={L:.4f} cosine={C:.4f} relative=+{100*(L-C)/C:.1f}%')"` |
+| Computation | Full-precision 10-seed means: learned distant F1 = 0.1770, cosine distant F1 = 0.1203; (0.1770 - 0.1203) / 0.1203 = 0.471, i.e. 47.1% relative, reported as 47%. |
+| Note | The rounded table values (0.177, 0.120) give 47.5%; the full-precision committed value is 47.1%. All artifacts state 47%. |
 
 ---
 

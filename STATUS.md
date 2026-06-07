@@ -12,7 +12,7 @@ Current state of the homology-cliff research compendium.
 
 | Check | Workflow | What it verifies |
 |---|---|---|
-| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,475 entries total; LFS pointer stubs skipped) |
+| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,479 entries total; LFS pointer stubs skipped) |
 | Pre-registration locks | `manifest.yml` | 2 SHA256-locked pre-reg files are byte-identical to their locked state |
 | Cell filename inventory | `tests.yml` | 9,360 .npz filenames present (3000 main + 3000 negctrl + 3000 fullnull + 180 cascade + 180 fisher) |
 | Smoke imports | `smoke.yml` | All harnesses and analysis scripts import without error on a fresh clone |

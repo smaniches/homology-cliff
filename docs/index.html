@@ -201,7 +201,7 @@
 <section id="rescue">
   <div class="wrap">
     <h2>The rescue, and the deployment recommendation</h2>
-    <p>Four rescues were pre-registered and rejected at their stated hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 18 of 18 factorial groups and improves distant-stratum F<sub>1</sub> by about 47% relative at the largest scale studied.</p>
+    <p>Four rescues were pre-registered and rejected at their stated hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at <i>k</i>=5) and improves distant-stratum F<sub>1</sub> by about 47% relative at the largest scale studied.</p>
     <p class="note">The honest operational consequence: apply the projection, and <b>even then route every distant-stratum positive to human review.</b> The rescue narrows the gap; it does not make the distant stratum trustworthy on its own.</p>
   </div>
 </section>
@@ -228,7 +228,7 @@ python -c "import json; d=json.load(open('data/results_summaries/cross_family_pa
 <pre>git lfs pull                              <span class="c"># ~188 MB of binary evidence</span>
 pytest tests/ -v                          <span class="c"># schema + invariant checks</span>
 python code/analyses/v3_aggregate.py      <span class="c"># regenerates the headline table</span></pre>
-    <p class="note">Integrity is machine-checked on every push: a SHA256 manifest over 9,475 files, two byte-locked pre-registration hashes, and headline-number spot-checks all run in CI. See <a href="https://github.com/smaniches/homology-cliff/blob/main/REVIEWER.md">REVIEWER.md</a> for the full five-command verification.</p>
+    <p class="note">Integrity is machine-checked on every push: a SHA256 manifest over 9,479 files, two byte-locked pre-registration hashes, and headline-number spot-checks all run in CI. See <a href="https://github.com/smaniches/homology-cliff/blob/main/REVIEWER.md">REVIEWER.md</a> for the full five-command verification.</p>
   </div>
 </section>
 
@@ -247,7 +247,7 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
   <div class="wrap">
     <h2>The five papers</h2>
     <ul class="papers">
-      <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/01_homology_cliff_and_rescue/paper.pdf">1 &middot; Homology Cliff and Its Rescue</a></span><div class="pd">Cliff confirmed (+0.745 gap at t30); full-pool null passes 300/300; rescue via learned projection wins 18/18.</div></li>
+      <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/01_homology_cliff_and_rescue/paper.pdf">1 &middot; Homology Cliff and Its Rescue</a></span><div class="pd">Cliff confirmed (+0.745 gap at t30); full-pool null passes 300/300; rescue via learned projection wins 16/18 (12/12 at t12 and t30).</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/02_three_failed_rescues/paper.pdf">2 &middot; Four Failed Rescue Attempts</a></span><div class="pd">Mahalanobis, Fisher-Rao, cascade, Mapper-augmentation &mdash; each rejected at its pre-registered hypothesis.</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/03_calibration_collapse/paper.pdf">3 &middot; Calibration Collapse</a></span><div class="pd">ECE 0.069 &rarr; 0.294 close&rarr;distant; 0 of 3 highest-confidence distant predictions correct.</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/04_methods_and_preregistrations/paper.pdf">4 &middot; Methods and Pre-Registrations</a></span><div class="pd">The 9,360-cell factorial template, the seed-variance gate, and the SHA256 pre-registration pattern.</div></li>

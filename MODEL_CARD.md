@@ -22,9 +22,9 @@ A linear projection $W \in \mathbb{R}^{D \times 128}$ fit in 50 Adam iterations 
 - Re-fit per panel (each panel is a new Adam run)
 
 ## Performance
-- 18 of 18 factorial (scale, $R$, $k$) groups: learned projection wins pooled $F_1$
-- At t30 $R=1000$ $k=25$: pooled $F_1$ 0.891 (best in 3000-cell factorial)
-- Distant-stratum $F_1$: t6 +16%, t12 +33%, t30 +48% relative over cosine baseline
+- 16 of 18 factorial (scale, $R$, $k$) groups: learned projection wins pooled $F_1$ (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at $k=5$)
+- At t30 $R=1000$ $k=25$: pooled $F_1$ 0.891 (best in 3000-cell factorial; learned 0.8905 vs cosine 0.8476, 10/10 seeds)
+- Distant-stratum $F_1$: t6 +16%, t12 +33%, t30 +47% relative over cosine baseline
 
 ## Out-of-scope uses
 - NOT a calibrated classifier — calibration under the projection was NOT measured in this work
@@ -49,4 +49,5 @@ A linear projection $W \in \mathbb{R}^{D \times 128}$ fit in 50 Adam iterations 
 
 ## Files
 - Harness code: `code/harnesses/run_cliff.py` (triplet-surrogate implementation)
-- Per-cell results: `data/cells/main/cell_*_learned_*.npz`
+- Per-stratum results: `data/cells/main/cell_*_learned_*.npz` (close/moderate/distant $F_1$ with bootstrap CI)
+- Pooled $F_1$ results: `data/cells/cascade/cascade_*.npz` (`learned_pooled_f1` field, the global confusion-matrix $F_1$ behind the 0.891 headline)

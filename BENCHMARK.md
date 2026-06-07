@@ -31,7 +31,7 @@ A public benchmark for frozen protein language model retrieval on biosecurity-re
 
 | rank | method | distant F1 ↑ | pooled F1 ↑ | wins factorial | submitter |
 |------|--------|--------------|-------------|----------------|-----------|
-| 1 | **Learned linear projection (panel-only triplet-surrogate)** | **0.177** | **0.891** | **18 / 18** | Maniches 2026 |
+| 1 | **Learned linear projection (panel-only triplet-surrogate)** | **0.177** | **0.891** | **16 / 18** | Maniches 2026 |
 | 2 | Cosine baseline | 0.120 | 0.848 | — | Maniches 2026 |
 | 3 | Fisher-Rao whitening | 0.094 | 0.461 | 0 / 18 | Maniches 2026 (rejected) |
 | 4 | Mahalanobis Ledoit-Wolf | 0.087 | 0.435 | 0 / 18 | Maniches 2026 (rejected) |
