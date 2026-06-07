@@ -72,8 +72,8 @@
   "sha256": "6c4b196edc5f2b6058dfdcf120d15e60f9b239e4a09fa993acc2a96a7936c0c5"
  },
  "FAQ.md": {
-  "bytes": 8908,
-  "sha256": "47723f538268b80cf7d0cdb3566f022ec3714ae202229a16ba67f80a37e3c80c"
+  "bytes": 9224,
+  "sha256": "cfffcaa29507e62d9aa632fb600701ca722b3040e4f62b20ab2de04a89cb8f79"
  },
  "LICENSE-code.txt": {
   "bytes": 1119,
@@ -37760,8 +37760,8 @@
   "sha256": "3974c82fe1e00dcfc09ae454b48659b5fe10484403f62eca5de9c41a3222f059"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 17992,
-  "sha256": "34e6d9581eac3665b648bd641e8557a3137e45d941c955c0306bd04607ccfb7f"
+  "bytes": 18064,
+  "sha256": "dd1cad27730379856b54e276e685aefac634a2e4ec2ff363278133a22c549f12"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
