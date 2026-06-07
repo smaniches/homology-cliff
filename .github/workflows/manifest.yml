@@ -1,6 +1,6 @@
 name: manifest-verify
 # Verifies MANIFEST.sha256.json against disk content for every real
-# (non-LFS-stub) tracked file, AND verifies the four pre-registration
+# (non-LFS-stub) tracked file, AND verifies the two pre-registration
 # SHA256 locks claimed in paper abstracts. Both checks are implemented
 # as standalone scripts in scripts/ci/ so they are runnable locally
 # with the exact same logic CI uses.

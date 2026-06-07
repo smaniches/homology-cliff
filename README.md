@@ -88,7 +88,7 @@ ls papers/*/paper.pdf                     # the five papers
 | `data/prereg/PRE_REGISTRATION_STRATIFIED_CASCADE_v1.md` | — | Cascade H1 and rejection threshold |
 | `data/prereg/PRE_REGISTRATION_FISHER_CLIFF_v1.md` | — | Fisher-Rao H1 and rejection threshold |
 
-All four pre-registrations were locked on disk, SHA256-computed, and committed **before** the corresponding experiment was run. The harness code verifies the pre-reg hash at runtime and aborts if it drifts.
+All four pre-registrations were committed **before** the corresponding experiment was run. Two of them (`PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md` and `PRE_REGISTRATION_HOMOLOGY_CLIFF_ADDENDUM_FULLNULL.md`) are SHA256-locked and re-verified in CI (`scripts/ci/verify_prereg_locks.py` recomputes both hashes and fails on drift). The main cliff pre-registration is additionally enforced at runtime: both `run_cliff.py` and `run_cliff_fullnull.py` call `verify_prereg_hash()`, which recomputes the `HOMOLOGY_CLIFF_v1` hash and aborts before any experiment runs if it drifts. The cascade and Fisher-Rao pre-registrations are committed without a hash check.
 
 ## Honest limitations
 

@@ -44,4 +44,4 @@
 
 ## Honest epistemic statement
 
-This compendium has six pre-registered experiments, four SHA256-locked pre-registrations, 9,360 per-cell bootstrap-CI results, five compiled papers, and one decisively-confirmed main claim (the cliff is real, is not a stratification artifact, and is rescuable by a 5-second supervised projection). It also has five null results properly owned, three factual corrections to early session prose, and documented deferrals. It is not perfect. It is, I believe, honest.
+This compendium has six pre-registered experiments, four committed pre-registrations (two SHA256-locked and verified by the harness at runtime and by CI; cascade and Fisher committed without a runtime hash check), 9,360 per-cell bootstrap-CI results, five compiled papers, and one decisively-confirmed main claim (the cliff is real, is not a stratification artifact, and is rescuable by a 5-second supervised projection). It also has five null results properly owned, three factual corrections to early session prose, and documented deferrals. It is not perfect. It is, I believe, honest.

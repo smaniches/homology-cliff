@@ -148,7 +148,7 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 - Five compiled papers at v1.0 baseline
 - 9,360 per-cell bootstrap-CI `.npz` results across main/negctrl/fullnull/cascade/fisher experiments
 - 3 ESM-2 embedding arrays (t6/t12/t30) via Git LFS
-- 4 SHA256-locked pre-registrations
+- 4 pre-registrations committed (2 SHA256-locked and harness/CI-verified; cascade and Fisher committed without a runtime hash check)
 - `MANIFEST.sha256.json` covering 9,445 files
 - Production infrastructure: pyproject.toml, CITATION.cff, codemeta.json, pytest harness, GitHub Actions CI, LICENSE (CC-BY-4.0 papers / MIT code)
 - `PROBLEMS.md` with self-audited error log
