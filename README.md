@@ -28,7 +28,7 @@ You are building a biosecurity screen. You have a panel of a few hundred to a th
 
 This is a safety-critical failure mode hiding behind a healthy-looking pooled metric. A lab reporting their retrieval system achieves, say, 0.85 overall $F_1$ has not told the full story: they may have 0.88 on the 89% of their test queries that look similar to panel members, and 0.12 on the remaining 11% that do not. In a deployment screen, the distant queries are the ones where a novel bioweapon might hide. Worse, the classifier is **confidently wrong** on the distant stratum: Expected Calibration Error quadruples from 0.069 to 0.294, and in the highest-confidence bin on the distant stratum there are 3 predictions and 0 are correct. A downstream filter that routes high-confidence positives to automated action will be routing false alarms to automation precisely where human review is most needed.
 
-We characterize the cliff across a 3,000-cell pre-registered factorial, show it is not a stratification artifact via a 3,000-cell full-pool permutation null, and find by Pfam partition that all 20 evaluable distant false alarms in our seed are cross-family (Wilson 95% CI on the within-family rate $[0\%, 17\%]$, substantially weakening the "just add more panel homologs" hypothesis as the dominant mechanism in this regime). We pre-register and reject four rescue hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified metric cascade, and topologically-biased panel augmentation. One rescue survives all tests: a cheap supervised linear projection of the embedding space, fit only on the panel in under five seconds of CPU time, which wins pooled $F_1$ in 18 of 18 factorial groups and improves distant-stratum $F_1$ by 48% relative at the largest scale. The deployment consequence is direct: **apply the projection, and even then, route every distant-stratum positive hit to human review**.
+We characterize the cliff across a 3,000-cell pre-registered factorial, show it is not a stratification artifact via a 3,000-cell full-pool permutation null, and find by Pfam partition that all 20 evaluable distant false alarms in our seed are cross-family (Wilson 95% CI on the within-family rate $[0\%, 17\%]$, substantially weakening the "just add more panel homologs" hypothesis as the dominant mechanism in this regime). We pre-register and reject four rescue hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified metric cascade, and topologically-biased panel augmentation. One rescue survives all tests: a cheap supervised linear projection of the embedding space, fit only on the panel in under five seconds of CPU time, which wins pooled $F_1$ in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at $k=5$) and improves distant-stratum $F_1$ by 47% relative at the largest scale. The deployment consequence is direct: **apply the projection, and even then, route every distant-stratum positive hit to human review**.
 
 ## Who this repository is for
 
@@ -42,7 +42,7 @@ We characterize the cliff across a 3,000-cell pre-registered factorial, show it 
 
 | # | Title | Primary claim | PDF |
 |---|---|---|---|
-| 1 | **Homology Cliff and Its Rescue** | Cliff confirmed (+0.745 gap at t30), full-null passes 300/300, rescue via learned projection wins 18/18 | `papers/01_homology_cliff_and_rescue/paper.pdf` |
+| 1 | **Homology Cliff and Its Rescue** | Cliff confirmed (+0.745 gap at t30), full-null passes 300/300, rescue via learned projection wins 16/18 (12/12 at t12 and t30; headline 0.8905 vs 0.8476 at t30/1000/25, 10/10 seeds) | `papers/01_homology_cliff_and_rescue/paper.pdf` |
 | 2 | **Four Failed Rescue Attempts** | Mahalanobis, Fisher-Rao, cascade, Mapper-augmentation — all pre-registered H1 rejected | `papers/02_three_failed_rescues/paper.pdf` |
 | 3 | **Calibration Collapse** | ECE 0.069 → 0.294 close→distant; 0 of 3 highest-confidence distant predictions correct | `papers/03_calibration_collapse/paper.pdf` |
 | 4 | **Methods and Pre-Registrations** | 9,360-cell factorial template, seed-variance gate, SHA256 pre-registration pattern | `papers/04_methods_and_preregistrations/paper.pdf` |
@@ -77,7 +77,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,475 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,479 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 

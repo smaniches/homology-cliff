@@ -40,8 +40,8 @@
   "sha256": "ebc8d12439c79bddd1a7ffb0e90896988562ec287f93a48047850e1316d8a73d"
  },
  ".zenodo.json": {
-  "bytes": 1495,
-  "sha256": "ee7825a8d367dac7b0a6cf65d19ff2cc7e17ac19524b3c614442fd6fd30d9a3d"
+  "bytes": 1803,
+  "sha256": "4bb4b79000299ac5268340259276baa6b5c8d414a45fe90fccdbeea66d2b3a44"
  },
  "ACKNOWLEDGMENTS.md": {
   "bytes": 2585,
@@ -49,7 +49,7 @@
  },
  "BENCHMARK.md": {
   "bytes": 4452,
-  "sha256": "221cae4b1f1a69d6bf012779853fabc86053c894cf381875f909f896050a025d"
+  "sha256": "60d5a0378df118a931fc2f6859b79afcdff7abe53a5e7efd90c0b8468823cf8a"
  },
  "CHANGELOG.md": {
   "bytes": 15198,
@@ -84,16 +84,16 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "MODEL_CARD.md": {
-  "bytes": 3048,
-  "sha256": "d763b75f1e9224ba4dab02e17c4da8ab00f9e80a4076edfd123d8699586f7b4b"
+  "bytes": 3377,
+  "sha256": "0e9bc2a062aa1267792c778f4dbcec422e0e7e2c4ee6cbf6829b4a190acbc70d"
  },
  "PROBLEMS.md": {
-  "bytes": 7756,
-  "sha256": "22411163ecaa1a2c2b2c248f4dc61b38746bb72dcaf4a0a6bf2c7c97c6b9b514"
+  "bytes": 7787,
+  "sha256": "29f4c9798c1304df8043edc8c0b92722d3ee77091f9a02da35a14d4bc3f089f6"
  },
  "README.md": {
-  "bytes": 20518,
-  "sha256": "665c2c6c13d9c1bb20b3b390040b6e9599c4548ffc98ac6924bf2ee288232d6b"
+  "bytes": 20679,
+  "sha256": "c886d43489a9874b467917a010dab45f590d88d26b9e0768798cb0eb7dd02ec0"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -101,7 +101,7 @@
  },
  "REVIEWER.md": {
   "bytes": 4299,
-  "sha256": "41ad0c339a5b8ef83c34cbb1ecde4862ec96e0f9205fc9ad47c5469be2dd4306"
+  "sha256": "029e0510be897fce939bd5e309d396f9428472e935a97fd9d9de5536383651ec"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -109,7 +109,7 @@
  },
  "STATUS.md": {
   "bytes": 5019,
-  "sha256": "0ba1ff8eef76b9a35588dcd488c82af576fb20e80ef3c1a9c69148084a8fd536"
+  "sha256": "52c73939910d3896e4f3def08c82116e4adedbb37a270f0f1db6434d0ffe2867"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37732,16 +37732,16 @@
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
  },
  "docs/CLAIMS_TO_EVIDENCE.md": {
-  "bytes": 10941,
-  "sha256": "4cd70d6cbdacba14eff8a8a801a02e4ba697f202b63dbead7a5b861b7ba11896"
+  "bytes": 12337,
+  "sha256": "fb4159d240d29cb97d3e18a7f7589d102c6107356d76ee3caaf873eb4308c82e"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 5000,
   "sha256": "54bcc2b5fb22c381be67ff230a43fecdec9cccb567d4db1b08759f8a049756b2"
  },
  "docs/index.html": {
-  "bytes": 19836,
-  "sha256": "02838f53b56c46f72d0bd5f448b4943b8a97a1f142b30cfe70ec68de40f60536"
+  "bytes": 19947,
+  "sha256": "76ed4a7f3a7b809bb4449c7cd542bc6621c7a7c328b85e1f3bdface5db6a7ef9"
  },
  "docs/robots.txt": {
   "bytes": 88,
@@ -37760,8 +37760,8 @@
   "sha256": "3974c82fe1e00dcfc09ae454b48659b5fe10484403f62eca5de9c41a3222f059"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 17776,
-  "sha256": "4d404b4a8cf91c109f425ce066f79ae554d7e846d0ada641b3034421a3888fe7"
+  "bytes": 17992,
+  "sha256": "34e6d9581eac3665b648bd641e8557a3137e45d941c955c0306bd04607ccfb7f"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
@@ -37776,16 +37776,16 @@
   "sha256": "eb2f65ebf59410cd8192d7ce4fdb43fd9a13ee3c09739f3e2f0edfe1570d1187"
  },
  "papers/02_three_failed_rescues/_source_cascade.tex": {
-  "bytes": 5169,
-  "sha256": "6a78448b10685849e7a793be40ed0866f32de9306a260bfe369401584c0fdcd8"
+  "bytes": 5307,
+  "sha256": "53d1c809cb3648edf6df52f43a0f543436a68c63e4a50390720ade48caaeeaf0"
  },
  "papers/02_three_failed_rescues/_source_fisher.tex": {
   "bytes": 5733,
   "sha256": "2c43c74705b853aa58dd8828dcf187a165ca0c43da9c1c88d3c6a227c54f3249"
  },
  "papers/02_three_failed_rescues/_source_mapper_aug.tex": {
-  "bytes": 4634,
-  "sha256": "d7a289389ebf6761f39f764053b7b482d94738a7ee27ae05d24d8bbda8454000"
+  "bytes": 4714,
+  "sha256": "3d1f993931f3f679419df0e23007ea4a2929d123066426d0c7ed43e66a4e5a94"
  },
  "papers/02_three_failed_rescues/paper.pdf": {
   "bytes": 187139,
@@ -37853,7 +37853,7 @@
  },
  "papers/05_cross_family_and_mapper/paper.tex": {
   "bytes": 8300,
-  "sha256": "a9c10270f4c769f403e078f7495cf14031134027f476705532fd705e7c5978b0"
+  "sha256": "015f93976d5ab83c94d1c28b1549a2cedd4be45c8b57e7f95823c7d4ce5ca846"
  },
  "papers/05_cross_family_and_mapper/references.bib": {
   "bytes": 7390,
