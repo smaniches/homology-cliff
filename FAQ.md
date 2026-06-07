@@ -53,7 +53,7 @@ Not yet externally. The `REFEREES.md` document logs the self-adversarial review 
 Approximately 28 hours wall-time on a 36 GB i7 workstation with FAISS CPU. Main factorial (3000 cells) alone takes ~6 hours. Full-null (3000 cells) takes ~5 hours. Panel-shuffle null takes ~5 hours. Cascade and Fisher 180-cell factorials take ~2 hours each. Analyses and aggregation take minutes.
 
 **Q15. Can I reproduce a single cell quickly?**
-Yes. Pick any cell from `data/cells/main/`, note its filename (encodes scale, R, k, metric, seed). Run `python code/harnesses/run_cliff.py --scale <scale> --R <R> --k <k> --metric <metric> --seed <seed>`. Expected time: 20-40 seconds. The output .npz should have a SHA256 matching `MANIFEST.sha256.json`.
+The harness regenerates one *scale* at a time, not an individual cell: `python code/harnesses/run_cliff.py --scale t6 --dry-run` previews the smallest-scale (8M) cells and `python code/harnesses/run_cliff.py --scale t6` recomputes them. (The CLI takes `--scale` only — it iterates R, k, metric, and seed internally; there are no `--R/--k/--metric/--seed` flags.) To re-run or verify one specific (scale, R, k, metric, seed) cell, follow `reproducibility/PROTOCOL.md`; every committed cell carries a SHA-256 in `MANIFEST.sha256.json`, so you can confirm a cell without recomputing.
 
 **Q16. I get different numbers when I re-run. What's wrong?**
 Check: (a) are you using the committed embeddings? They are LFS-tracked; `git lfs pull` is required. (b) Are you L2-normalizing? The pipeline assumes normalized embeddings. (c) Are you using `numpy.random.default_rng(seed)`? Older `numpy.random.RandomState` gives different streams. (d) Are you on Python 3.11+ with numpy ≥1.26? Earlier versions have different bit-exact arithmetic in edge cases.
