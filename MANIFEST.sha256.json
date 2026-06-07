@@ -24,8 +24,8 @@
   "sha256": "d5b46ed2420a2d38465c1456dfb83a8ebc5610aced483f64750e6dffe903b001"
  },
  ".github/workflows/manifest.yml": {
-  "bytes": 793,
-  "sha256": "d2487154785b0bef73f9d6529965d29bc797e4f6c019855ae2a9cc89180dcdef"
+  "bytes": 792,
+  "sha256": "b128de7656e4e7647bbd69c5c7b2ba2835bfd9c07a9e76d55b928e5fa3e6cdc4"
  },
  ".github/workflows/smoke.yml": {
   "bytes": 1013,
@@ -52,8 +52,8 @@
   "sha256": "60d5a0378df118a931fc2f6859b79afcdff7abe53a5e7efd90c0b8468823cf8a"
  },
  "CHANGELOG.md": {
-  "bytes": 15198,
-  "sha256": "139ce34ede245fa8ec41fc130330d879b674d79be1557c7ad45d6ad23cfb86a0"
+  "bytes": 15295,
+  "sha256": "2a305c8baeefec44d059e834aae8ee52a54df1968c328d96233e649d75c3467a"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -88,12 +88,12 @@
   "sha256": "0e9bc2a062aa1267792c778f4dbcec422e0e7e2c4ee6cbf6829b4a190acbc70d"
  },
  "PROBLEMS.md": {
-  "bytes": 7787,
-  "sha256": "29f4c9798c1304df8043edc8c0b92722d3ee77091f9a02da35a14d4bc3f089f6"
+  "bytes": 7911,
+  "sha256": "ea726e2d874c21051f10ea37c1248cb8855a504ba4e30fc72c4cf700de489344"
  },
  "README.md": {
-  "bytes": 20679,
-  "sha256": "c886d43489a9874b467917a010dab45f590d88d26b9e0768798cb0eb7dd02ec0"
+  "bytes": 21122,
+  "sha256": "298496d9124e3805a2320821a3eed144313fe025e056f39e2364f63f96b769f5"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -37720,12 +37720,12 @@
   "sha256": "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc"
  },
  "deployment_example/README.md": {
-  "bytes": 1810,
-  "sha256": "25aaf2b60541b2e8246a210c5f9ce2ce881e2c1fecfa8064093906980c437a63"
+  "bytes": 2593,
+  "sha256": "f41e9944e75fdbf7ccddeb8d96da11f331795011d3e7766193cc7fbd61374bc1"
  },
  "deployment_example/deploy_cliff_rescue.py": {
-  "bytes": 3560,
-  "sha256": "c2cac853318d32def494dfe548c05af684b1bb9978bbf26764d372cac534f6cc"
+  "bytes": 4401,
+  "sha256": "8e7caefb427b3ab5e81d461319d59287e0c39295e5292b2808119514a7ffc365"
  },
  "docs/.nojekyll": {
   "bytes": 0,

@@ -1,6 +1,18 @@
 """Minimal deployment example: learned panel-only triplet-surrogate projection
 as cliff rescue for frozen PLM biosecurity retrieval.
 
+Illustrative deployment scaffold, not the validated estimator. It demonstrates
+the deployment pipeline end-to-end (fit a panel-only projection -> retrieve
+k-NN -> stratify by s_max -> route distant-stratum positives to human review).
+The surrogate objective and 50-iteration schedule match the validated estimator
+(`code/harnesses/run_cliff.py:knn_learned`), but this example uses
+`lr=0.01` and an orthogonal initialization rather than the validated `lr=1e-3`
+and default Linear initialization. It therefore does NOT reproduce the paper's
+reported metrics (pooled F1 win in 16 of 18 factorial groups, +47% relative distant
+F1 at t30); the `__main__` block runs on random data to show data flow only. To
+reproduce the validated numbers, run `code/harnesses/run_cascade.py` (which
+computes the learned-metric pooled F1 across the factorial).
+
 Author: Santiago Maniches (ORCID 0009-0005-6480-1987), TOPOLOGICA LLC.
 License: MIT.
 """

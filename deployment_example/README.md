@@ -1,6 +1,8 @@
 # Deployment Example
 
-Minimal self-contained example for applying the Homology Cliff rescue (Paper 1) in production.
+Minimal self-contained example showing how to wire the Homology Cliff rescue (Paper 1) into a production retrieval pipeline.
+
+> **This is an illustrative deployment scaffold, not the validated estimator.** It demonstrates the end-to-end flow — fit a panel-only projection, retrieve k-NN, stratify by `s_max`, and route distant-stratum positives to human review. It shares the surrogate objective and 50-iteration schedule of the validated estimator (`code/harnesses/run_cliff.py:knn_learned`), but uses `lr=0.01` and an orthogonal initialization instead of the validated `lr=1e-3` and default initialization, so it does **not** reproduce the paper's reported metrics (pooled F1 win in 16 of 18 groups, +47% relative distant F1 at t30). To reproduce the validated numbers, run `code/harnesses/run_cascade.py` (which computes the learned-metric pooled F1 across the factorial).
 
 **Contents:**
 - `deploy_cliff_rescue.py` — fit projection on your panel, retrieve k-NN, stratify, flag distant-stratum positives for human review
