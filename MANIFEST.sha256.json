@@ -97,7 +97,7 @@
  },
  "README.md": {
   "bytes": 21404,
-  "sha256": "3e5a49a150d2044b85eac47b22f012666e9c1604b5925d78099311b176cd5d5d"
+  "sha256": "06e76f4d4388e24d3ab0ac09c4f54cc10e5b9ffdd362c241e622d1d62e8e0358"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -105,7 +105,7 @@
  },
  "REVIEWER.md": {
   "bytes": 4299,
-  "sha256": "029e0510be897fce939bd5e309d396f9428472e935a97fd9d9de5536383651ec"
+  "sha256": "d5d853be29bc38a7c5f589846b1595ed2b1fca9bda63d94372d0406535b5b98d"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -113,7 +113,7 @@
  },
  "STATUS.md": {
   "bytes": 5019,
-  "sha256": "52c73939910d3896e4f3def08c82116e4adedbb37a270f0f1db6434d0ffe2867"
+  "sha256": "964e9046f2c52a53fabda99f498411bcbf8dfc6b8cf14e81b3e6416a7df9a712"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37745,7 +37745,7 @@
  },
  "docs/index.html": {
   "bytes": 19947,
-  "sha256": "76ed4a7f3a7b809bb4449c7cd542bc6621c7a7c328b85e1f3bdface5db6a7ef9"
+  "sha256": "ebfb16d9c6f7b77ffc20efffeb75b89f031d7cb47be317420c22950a28a33a83"
  },
  "docs/robots.txt": {
   "bytes": 88,

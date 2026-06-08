@@ -15,7 +15,7 @@ cd homology-cliff
 git lfs pull                              # ~188 MB of binary evidence
 pip install numpy scipy scikit-learn pytest
 
-python scripts/ci/verify_manifest.py      # 9,479 manifest entries
+python scripts/ci/verify_manifest.py      # 9,480 manifest entries
 python scripts/ci/verify_prereg_locks.py  # 2 SHA256-locked pre-registrations
 ```
 
