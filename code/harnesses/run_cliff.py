@@ -156,7 +156,12 @@ def verify_prereg_hash() -> None:
             f"Set HOMOLOGY_CLIFF_REPO_ROOT or run from a clone with "
             f"`git lfs pull` completed."
         )
-    h = hashlib.sha256(prereg.read_bytes()).hexdigest()
+    # PREREG_HASH is defined over the LF-normalized bytes (the form committed to
+    # git). Strip CR before hashing so a Windows clone with core.autocrlf=true,
+    # whose working tree carries CRLF endings, does not abort an experiment over
+    # a line-ending difference rather than a real content edit. Matches
+    # scripts/ci/verify_prereg_locks.py and the `.gitattributes` LF guarantee.
+    h = hashlib.sha256(prereg.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     if h != PREREG_HASH:
         raise SystemExit(
             f"PRE-REG HASH MISMATCH. Expected {PREREG_HASH}, got {h}. ABORT."

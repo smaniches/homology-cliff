@@ -23,6 +23,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 # Claimed pre-registration locks, taken verbatim from the paper sources.
+# The lock is canonically defined over the LF-normalized bytes of each file
+# (the form committed to git). We strip CR before hashing so the check is
+# byte-stable across platforms: on a Windows clone with core.autocrlf=true the
+# working tree carries CRLF line endings, which would otherwise produce a
+# spurious MISMATCH even though no content was edited. Normalizing CR here
+# matches what `.gitattributes` (`data/prereg/*.md text eol=lf`) guarantees for
+# fresh clones, and keeps the EXPECTED hashes below unchanged.
 # If any of these need to change, the paper that cites the prefix must
 # also change in the SAME commit.
 EXPECTED = {
@@ -41,8 +48,10 @@ def main() -> int:
             print(f"MISSING  {rel_path}")
             fail = True
             continue
-        with open(path, "rb") as fh:
-            actual = hashlib.sha256(fh.read()).hexdigest()
+        # Hash the LF-normalized content (strip CR) so a CRLF working tree
+        # does not void an otherwise-intact registration. See EXPECTED above.
+        content = path.read_bytes().replace(b"\r\n", b"\n")
+        actual = hashlib.sha256(content).hexdigest()
         if actual == expected:
             print(f"OK       {rel_path}")
             print(f"           sha256 = {actual}")

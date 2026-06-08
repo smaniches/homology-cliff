@@ -17,15 +17,18 @@ _npz_paths = (
 )
 # Detect Git LFS pointer stubs (a clone without `git lfs pull`) and exit with
 # an explicit message, rather than failing with an uninformative UnpicklingError
-# on the first np.load.
-if _npz_paths:
-    with open(_npz_paths[0], "rb") as _fh:
-        if _fh.read(64).startswith(b"version https://git-lfs.github.com/spec/v1"):
-            raise SystemExit(
-                "data/cells/*.npz are Git LFS pointer stubs in this clone. "
-                "Run `git lfs pull` to fetch the cell archives, then re-run; "
-                "otherwise this aggregation has no real data to read."
-            )
+# on the first np.load. Check every path, not just the first: a partial
+# `git lfs pull` (interrupted, or filtered by include/exclude) can leave some
+# cells real and others as stubs, which would otherwise crash mid-aggregation.
+_LFS_MAGIC = b"version https://git-lfs.github.com/spec/v1"
+_stubs = [p for p in _npz_paths if open(p, "rb").read(64).startswith(_LFS_MAGIC)]
+if _stubs:
+    raise SystemExit(
+        f"{len(_stubs)} of {len(_npz_paths)} data/cells/*.npz are Git LFS "
+        f"pointer stubs in this clone (e.g. {_stubs[0]}). "
+        "Run `git lfs pull` to fetch the cell archives, then re-run; "
+        "otherwise this aggregation has no real data to read."
+    )
 for f in _npz_paths:
     m = PAT.search(f)
     if not m: continue

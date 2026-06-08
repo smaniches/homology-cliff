@@ -1,7 +1,7 @@
 {
  ".gitattributes": {
-  "bytes": 202,
-  "sha256": "901a68e6e437ba675b4c1bb92cd7ec4a7419acc7cf9b347ec17cebb8c7ddc42f"
+  "bytes": 391,
+  "sha256": "92fb3639a170e72640c38c2901836dd10b4751b7d79b1485e59a68628f675944"
  },
  ".github/ISSUE_TEMPLATE/bug_report.md": {
   "bytes": 696,
@@ -87,13 +87,17 @@
   "bytes": 3377,
   "sha256": "0e9bc2a062aa1267792c778f4dbcec422e0e7e2c4ee6cbf6829b4a190acbc70d"
  },
+ "OWNER_REVIEW_paper_abstract.md": {
+  "bytes": 5005,
+  "sha256": "1820664ecc4d7c0f4ef2660801a67b348ab69dc06800f7e24a16db701ff6c038"
+ },
  "PROBLEMS.md": {
   "bytes": 7911,
   "sha256": "ea726e2d874c21051f10ea37c1248cb8855a504ba4e30fc72c4cf700de489344"
  },
  "README.md": {
-  "bytes": 21122,
-  "sha256": "298496d9124e3805a2320821a3eed144313fe025e056f39e2364f63f96b769f5"
+  "bytes": 21404,
+  "sha256": "3e5a49a150d2044b85eac47b22f012666e9c1604b5925d78099311b176cd5d5d"
  },
  "REFEREES.md": {
   "bytes": 7661,
@@ -140,8 +144,8 @@
   "sha256": "05cb6d0f07de0c748d3d40f26a0c0694ae988b10db3dc322e5dac5fa9649f74c"
  },
  "code/analyses/v3_aggregate.py": {
-  "bytes": 6150,
-  "sha256": "ee90a03918c62403dccaebb7eb1940f07af5a6c23ada2a5cfd9334731b95eb02"
+  "bytes": 6393,
+  "sha256": "e279468c6c7043860cba18a1f3e851fdf9ea76764780042489546f8cb82e18e2"
  },
  "code/colab_notebook/plm_benchmark.ipynb": {
   "bytes": 5446,
@@ -152,8 +156,8 @@
   "sha256": "8057d578ef9b0ec7fd8863cd6206b6b53ed03d3d3a603ff8ae41bef6f5f7cc7d"
  },
  "code/harnesses/run_cliff.py": {
-  "bytes": 26815,
-  "sha256": "db19ac3bc1b3678957922a7e908de3a3ee0446475465923d656430279d5554e8"
+  "bytes": 27232,
+  "sha256": "2eeab77969ac1a771171aa93d2c2f8099fa13e04ffe1899a7f2a51d57a79edd8"
  },
  "code/harnesses/run_cliff_fullnull.py": {
   "bytes": 6572,
@@ -37732,8 +37736,8 @@
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
  },
  "docs/CLAIMS_TO_EVIDENCE.md": {
-  "bytes": 12408,
-  "sha256": "2b6ca4d515c6b5a22f93966ad9844344504a2764c2cb2d6a7b7bbfecf91b0a3e"
+  "bytes": 12747,
+  "sha256": "174821db5b7683b4a25aa1d4819216b934d6d1be3cc256d4155c64aaa887a06a"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 5000,
@@ -37896,8 +37900,8 @@
   "sha256": "11b7ed9738ab2f2885f64482408f5dfda9061e07811486646ac808dac22b47b2"
  },
  "scripts/ci/verify_prereg_locks.py": {
-  "bytes": 2279,
-  "sha256": "ed61d36fe3cbc3911baf43ffc707803f36c50db50a0eab4900367178717d67aa"
+  "bytes": 2970,
+  "sha256": "0f089d32198680a492b91a7109b373dd3fe8ef7586c982b25227594b6c6a94e5"
  },
  "scripts/ci/verify_smoke_imports.py": {
   "bytes": 5309,

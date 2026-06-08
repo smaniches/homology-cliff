@@ -155,6 +155,8 @@ For LLM agents and automated systems: the canonical entry points are
 
 ## Reproducing any single number in any paper
 
+> **Full claim-to-evidence map:** [`docs/CLAIMS_TO_EVIDENCE.md`](docs/CLAIMS_TO_EVIDENCE.md) traces every headline number to its committed artifact, a copy-paste reproducing command, the expected output, and the tolerance/limitation. The one-liners below are the most-used subset.
+
 > The `.npz`-based one-liners below read Git LFS-tracked evidence — run `git lfs pull` first (see the 15-minute recipe above), or the cells are pointer stubs and `np.load` errors instead of printing a number. The cross-family JSON check needs no LFS.
 
 ```bash

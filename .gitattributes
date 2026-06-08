@@ -2,3 +2,7 @@
 *.npy filter=lfs diff=lfs merge=lfs -text
 data/annotations/*.json filter=lfs diff=lfs merge=lfs -text
 data/sequences/*.json filter=lfs diff=lfs merge=lfs -text
+
+# The pre-registration files are SHA256-locked over their LF bytes. Force LF on
+# checkout so a Windows clone (core.autocrlf=true) reproduces the locked hash.
+data/prereg/*.md text eol=lf
