@@ -1,3 +1,19 @@
+# This repository is a research compendium, not an importable Python library.
+# The code under code/ runs as standalone scripts (e.g. `python code/harnesses/run_cliff.py`,
+# `python code/analyses/v3_aggregate.py`) that resolve their data paths relative to the
+# on-disk repository root and import sibling scripts via sys.path; see README.md and
+# REVIEWER.md for the canonical usage. No package is shipped to site-packages.
+#
+# This pyproject exists only to (1) carry project metadata and (2) make
+# `pip install -e .` a convenient way to install the runtime dependencies. The
+# `[tool.setuptools] py-modules = []` line below disables setuptools' flat-layout
+# auto-discovery, which would otherwise fail because code/, data/, papers/, etc. are
+# all top-level directories.
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "homology-cliff"
 version = "1.4.7"
@@ -14,3 +30,7 @@ paper = ["biopython"]
 
 [project.urls]
 Homepage = "https://github.com/smaniches/homology-cliff"
+
+[tool.setuptools]
+# No importable package is shipped; see the header comment above.
+py-modules = []
