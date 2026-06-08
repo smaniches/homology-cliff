@@ -101,8 +101,8 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Papers | Paper 1, Section 3.2 |
 | Source artifact | 3,000 .npz files in `data/cells/fullnull/` |
 | Aggregate artifact | `data/results_summaries/v3_final.txt` (FULL-NULL table) |
-| Reproducing command | `python code/analyses/v3_aggregate.py 2>/dev/null \| grep -c "fullnull"` (count non-header fullnull rows); or run `pytest tests/test_cell_schema.py::test_fullnull_gap_near_zero -v` with LFS |
-| Expected output | 300 fullnull groups; all with gap near zero |
+| Reproducing command | Group count: `python code/analyses/v3_aggregate.py 2>/dev/null \| grep "^fullnull groups:"`. Gap-near-zero criterion: `pytest tests/test_cell_schema.py::test_fullnull_gap_near_zero -v` (requires LFS). |
+| Expected output | `fullnull groups: 300  cells: 3000`, and the pytest passes (every fullnull group's mean gap is near zero). |
 | Tolerance | Per addendum pre-registration: 95% bootstrap CI on the 10-seed mean gap includes zero |
 | Requires LFS | Yes (for individual cell verification) |
 
@@ -113,8 +113,8 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Claim | All 300 main factorial groups pass the seed-variance gate |
 | Papers | Paper 1, Section 3.1; Paper 4, Section 2 |
 | Source artifact | `data/results_summaries/v3_final.txt` (MAIN gap table, "up" column) |
-| Reproducing command | `python code/analyses/v3_aggregate.py 2>/dev/null \| grep -E "^t[0-9]" \| awk '{print $NF}' \| sort -u` |
-| Expected output | All "up" (underpowered/voided) counts are 0 |
+| Reproducing command | `python code/analyses/v3_aggregate.py 2>/dev/null \| awk '/=== MAIN gap table/{f=1;next} /^=== /{f=0} f && /^t[0-9]/{print $NF}' \| sort -u` (scopes to the MAIN gap table, whose last column is the per-group "up" count; a bare `grep "^t[0-9]"` also matches the FULL-NULL and NEGATIVE CONTROL tables, whose last columns are not the up count) |
+| Expected output | `0` (the only distinct value; every one of the 300 main groups has up=0) |
 | Requires LFS | Yes |
 
 ### 9. cross_family_fraction = 20/20
