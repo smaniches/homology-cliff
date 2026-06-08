@@ -52,8 +52,8 @@
   "sha256": "60d5a0378df118a931fc2f6859b79afcdff7abe53a5e7efd90c0b8468823cf8a"
  },
  "CHANGELOG.md": {
-  "bytes": 16789,
-  "sha256": "abf36e0a66fc5ce1622ea166d0ea33d425257e8d19d585ea89c962c5417686d8"
+  "bytes": 17909,
+  "sha256": "5b597fb0fd533ac02e02476f5e31afb3047878dfcec44216b8af7fbbe88e93ba"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -37876,8 +37876,8 @@
   "sha256": "ae189052143b48a595111474e3f05b866cb3c9e19b8e74cb906af6143b5309de"
  },
  "pyproject.toml": {
-  "bytes": 1572,
-  "sha256": "8bf1cbc4c0c779ff3cea0ebbed5c0298bcf163fb6b2fd9a05073de7032a47650"
+  "bytes": 2640,
+  "sha256": "ee043510c139c0836b1a26ac06f904d7860ed30790a61f89520396bb05b13f1d"
  },
  "reproducibility/GPU_EXECUTION_GUIDE.md": {
   "bytes": 4041,
@@ -37896,8 +37896,8 @@
   "sha256": "121e0e81631654cf64bccc145000f66c704516c8b0d71694da3f51b3ab12feb6"
  },
  "scripts/ci/verify_manifest.py": {
-  "bytes": 4623,
-  "sha256": "778c635a3a5b963c5b420a7de2fc70b53cf8f00ea583668bfefadc166e6f4366"
+  "bytes": 4791,
+  "sha256": "6f5bb7e2a8b1f3a6dc4f6438f02d58e2e0e640ab4a887fa165f79c3526718ade"
  },
  "scripts/ci/verify_prereg_locks.py": {
   "bytes": 2970,
