@@ -11,7 +11,9 @@
 # all top-level directories.
 
 [build-system]
-requires = ["setuptools>=61"]
+# setuptools>=64 provides the PEP 660 build_editable hook that `pip install -e .`
+# requires; 61-63 satisfy the spec but lack that backend hook.
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,6 +24,26 @@ authors = [{name = "Santiago Maniches", email = "santiago@topologica.llc"}]
 readme = "README.md"
 license = {text = "MIT AND CC-BY-4.0"}
 requires-python = ">=3.11"
+keywords = [
+    "protein language models",
+    "ESM-2",
+    "biosecurity",
+    "pre-registered research",
+    "retrieval",
+    "homology detection",
+    "calibration",
+    "topological data analysis",
+    "Mapper",
+    "reproducibility",
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
 dependencies = ["numpy>=1.26", "scikit-learn>=1.4", "faiss-cpu>=1.7.4", "torch>=2.0", "scipy>=1.11"]
 
 [project.optional-dependencies]
@@ -30,7 +52,13 @@ paper = ["biopython"]
 
 [project.urls]
 Homepage = "https://github.com/smaniches/homology-cliff"
+Repository = "https://github.com/smaniches/homology-cliff"
+Documentation = "https://smaniches.github.io/homology-cliff/"
+Changelog = "https://github.com/smaniches/homology-cliff/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
-# No importable package is shipped; see the header comment above.
+# No importable package is shipped; see the header comment above. Both
+# packages and py-modules are pinned empty so setuptools' flat-layout
+# auto-discovery never treats code/, data/, papers/, etc. as importable.
+packages = []
 py-modules = []

@@ -90,7 +90,7 @@ def main() -> int:
         # edited. For non-binary files, retry against the LF-normalized form so
         # an intact file does not register a spurious mismatch. This mirrors
         # verify_prereg_locks.py. Binary files are never normalized.
-        if not rel_path.endswith(BINARY_SUFFIXES):
+        if not rel_path.lower().endswith(BINARY_SUFFIXES):
             lf = content.replace(b"\r\n", b"\n")
             lf_sha = hashlib.sha256(lf).hexdigest()
             if (expected.get("sha256") == lf_sha
