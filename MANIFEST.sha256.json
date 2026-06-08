@@ -37896,8 +37896,8 @@
   "sha256": "121e0e81631654cf64bccc145000f66c704516c8b0d71694da3f51b3ab12feb6"
  },
  "scripts/ci/verify_manifest.py": {
-  "bytes": 4631,
-  "sha256": "30afc6dcc7c313dc62650302ce83ce6d540fa922b8bf4eaaee72453972f7f989"
+  "bytes": 4791,
+  "sha256": "6f5bb7e2a8b1f3a6dc4f6438f02d58e2e0e640ab4a887fa165f79c3526718ade"
  },
  "scripts/ci/verify_prereg_locks.py": {
   "bytes": 2970,

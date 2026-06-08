@@ -33,6 +33,8 @@ LFS_PREFIX = b"version https://git-lfs.github.com/spec/v1"
 GITIGNORED_SUFFIXES = (".aux", ".bbl", ".blg", ".log", ".out", ".toc")
 
 # Binary suffixes whose bytes must match exactly; never LF-normalize these.
+# Stored lowercase; the suffix check lowercases the path so matching is
+# case-insensitive regardless of how a future entry is cased.
 BINARY_SUFFIXES = (".npz", ".npy", ".png", ".pdf", ".jpg", ".jpeg", ".gif",
                    ".ico", ".whl")
 
@@ -90,7 +92,7 @@ def main() -> int:
         # edited. For non-binary files, retry against the LF-normalized form so
         # an intact file does not register a spurious mismatch. This mirrors
         # verify_prereg_locks.py. Binary files are never normalized.
-        if not rel_path.lower().endswith(BINARY_SUFFIXES):
+        if not rel_path.lower().endswith(tuple(s.lower() for s in BINARY_SUFFIXES)):
             lf = content.replace(b"\r\n", b"\n")
             lf_sha = hashlib.sha256(lf).hexdigest()
             if (expected.get("sha256") == lf_sha
