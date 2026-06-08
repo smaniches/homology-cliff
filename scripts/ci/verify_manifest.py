@@ -32,6 +32,10 @@ LFS_PREFIX = b"version https://git-lfs.github.com/spec/v1"
 
 GITIGNORED_SUFFIXES = (".aux", ".bbl", ".blg", ".log", ".out", ".toc")
 
+# Binary suffixes whose bytes must match exactly; never LF-normalize these.
+BINARY_SUFFIXES = (".npz", ".npy", ".png", ".pdf", ".jpg", ".jpeg", ".gif",
+                   ".ico", ".whl")
+
 
 def is_lfs_stub(path: Path) -> bool:
     try:
@@ -77,12 +81,28 @@ def main() -> int:
         if (expected.get("sha256") == actual_sha
                 and expected.get("bytes") == actual_bytes):
             ok += 1
-        else:
-            mismatches.append((
-                rel_path,
-                f"manifest:{expected.get('sha256','?')[:16]}({expected.get('bytes')}b)",
-                f"disk:{actual_sha[:16]}({actual_bytes}b)",
-            ))
+            continue
+
+        # Raw bytes did not match. The manifest stores the LF-committed form
+        # of text files (what git tracks). On a Windows checkout with
+        # core.autocrlf=true the working tree carries CRLF line endings, which
+        # inflates byte count and changes the hash even though no content was
+        # edited. For non-binary files, retry against the LF-normalized form so
+        # an intact file does not register a spurious mismatch. This mirrors
+        # verify_prereg_locks.py. Binary files are never normalized.
+        if not rel_path.endswith(BINARY_SUFFIXES):
+            lf = content.replace(b"\r\n", b"\n")
+            lf_sha = hashlib.sha256(lf).hexdigest()
+            if (expected.get("sha256") == lf_sha
+                    and expected.get("bytes") == len(lf)):
+                ok += 1
+                continue
+
+        mismatches.append((
+            rel_path,
+            f"manifest:{expected.get('sha256','?')[:16]}({expected.get('bytes')}b)",
+            f"disk:{actual_sha[:16]}({actual_bytes}b)",
+        ))
 
     print("Manifest verification")
     print("=====================")
