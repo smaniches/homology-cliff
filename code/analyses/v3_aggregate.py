@@ -21,7 +21,14 @@ _npz_paths = (
 # `git lfs pull` (interrupted, or filtered by include/exclude) can leave some
 # cells real and others as stubs, which would otherwise crash mid-aggregation.
 _LFS_MAGIC = b"version https://git-lfs.github.com/spec/v1"
-_stubs = [p for p in _npz_paths if open(p, "rb").read(64).startswith(_LFS_MAGIC)]
+def _is_lfs_stub(path: str) -> bool:
+    # Read only the 64-byte header and close immediately. Opening inside a list
+    # comprehension without closing would leak file descriptors across thousands
+    # of cell paths (OSError: too many open files); read_bytes() would instead
+    # slurp whole multi-MB archives just to inspect the header.
+    with open(path, "rb") as fh:
+        return fh.read(64).startswith(_LFS_MAGIC)
+_stubs = [p for p in _npz_paths if _is_lfs_stub(p)]
 if _stubs:
     raise SystemExit(
         f"{len(_stubs)} of {len(_npz_paths)} data/cells/*.npz are Git LFS "
