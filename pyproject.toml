@@ -12,8 +12,9 @@
 
 [build-system]
 # setuptools>=64 provides the PEP 660 build_editable hook that `pip install -e .`
-# requires; 61-63 satisfy the spec but lack that backend hook.
-requires = ["setuptools>=64"]
+# requires; >=77 additionally understands the PEP 639 SPDX `license` expression
+# and `license-files` used below.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,7 +23,9 @@ version = "1.4.7"
 description = "Homology cliff in frozen protein language models: characterization, pre-registered nulls, and a deployable rescue"
 authors = [{name = "Santiago Maniches", email = "santiago@topologica.llc"}]
 readme = "README.md"
-license = {text = "MIT AND CC-BY-4.0"}
+# PEP 639 SPDX expression: code is MIT, papers/figures are CC-BY-4.0.
+license = "MIT AND CC-BY-4.0"
+license-files = ["LICENSE-code.txt", "LICENSE-papers.txt"]
 requires-python = ">=3.11"
 keywords = [
     "protein language models",
@@ -49,6 +52,18 @@ dependencies = ["numpy>=1.26", "scikit-learn>=1.4", "faiss-cpu>=1.7.4", "torch>=
 [project.optional-dependencies]
 test = ["pytest>=8.0", "pytest-cov"]
 paper = ["biopython"]
+# Lint / type / security toolchain used by the CI quality gates. Exact,
+# CI-validated pins live in requirements-lock.txt (the verification-toolchain
+# lock); these floors keep `pip install -e .[dev]` usable for contributors.
+dev = [
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "bandit>=1.7",
+    "pip-audit>=2.7",
+    "pytest>=8.0",
+    "pytest-cov",
+    "coverage>=7.5",
+]
 
 [project.urls]
 Homepage = "https://github.com/smaniches/homology-cliff"
@@ -62,3 +77,73 @@ Changelog = "https://github.com/smaniches/homology-cliff/blob/main/CHANGELOG.md"
 # auto-discovery never treats code/, data/, papers/, etc. as importable.
 packages = []
 py-modules = []
+
+# ---------------------------------------------------------------------------
+# Quality gates (run by .github/workflows/lint.yml and tests.yml).
+#
+# Scope rationale: the harness/analysis scripts under code/ are
+# pre-registration / DOI-locked artifact code. This PR adds verification
+# without reformatting them, so style-only rules are omitted, a few pre-existing
+# findings are explicitly accepted (ruff per-file-ignores + a bandit baseline),
+# and --strict typing is scoped to the already-annotated verifier surface.
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+# Kaggle/Colab notebook cells are fragments of one interactive session (each
+# cell uses names bound by an earlier cell), so linting them as standalone
+# modules trips F821 on every reference -- category-inappropriate. Excluded.
+extend-exclude = ["code/kaggle_notebooks", "code/colab_notebook"]
+
+[tool.ruff.lint]
+# Correctness rules only: pyflakes (F) + syntax/runtime errors (E9). Stylistic
+# compound-statement rules (E701/E702) are intentionally omitted: the locked
+# scripts use compact one-line guards by design and are not reformatted here.
+select = ["F", "E9"]
+
+[tool.ruff.lint.per-file-ignores]
+# DOI-locked artifact scripts: pre-existing unused-import/name/f-string flags
+# are accepted rather than edited, so this PR changes no published-result code.
+# Tracked for a future provenance-safe cleanup pass.
+"code/harnesses/*.py" = ["F401"]
+"code/analyses/*.py" = ["F401", "F841", "F541"]
+"deployment_example/*.py" = ["F841"]
+
+[tool.mypy]
+python_version = "3.11"
+# --strict is enforced (in CI) only on the fully-annotated verification surface
+# under scripts/ci/. The numpy-heavy research harnesses are intentionally
+# untyped; bringing them to --strict is tracked separately, not in scope here.
+strict = true
+files = ["scripts/ci"]
+
+[[tool.mypy.overrides]]
+module = ["faiss", "faiss.*", "torch", "torch.*", "sklearn", "sklearn.*"]
+ignore_missing_imports = true
+
+# bandit is invoked in CI over explicit targets (code/harnesses code/analyses
+# scripts deployment_example) against a committed bandit-baseline.json, so the
+# gate fails only on NEW findings. Notebook cells and tests are out of scope by
+# not being scanned. Accepted baseline findings: allow_pickle on self-produced
+# .npz, a hardcoded-https urlopen, and seeded stdlib random for bootstrap CIs.
+
+[tool.coverage.run]
+branch = true
+# CI runs WITHOUT the Git-LFS payload and WITHOUT faiss/torch, so coverage
+# reflects only the LFS-free, dependency-light surface CI can execute: the pure
+# numerical functions exercised by the known-answer tests plus the verifiers.
+# This is deliberately NOT a whole-repo coverage claim -- see the PR description.
+source = ["scripts/ci", "code/harnesses", "code/analyses"]
+
+[tool.coverage.report]
+show_missing = true
+# Honest floor, NOT a ceiling. Measured ~17% over the FULL numerical+verifier
+# surface (denominator is not cherry-picked). It is low by construction: the
+# per-cell harness paths and analysis orchestration require the LFS data payload
+# plus faiss/torch (absent in CI), and the standalone verifier scripts
+# (verify_evidence/prereg_locks/smoke_imports) are exercised by their own
+# workflows rather than under pytest. What IS unit-covered is the published-
+# number logic: F1/ECE/stratify/bootstrap/panel/vote and the manifest verifier.
+# This gate only guards against regression below the current floor.
+fail_under = 15

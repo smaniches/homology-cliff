@@ -1,0 +1,25 @@
+# Verification-toolchain lock for homology-cliff CI.
+#
+# SCOPE: this pins ONLY the light, CI-validated stack that the Linux runners
+# install to LINT, TYPE-CHECK, and unit-TEST the compendium -- NOT the
+# environment that generated the published embeddings/cells. The repository
+# never recorded exact torch/faiss/numpy versions for the GPU artifact runs
+# (see DATA_CARD.md and reproducibility/), and CI does not install torch or
+# faiss, so pinning those here would be a fabricated, untestable reproducibility
+# claim. Exact-version reproduction of the GPU embeddings is therefore NOT
+# guaranteed by this lock; the floors in pyproject.toml remain the compatibility
+# minimums for runtime use.
+#
+# Generated from the verified working toolchain and validated by the lint and
+# tests workflows on ubuntu-latest + Python 3.11. When bumping versions
+# (Dependabot opens those PRs), regenerate from the same tool set.
+numpy==2.4.3
+scipy==1.17.1
+scikit-learn==1.8.0
+pytest==9.0.3
+pytest-cov==7.1.0
+coverage==7.13.5
+ruff==0.15.12
+mypy==1.20.1
+bandit==1.9.4
+pip-audit==2.10.1

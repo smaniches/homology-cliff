@@ -1,0 +1,34 @@
+name: lint
+# Static quality gates: ruff (lint), mypy (strict types on the verifier
+# surface), bandit (security, baseline-gated), and pip-audit (dependency CVEs).
+# All run on the LFS-free, dependency-light verification toolchain pinned in
+# requirements-lock.txt -- no torch/faiss and no Git-LFS payload required.
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {lfs: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11', cache: 'pip'}
+
+      - name: install verification toolchain (pinned)
+        run: pip install --quiet -r requirements-lock.txt
+
+      - name: ruff (lint -- pyflakes + syntax errors)
+        run: ruff check .
+
+      - name: mypy (--strict on scripts/ci, configured in pyproject.toml)
+        run: mypy
+
+      - name: bandit (security, fails only on findings not in the baseline)
+        run: bandit -r code/harnesses code/analyses scripts deployment_example -b bandit-baseline.json
+
+      - name: pip-audit (CVEs in the CI verification toolchain)
+        run: pip-audit -r requirements-lock.txt

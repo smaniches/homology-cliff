@@ -3,6 +3,10 @@
   "bytes": 391,
   "sha256": "92fb3639a170e72640c38c2901836dd10b4751b7d79b1485e59a68628f675944"
  },
+ ".github/CODEOWNERS": {
+  "bytes": 548,
+  "sha256": "7e25ed5e1fcbf69c75b3127592e8dfe5a067812947cadc7e5aa8c7a9aa8b0031"
+ },
  ".github/ISSUE_TEMPLATE/bug_report.md": {
   "bytes": 696,
   "sha256": "49d13d67d71a87c403be97876e237d8901ec0ddf5c741f12cb033073d392f6cb"
@@ -19,9 +23,17 @@
   "bytes": 23873,
   "sha256": "79733fbebdc1c58ecbadada5b6be06800c6b4d44d08c19c6f65d1faf3b49c9be"
  },
+ ".github/dependabot.yml": {
+  "bytes": 736,
+  "sha256": "5a41fa4a641c655c6ca560f5b5bc0ca7df43e1df528444638775cf70776a9f0d"
+ },
  ".github/workflows/evidence.yml": {
   "bytes": 744,
   "sha256": "d5b46ed2420a2d38465c1456dfb83a8ebc5610aced483f64750e6dffe903b001"
+ },
+ ".github/workflows/lint.yml": {
+  "bytes": 1159,
+  "sha256": "7dc1f68f17a71e3e8ead3626b2de8b5f8952ea53d294465145f21a8bfd018e34"
  },
  ".github/workflows/manifest.yml": {
   "bytes": 792,
@@ -32,12 +44,12 @@
   "sha256": "83fac9d3ca0a5eeb4a406ad07f599852aa173e4f96290c3e8d0cba146458fc6d"
  },
  ".github/workflows/tests.yml": {
-  "bytes": 921,
-  "sha256": "8c2118da10420c126fb61aea7934aeb650316b76a159804cadc1a21a6c214f42"
+  "bytes": 1234,
+  "sha256": "370903bf89d839958fac3fc84f19a3b2a53f5da53baa509c87eb879ffba2b8b2"
  },
  ".gitignore": {
-  "bytes": 118,
-  "sha256": "ebc8d12439c79bddd1a7ffb0e90896988562ec287f93a48047850e1316d8a73d"
+  "bytes": 188,
+  "sha256": "0f1f850cef7e4127ef29d9d118677f9087295e71971c5e049d4bab2639add31e"
  },
  ".zenodo.json": {
   "bytes": 1803,
@@ -114,6 +126,10 @@
  "STATUS.md": {
   "bytes": 5019,
   "sha256": "5a36196a734069335755cc320647535fb80441c47781ad0155628e0b050d9911"
+ },
+ "bandit-baseline.json": {
+  "bytes": 24553,
+  "sha256": "fb3a14f7110f0d3b14ec1832cc52c5108225ccfa54d38432cd873ef07126cf07"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37876,8 +37892,8 @@
   "sha256": "ae189052143b48a595111474e3f05b866cb3c9e19b8e74cb906af6143b5309de"
  },
  "pyproject.toml": {
-  "bytes": 2640,
-  "sha256": "ee043510c139c0836b1a26ac06f904d7860ed30790a61f89520396bb05b13f1d"
+  "bytes": 6675,
+  "sha256": "cb13aff2a9c7dcd0f1708aee48872dc94c715b5c38600e847e8ae906e6baf1ae"
  },
  "reproducibility/GPU_EXECUTION_GUIDE.md": {
   "bytes": 4041,
@@ -37886,6 +37902,10 @@
  "reproducibility/PROTOCOL.md": {
   "bytes": 2199,
   "sha256": "cfc621e89d9c57dc5a4ba966f09a9231032dd9b3f1b39810623199928e903a7c"
+ },
+ "requirements-lock.txt": {
+  "bytes": 1070,
+  "sha256": "67fe78647c8aaf6178b2f608fd0130b8b15add248648be29d0488af2dfa88781"
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10705,
@@ -37896,28 +37916,32 @@
   "sha256": "121e0e81631654cf64bccc145000f66c704516c8b0d71694da3f51b3ab12feb6"
  },
  "scripts/ci/verify_manifest.py": {
-  "bytes": 4791,
-  "sha256": "6f5bb7e2a8b1f3a6dc4f6438f02d58e2e0e640ab4a887fa165f79c3526718ade"
+  "bytes": 4781,
+  "sha256": "ce3167daf8713c67f67fd954323256310e2c0fe1f2785563238829a4b020ad3d"
  },
  "scripts/ci/verify_prereg_locks.py": {
   "bytes": 2970,
   "sha256": "0f089d32198680a492b91a7109b373dd3fe8ef7586c982b25227594b6c6a94e5"
  },
  "scripts/ci/verify_smoke_imports.py": {
-  "bytes": 5309,
-  "sha256": "0a58b88cf470347509da927d5d8994dc0d4dabda6a5dbbdf94528a098faa39cd"
+  "bytes": 5299,
+  "sha256": "5bdb7aa85c8db5e02a7d8e3828d315c442dadda779ec3c94e90a158d33eaa205"
  },
  "scripts/update_manifest.py": {
-  "bytes": 3317,
-  "sha256": "5e146d5a609d5961081c9c327c298e472364d0584de1227e30f5794b55994232"
+  "bytes": 6736,
+  "sha256": "61dcde55950735e4fcec4119244cea7cae6e5a1d4efd438dbf7688a92395e278"
  },
  "tests/__init__.py": {
   "bytes": 0,
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
  },
  "tests/test_cell_schema.py": {
-  "bytes": 4653,
-  "sha256": "a769b30b7eda881f9dbd4b76dde9f989f367df90b18d21cdf8abdf7d02be8e48"
+  "bytes": 4643,
+  "sha256": "4760077a9fc75e67f3645dfa74dd6804b8dd20cf1b89b0185ff184c91dcd0279"
+ },
+ "tests/test_numerics_known_answer.py": {
+  "bytes": 12236,
+  "sha256": "a73c932b0aacbebf1838d47bf43aa0961e6327d5a0e44cf90cc5b501d41c255e"
  },
  "tests/test_verify_manifest.py": {
   "bytes": 4726,
