@@ -1,0 +1,12 @@
+# Code owners for homology-cliff. GitHub auto-requests review from the owner
+# on every pull request. The pre-registration locks and committed artifacts are
+# provenance-critical, so changes under those paths in particular must not be
+# merged without the owner's review.
+
+*                        @smaniches
+
+# Provenance-critical paths (SHA256-locked pre-registrations, the integrity
+# manifest, and the pre-registration-locked harness).
+/data/prereg/            @smaniches
+/MANIFEST.sha256.json    @smaniches
+/code/harnesses/         @smaniches

@@ -15,7 +15,7 @@ cd homology-cliff
 git lfs pull                              # ~188 MB of binary evidence
 pip install numpy scipy scikit-learn pytest
 
-python scripts/ci/verify_manifest.py      # 9,481 manifest entries
+python scripts/ci/verify_manifest.py      # 9,488 manifest entries
 python scripts/ci/verify_prereg_locks.py  # 2 SHA256-locked pre-registrations
 ```
 
@@ -28,7 +28,7 @@ pre-registration hashes match.
 pytest tests/ -v
 ```
 
-Expected with LFS pulled: 12 passed, 0 failed. Without LFS: 9 passed,
+Expected with LFS pulled: 40 passed, 0 failed. Without LFS: 37 passed,
 3 skipped (the three data-dependent cell tests skip cleanly when .npz
 files are LFS pointer stubs; the verifier and cell-inventory tests do
 not need LFS payload).

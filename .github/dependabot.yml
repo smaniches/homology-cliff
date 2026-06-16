@@ -1,0 +1,22 @@
+# Dependabot keeps the CI verification toolchain and the GitHub Actions pins
+# current. The pip ecosystem watches requirements-lock.txt and pyproject.toml;
+# github-actions watches the workflow action versions. Runtime GPU dependencies
+# (torch, faiss) are intentionally left to the compatibility floors in
+# pyproject.toml -- they are not installed in CI and have no committed lock.
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"

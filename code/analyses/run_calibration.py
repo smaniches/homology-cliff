@@ -8,8 +8,8 @@ number reported in Paper 3 (`papers/03_calibration_collapse/paper.tex`):
     moderate-stratum ECE = 0.154
     distant-stratum ECE = 0.294
     distant pos-pred precision = 3 / 44 = 0.068
-    close pos-pred precision   = 0.891
-    moderate pos-pred precision = 0.467
+    close pos-pred precision   = 0.788
+    moderate pos-pred precision = 0.347
 
 Reliability binning matches the published figure exactly:
     [0.0, 0.1)  [0.1, 0.3)  [0.3, 0.5)  [0.5, 0.7)  [0.7, 0.9)  [0.9, 1.0]

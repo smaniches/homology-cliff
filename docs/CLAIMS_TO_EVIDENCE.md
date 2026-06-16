@@ -89,7 +89,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Papers | Paper 3 abstract; README figure caption |
 | Source artifact | `data/results_summaries/calibration_results.json` |
 | Reproducing command | `python -c "import json; d=json.load(open('data/results_summaries/calibration_results.json')); print(f\"ratio: {d['ece_distant_to_close_ratio']:.2f}x\")"` |
-| Expected output | ratio: 4.26x (reported as approximately 4.3x) |
+| Expected output | ratio: 4.29x (reported as approximately 4.3x) |
 | Tolerance | Rounded to one decimal place in papers |
 | Requires LFS | No |
 

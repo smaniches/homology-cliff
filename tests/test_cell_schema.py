@@ -14,7 +14,6 @@ Designed to run in two contexts:
    burning LFS bandwidth on every CI run.
 """
 import glob
-import os
 from pathlib import Path
 
 import numpy as np

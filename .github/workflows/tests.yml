@@ -20,10 +20,13 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.11', cache: 'pip'}
 
-      - name: install minimal test deps
-        run: pip install --quiet numpy scipy pytest
+      - name: install pinned verification toolchain
+        # requirements-lock.txt pins the LFS-free test/lint stack (numpy, pytest,
+        # pytest-cov, coverage, ...). No torch/faiss/LFS payload is needed.
+        run: pip install --quiet -r requirements-lock.txt
 
-      - name: pytest with skip-summary
-        # -rs prints the skip reasons in the summary so reviewers see
-        # exactly which tests are data-dependent and why they skipped.
-        run: pytest tests/ -v --tb=short -rs
+      - name: pytest with coverage + skip-summary
+        # -rs prints the skip reasons in the summary so reviewers see exactly
+        # which tests are data-dependent and why they skipped. --cov enforces
+        # the honest coverage floor configured in pyproject.toml (fail_under).
+        run: pytest tests/ -v --tb=short -rs --cov --cov-report=term-missing

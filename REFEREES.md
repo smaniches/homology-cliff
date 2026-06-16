@@ -30,7 +30,7 @@ The five adversarial-referee personas used, per the TOPOLOGICA `adversarial-manu
 |------|---------|----------|------------|
 | 1 | Logical structure | Earlier drafts merged 3 rescue rejections into one paper. Reviewer: "is this really one paper or three short papers?" | Justification: each rejection is short (2-3 pages), collectively they form a coherent "what doesn't work" narrative, splitting would fragment. Kept as one. |
 | 2 | Mathematical rigor | Fisher-Rao "within-class whitening" terminology was ambiguous. Which covariance exactly? | Paper 4 methods section specifies: within-class scatter matrix $S_W = \sum_c \sum_{x \in c} (x - \mu_c)(x - \mu_c)^\top$, whitened via pseudoinverse. |
-| 3 | Empirical honesty | Mapper-augmentation rescue +0.0018 CI [-0.027, +0.029]. Reviewer: "this is essentially zero. Does the paper honestly state that?" | Yes, Paper 2 Attempt 4 explicitly reports "rescue +0.0018 indistinguishable from zero, H1 rejected." |
+| 3 | Empirical honesty | Mapper-augmentation rescue -0.0080 CI [-0.035, +0.018] (corrected v1.5.0 from +0.0018 after a biased-panel deduplication fix; H1-rejected conclusion unchanged). Reviewer: "this is essentially zero. Does the paper honestly state that?" | Yes, Paper 2 Attempt 4 explicitly reports "rescue -0.0080 indistinguishable from zero, H1 rejected." |
 | 4 | Literature positioning | Weinberger 2009 (LMNN) should be cited for metric learning baseline context. | Added to Paper 2 §7. |
 | 5 | Presentation clarity | Needs at least one visual summary table of "what was tried, what happened." | Paper 2 §6 "Synthesis" table added. |
 

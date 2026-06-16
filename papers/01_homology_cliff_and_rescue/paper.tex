@@ -7,13 +7,15 @@
 \newtheorem{proposition}{Proposition}
 \title{The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval: Characterization, Pre-Registered Null Controls, Cross-Family Mechanism, and a Deployable Rescue}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC. Correspondence: santiago@topologica.llc.}}
-\date{April 12, 2026 (v1.1)}
+\date{April 12, 2026 (v1.1; erratum 2026-06-15)}
 \begin{document}
 \maketitle
 
 \begin{abstract}
 Frozen protein language models (PLMs) increasingly feed biosecurity retrieval pipelines. We characterize a systematic failure mode, the \emph{homology cliff}, in frozen ESM-2 \cite{lin2023evolutionary} cosine $k$-NN retrieval on a 24{,}885-protein biosecurity-relevant test set (28.7\% positive prior). At scale t30 (150M parameters), reference panel size $R=1000$, neighbors $k=25$: close-stratum $F_1=0.866$ against distant-stratum $F_1=0.120$ (gap $+0.745$). We report six pre-registered experiments. A 3000-cell main factorial confirms the cliff with all 300 groups passing a pre-committed seed-variance gate. A pre-registered full-pool permutation null (SHA256 \texttt{f3864d09\ldots}) produces gap $\in [-0.027, +0.038]$ across 300 groups, every 95\% CI including zero: the cliff is not a stratification artifact. The failure is a \emph{precision} collapse: at t30 $R=1000$ $k=25$ cosine, distant-stratum positive-prediction precision is $3/44=0.068$ and expected calibration error rises $4\times$ from close (0.069) to distant (0.294). Pfam partition of 20 evaluable distant false alarms finds \textbf{zero within-family and 20 cross-family} failures (Wilson 95\% CI on the within-family rate: $[0\%, 17\%]$), consistent with cross-family failures dominating the cliff in this dataset and inconsistent with the within-family distant-homology hypothesis as the primary mechanism. Four rescue attempts fail at pre-registered H1: Ledoit-Wolf Mahalanobis whitening \cite{ledoit2004}, Fisher-Rao within-class whitening \cite{amari2016}, stratified cosine+Mahalanobis cascade, and Mapper-biased panel augmentation. One rescue succeeds: a panel-only linear projection trained via a 50-iteration triplet-surrogate loss \cite{schroff2015facenet} wins pooled $F_1$ in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at $k=5$) and achieves $F_1=0.891$ at t30 $R=1000$ $k=25$, improving distant-stratum $F_1$ by 47\% relative. We release 9{,}360 per-cell bootstrap-CI results, four pre-registrations (two SHA256-locked and automatically re-verified), and full code under MIT + CC-BY-4.0.
 \end{abstract}
+
+\paragraph{Erratum (2026-06-15).} The reliability figure (Fig.~\ref{fig:reliability}) is now plotted from the script-computed reliability table rather than hand-entered diagram read-offs; all cited values (distant precision $3/44=0.068$, ECE close 0.069 / distant 0.294, the $+0.745$ cliff gap) are unchanged and were independently reproduced bit-for-bit from the committed embeddings and seeds. A stale-artifact correction to the Paper 3 calibration table and a deduplication fix to the Paper 2 Mapper-augmentation number are documented in \texttt{CHANGELOG.md}.
 
 \section{Introduction}
 Frozen protein language models \cite{lin2023evolutionary,elnaggar2022prottrans,brandes2022proteinbert,madani2023progen} now serve as general-purpose feature extractors for downstream retrieval, classification, and design tasks. A common deployment pattern is cosine $k$-NN retrieval: given a query protein, retrieve the $k$ nearest panel members in frozen embedding space and vote their labels. For biosecurity applications, where the query set contains potentially novel threats and the panel contains known-toxin exemplars, retrieval performance on proteins distant from any panel member is the safety-critical metric.
@@ -105,10 +107,10 @@ At t30 $R{=}1000$ $k{=}25$ cosine (seed 20260410): of 24{,}885 test proteins, \e
 \begin{figure}[h]\centering
 \begin{tikzpicture}
 \begin{axis}[width=11cm,height=5cm,xlabel={predicted vote fraction bin},ylabel={empirical positive rate},ybar,bar width=7pt,grid=major,legend pos=north west,ymin=0,ymax=1,symbolic x coords={{[0.0,0.1)},{[0.1,0.3)},{[0.3,0.5)},{[0.5,0.7)},{[0.7,0.9)},{[0.9,1.0]}},xtick=data,x tick label style={rotate=30,anchor=east,font=\small}]
-\addplot[fill=blue!60] coordinates {({[0.0,0.1)},0.02)({[0.1,0.3)},0.18)({[0.3,0.5)},0.41)({[0.5,0.7)},0.69)({[0.7,0.9)},0.88)({[0.9,1.0]},0.97)}; \addlegendentry{close (ECE=0.069)}
-\addplot[fill=red!60] coordinates {({[0.0,0.1)},0.24)({[0.1,0.3)},0.26)({[0.3,0.5)},0.31)({[0.5,0.7)},0.28)({[0.7,0.9)},0.20)({[0.9,1.0]},0.00)}; \addlegendentry{distant (ECE=0.294)}
+\addplot[fill=blue!60] coordinates {({[0.0,0.1)},0.003)({[0.1,0.3)},0.060)({[0.3,0.5)},0.171)({[0.5,0.7)},0.308)({[0.7,0.9)},0.637)({[0.9,1.0]},0.912)}; \addlegendentry{close (ECE=0.069)}
+\addplot[fill=red!60] coordinates {({[0.0,0.1)},0.000)({[0.1,0.3)},0.037)({[0.3,0.5)},0.051)({[0.5,0.7)},0.034)({[0.7,0.9)},0.167)({[0.9,1.0]},0.000)}; \addlegendentry{distant (ECE=0.294)}
 \end{axis}\end{tikzpicture}
-\caption{\textbf{Calibration collapse on the distant stratum.} Close-stratum reliability (blue) tracks the diagonal closely (ECE = 0.069). Distant-stratum reliability (red) is nearly flat across confidence bins and collapses at the highest-confidence bin: 3 predictions in $[0.9, 1.0)$, 0 correct (ECE = 0.294). Data at t30 $R{=}1000$ $k{=}25$ cosine, seed 20260410.}\label{fig:reliability}
+\caption{\textbf{Calibration collapse on the distant stratum.} Close-stratum reliability (blue) rises with confidence and is well-calibrated in aggregate (ECE = 0.069). Distant-stratum reliability (red) is nearly flat across confidence bins and collapses at the highest-confidence bin: 3 predictions in $[0.9, 1.0)$, 0 correct (ECE = 0.294). Data at t30 $R{=}1000$ $k{=}25$ cosine, seed 20260410.}\label{fig:reliability}
 \end{figure}
 
 \section{Cross-family partition (new in v1.1)}
