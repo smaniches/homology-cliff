@@ -19,6 +19,20 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 - `requirements-lock.txt`: `coverage` 7.14.3 -> 7.15.0, `ruff` 0.15.20 -> 0.15.21, `mypy` 2.1.0 -> 2.2.0 (Dependabot verification-toolchain group, PR #46). `MANIFEST.sha256.json` re-sealed to match (single entry, `requirements-lock.txt`; count unchanged at 9,490) -- Dependabot cannot run `scripts/update_manifest.py` itself, so its PRs always fail `manifest-verify` on the file they touch; this is the same land-manually-and-supersede pattern used for PRs #24-#30, #34-#40. Runtime pins (`numpy`, `scipy`, `scikit-learn`) and GPU floors are untouched. Re-validated against the new toolchain: `ruff check .`, `mypy` (--strict), `bandit`, `pip-audit` (0 known vulnerabilities), `pytest tests/` (37 passed / 3 skipped, coverage 15.91% > 15% floor), and `python reproduce.py` (all 7 phases pass, headline numbers unchanged) all green. Supersedes #46.
 - `requirements-lock.txt`: `ruff` 0.15.21 -> 0.15.22, `mypy` 2.2.0 -> 2.3.0, `coverage` 7.15.0 -> 7.15.2 (Dependabot verification-toolchain group, PR #48). `MANIFEST.sha256.json` re-sealed to match (single entry, `requirements-lock.txt`; count unchanged at 9,490) -- Dependabot cannot run `scripts/update_manifest.py` itself, so its PRs always fail `manifest-verify` on the file they touch; this is the same land-manually-and-supersede pattern used for PRs #24-#30, #34-#40, #46. Runtime pins (`numpy`, `scipy`, `scikit-learn`) and GPU floors are untouched. Re-validated against the new toolchain: `ruff check .`, `mypy` (--strict), `bandit`, `pip-audit` (0 known vulnerabilities), `pytest tests/` (37 passed / 3 skipped, coverage 15.91% > 15% floor), and `python reproduce.py` (all 7 phases pass, headline numbers unchanged) all green. Supersedes #48.
 
+## [v1.5.3] — 2026-06-16
+
+Reproducibility-tooling hardening for the pooled-F1 provenance added in v1.5.2 (addresses automated-review feedback on PR #32). No paper, result, or conclusion change; all evidence cells and result summaries are byte-identical to v1.5.0.
+
+### Changed -- code/analyses/compute_pooled_f1.py
+- The cross-check against the committed cascade cells is now **enforced**: if the reproduced cosine/Mahalanobis/learned/cascade pooled F1 drifts from the committed cascade evidence by more than 1e-3, the script aborts (previously it only printed a note, so a real pipeline drift could still pass).
+- `--check` now **fails** if the committed `pooled_f1_summary.json` is missing, and verifies the regenerated cell set matches the committed one exactly (previously a missing file silently regenerated and passed, and dropped cells were skipped).
+- Added the **cascade** metric so the script reproduces the Paper 2 Attempt-3 pooled-F1 penalty range (-0.046 to -0.236) cited in the v1.5.2 erratum, and prints that range. `pooled_f1_summary.json` expands from 72 to 90 cells (the 18 cascade cells).
+- `np.load(..., allow_pickle=False)` for the cascade cells (they store only scalar/string arrays).
+
+### Changed
+- `reproduce.py` pooled check now also asserts the cascade penalty range (18 groups, all negative, min ~= -0.236).
+- `version` 1.5.2 -> 1.5.3 (CITATION.cff, codemeta.json, README.md, pyproject.toml); `figures/cliff_summary.png` version label and `MANIFEST.sha256.json` refreshed.
+
 ## [v1.5.2] — 2026-06-16
 
 Pooled-F1 provenance + Paper 2 Attempt-2 correction. No conclusion changes; all evidence cells and result summaries are byte-identical to v1.5.0.

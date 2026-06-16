@@ -2,7 +2,7 @@
 
 Current state of the homology-cliff research compendium.
 
-**Version:** v1.5.2  
+**Version:** v1.5.3  
 **Last updated:** 2026-07-06  
 **Maintainer:** Santiago Maniches (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)), TOPOLOGICA LLC.
 

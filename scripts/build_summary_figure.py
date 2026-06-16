@@ -1,4 +1,4 @@
-"""scripts/build_summary_figure.py -- generate the v1.5.2 summary figure.
+"""scripts/build_summary_figure.py -- generate the v1.5.3 summary figure.
 
 Reads only committed JSON / aggregate evidence (no LFS payload required)
 and produces figures/cliff_summary.png, a 4-panel TL;DR of the entire
@@ -146,7 +146,7 @@ def main() -> None:
     # --- Figure layout ------------------------------------------------------
     fig, axes = plt.subplots(2, 2, figsize=(11, 7.5))
     fig.suptitle(
-        "The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval  -  v1.5.2 summary",
+        "The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval  -  v1.5.3 summary",
         fontsize=13, fontweight="bold", y=0.995)
 
     # Panel A

@@ -110,6 +110,13 @@ def verify_pooled_numbers() -> bool:
     print(f"    {'learned pooled > cosine pooled (t30 R1000 k25)':<34} = {rescue}  "
           f"({pf['t30_1000_25_learned']['pooled']:.4f} > {pf['t30_1000_25_cosine']['pooled']:.4f})")
     ok &= rescue
+    # Paper 2 Attempt-3: cascade loses to cosine on pooled F1 in all 18 groups (penalty -0.046..-0.236)
+    pens = [pf[g]["pooled"] - pf[g.replace("_cascade", "_cosine")]["pooled"]
+            for g in pf if g.endswith("_cascade")]
+    cascade_ok = len(pens) == 18 and max(pens) < 0.0 and abs(min(pens) - (-0.236)) <= 0.005
+    print(f"    {'cascade loses to cosine, 18 groups (penalty)':<34} = "
+          f"{min(pens):+.3f}..{max(pens):+.3f} over {len(pens)} groups  {'OK' if cascade_ok else 'MISMATCH'}")
+    ok &= cascade_ok
     print(f"--> pooled F1: {'PASS' if ok else 'FAIL'}", flush=True)
     return bool(ok)
 
