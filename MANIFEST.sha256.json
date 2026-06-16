@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 23023,
-  "sha256": "4d69d7ebeb3e207d4759bd5954daa391f3468e72c77d7e8b43ec68a69aed0173"
+  "bytes": 23582,
+  "sha256": "20c58550858d4fe68f6cf9e3740015fd98042f8f02b2603e5c3925b666bce90f"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -109,7 +109,7 @@
  },
  "README.md": {
   "bytes": 21408,
-  "sha256": "c114752480916763444fda2a7834ab731f25da6e7cdf14d35b07c25b31762bc2"
+  "sha256": "6caae0c99b222f2e076483ec8dc2b16e34434f48f511384487c9d7da70d6eeb3"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -117,7 +117,7 @@
  },
  "REVIEWER.md": {
   "bytes": 4379,
-  "sha256": "980996b5ae9153d468502e4c6109dd4b56e6ed41c8458832fe168d386aba8160"
+  "sha256": "464c59e504a5694511f2c8e7d14e7866cb32ce55323d233587116a46adc817e5"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -125,7 +125,7 @@
  },
  "STATUS.md": {
   "bytes": 5255,
-  "sha256": "9b518951c3dbaf97de22e7154c9c83aee138c22b81e7e2f05de9b9ab27499b1e"
+  "sha256": "b73e5dfbcd182f42af93e53407a8ce31f6ea468fad99dbace617ceca0d47b16e"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -37761,7 +37761,7 @@
  },
  "docs/index.html": {
   "bytes": 20066,
-  "sha256": "36aba618709f8eac073a7835834d26cf0a4dc729b55c6432bc31cb124dad16fb"
+  "sha256": "e726958287d20c8f24b5785249c9afd6d4f90083174fbdbf2650b3c07f8f3ece"
  },
  "docs/robots.txt": {
   "bytes": 88,
@@ -37894,6 +37894,10 @@
  "pyproject.toml": {
   "bytes": 7280,
   "sha256": "49b5104e8599c32f767e304e0ffb3eae445f27117abb2b1a6e74d4cf41e9c123"
+ },
+ "reproduce.py": {
+  "bytes": 6234,
+  "sha256": "75dc37323d3647446cb373c4773ed2448266ae997424cee23b72fc59f9c034fd"
  },
  "reproducibility/GPU_EXECUTION_GUIDE.md": {
   "bytes": 4041,
