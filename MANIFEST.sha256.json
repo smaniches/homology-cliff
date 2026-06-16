@@ -37776,12 +37776,12 @@
   "sha256": "e387785e92aa4051ac2e21f64993835b518ac3a85236caa989beac74128e6548"
  },
  "papers/01_homology_cliff_and_rescue/paper.pdf": {
-  "bytes": 270963,
-  "sha256": "e49a8817564f65258353645659ac0936974846c3c00af9b52e1326bd2e476390"
+  "bytes": 271217,
+  "sha256": "094f60438fba45c72bc83309916457954500b5ddc814fae2891d00ecc3bc16d5"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 19476,
-  "sha256": "8643af64dad59be8bde0a9350d452052496be6031b6e588d52fe3c0a9355699f"
+  "bytes": 19531,
+  "sha256": "a3f349f5cb1c74db6ab18a31562d16d3cb58300b671e6427ce9acb0a0481f5a0"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
