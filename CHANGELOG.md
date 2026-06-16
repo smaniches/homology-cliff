@@ -6,6 +6,25 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [Unreleased]
 
+## [v1.5.2] — 2026-06-16
+
+Pooled-F1 provenance + Paper 2 Attempt-2 correction. No conclusion changes; all evidence cells and result summaries are byte-identical to v1.5.0.
+
+### Added
+- `code/analyses/compute_pooled_f1.py` + `data/results_summaries/pooled_f1_summary.json`: reproduce pooled (whole-test-set) F1, per-stratum F1, and the close-distant gap for the cited cells directly from the committed embeddings (via `run_cliff`/`run_fisher`). The cosine/mahalanobis/learned pooled values cross-check against the committed cascade cells to a maximum drift of 8.8e-6; the script supplies the one pooled value (Fisher-Rao) that no committed cell stored. `reproduce.py` now asserts the rescue-table pooled row (default mode) and re-derives it under `--full`.
+
+### Fixed — Paper 2 Attempt-2 (Fisher-Rao), erratum 2026-06-16
+- The prior text claimed Fisher-Rao "underperforms Mahalanobis" with a "+0.015 to +0.285 pooled-F1 penalty" and is "strictly worse than Mahalanobis." Reproduction from the committed cells shows the opposite sign: Fisher attains **higher** pooled F1 than Mahalanobis in all 18 cells (its close-stratum collapse is milder). The pre-registered result is unchanged: Fisher's close-distant **gap** exceeds Mahalanobis's in 17 of 18 cells (H1 rejected), and at the R=1000 deployment regime neither whitening lifts distant-stratum F1 to the cosine baseline, so Attempt 2 remains a failed rescue.
+- `fig:whitening` now plots **distant-stratum F1** (the safety-critical metric, reproducible from the committed cells: cosine > Fisher > Mahalanobis at R=500 and 1000) instead of pooled F1; the prior figure plotted Fisher below Mahalanobis, which the pooled data does not support.
+- Attempt-2 factorial description corrected to "3 panels x 2 k-values" (was "2 panels x 3 k-values"; the run is R in {100,500,1000} x k in {5,25}).
+
+### Fixed — Paper 2 Attempt-3 (cascade), Paper 1 rescue table
+- Attempt-3 cascade pooled-F1 penalty range corrected to **-0.046 to -0.236** (10-seed mean, from the committed cascade cells; the prior **-0.310** overstated the maximum). The "rejected in 18 of 18 cells" conclusion is unchanged.
+- Paper 1 rescue-table Fisher-Rao row brought into exact agreement with the committed Fisher cells: close 0.478->0.484, distant 0.094->0.099, pooled 0.461->0.462 (the cosine/Mahalanobis/learned rows already matched).
+
+### Changed
+- `version` 1.5.1 -> 1.5.2 in `CITATION.cff`, `codemeta.json`, `README.md`, `pyproject.toml`; Papers 1 and 2 PDFs rebuilt; `figures/cliff_summary.png` version label updated; `MANIFEST.sha256.json` refreshed.
+
 ## [v1.5.1] — 2026-06-16
 
 Figure-erratum and citation-metadata patch. No result, table, or conclusion changes; all evidence cells and result summaries are byte-identical to v1.5.0.

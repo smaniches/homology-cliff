@@ -64,12 +64,12 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 25986,
-  "sha256": "31ebcfadd82e6b4f62f20ad16769e42eb70bc8eea1a9425421cace980c94f782"
+  "bytes": 28563,
+  "sha256": "171da4867e88251e40e76efad15dd2d3c467e8707da7dcee6331e60f2411a820"
  },
  "CITATION.cff": {
   "bytes": 610,
-  "sha256": "92e7df44738497a3971888cfdad01ec4222da85337b5bcfb54170b1fa88ad0dc"
+  "sha256": "670cf61fbf29804313d9dc6e05e3e8cede021bbc8de9462a138caf14b28d2ede"
  },
  "CODE_OF_CONDUCT.md": {
   "bytes": 1163,
@@ -109,7 +109,7 @@
  },
  "README.md": {
   "bytes": 21614,
-  "sha256": "f91772f463f180444a2bdc8b196a51d9084dc1cf3a9487b6aac0790db5be276d"
+  "sha256": "246141c0c4bca58c26c60a487dbfc849d41ed3c420541f9074ac5df97a535881"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -126,6 +126,10 @@
  "STATUS.md": {
   "bytes": 5255,
   "sha256": "b73e5dfbcd182f42af93e53407a8ce31f6ea468fad99dbace617ceca0d47b16e"
+ },
+ "code/analyses/compute_pooled_f1.py": {
+  "bytes": 7549,
+  "sha256": "9b61c39a05adb4d18f166766b286b13b8b496f4575d348ee6c1bef5ce87bff0e"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
@@ -209,7 +213,7 @@
  },
  "codemeta.json": {
   "bytes": 1167,
-  "sha256": "cfe72fde3509884a9045785abf5f074c024ade5615ab778afa4245b828feb60f"
+  "sha256": "0bd38afa2bd3b32da365cb1f0343f28311ad4ba586d3e4e79b30d2f01e14b0cb"
  },
  "data/annotations/proteins_25k_pfam.json": {
   "bytes": 14117086,
@@ -37727,6 +37731,10 @@
   "bytes": 55530,
   "sha256": "cf50b88450ce8cf6c4879ea1ca487ddb4576e738ded03957dc5184b49f4c9fcf"
  },
+ "data/results_summaries/pooled_f1_summary.json": {
+  "bytes": 13872,
+  "sha256": "d831196b7e82f460ba729bfb2b7c91902b37bb30120a47ce3c07a4e63814e8fb"
+ },
  "data/results_summaries/proteins_25k_pfam.json": {
   "bytes": 14117086,
   "sha256": "cf8c92aec615bb2975d73ed74a7544d71a86f6db1bcc7f4a4c5187939e642aeb"
@@ -37772,16 +37780,16 @@
   "sha256": "ebe839db9bb28795e236c682a014857f92105e7a2f07df71b2cccd4de903d384"
  },
  "figures/cliff_summary.png": {
-  "bytes": 193259,
-  "sha256": "e387785e92aa4051ac2e21f64993835b518ac3a85236caa989beac74128e6548"
+  "bytes": 193408,
+  "sha256": "69dab5238a262817ae4f2a2263133de4a8481169066d286ee7a6fbfff353d2a3"
  },
  "papers/01_homology_cliff_and_rescue/paper.pdf": {
-  "bytes": 271217,
-  "sha256": "094f60438fba45c72bc83309916457954500b5ddc814fae2891d00ecc3bc16d5"
+  "bytes": 271789,
+  "sha256": "c430a2200738781060fdeaf5ef43e27bf8a0107f52cbc7d1c3f1688622d78858"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 19531,
-  "sha256": "a3f349f5cb1c74db6ab18a31562d16d3cb58300b671e6427ce9acb0a0481f5a0"
+  "bytes": 19841,
+  "sha256": "07ab6177c45aa839604077a7d2e17372bedca70c701316dbc25141c029e1f858"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
@@ -37808,12 +37816,12 @@
   "sha256": "ee430c7c51e89e1c378b955a2368f14a1282bcee4f11f5591546a5e3f3da9080"
  },
  "papers/02_three_failed_rescues/paper.pdf": {
-  "bytes": 215190,
-  "sha256": "19f46dcc7baa3b124871f19e2e0e6cf8874bee4def2d0383b8311e5f7bfd6190"
+  "bytes": 217955,
+  "sha256": "3e8086d0f5e5b0024c6868a9fae1dfcd3981582ef83882ca825dde54cbefd1f6"
  },
  "papers/02_three_failed_rescues/paper.tex": {
-  "bytes": 11887,
-  "sha256": "04107642feac59459a281c6f69770f7c6106a0f5a7c304959890a0390057301d"
+  "bytes": 14043,
+  "sha256": "341cc2501ad6316bc3fb237e8282e0e55f37268ce19530b7610754a12ff0b50b"
  },
  "papers/02_three_failed_rescues/references.bib": {
   "bytes": 7390,
@@ -37893,11 +37901,11 @@
  },
  "pyproject.toml": {
   "bytes": 7280,
-  "sha256": "a12591d953d15c79402ef079332aa99487f6faf6dc5dd629a68b16f06e4c34d5"
+  "sha256": "8d4dd866f6858a905960e44c252b4c78e43e69640dd6a6147c17938ac0c74b8c"
  },
  "reproduce.py": {
-  "bytes": 6234,
-  "sha256": "75dc37323d3647446cb373c4773ed2448266ae997424cee23b72fc59f9c034fd"
+  "bytes": 8191,
+  "sha256": "f3c066c5537b3c1e5991017fa21067d95b8582e80aa98dba668a60dae8c7ec5e"
  },
  "reproducibility/GPU_EXECUTION_GUIDE.md": {
   "bytes": 4041,
@@ -37913,7 +37921,7 @@
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10705,
-  "sha256": "899a2b57604144318359e770a99e1bab20eb0c3478fa1d6330fb444b43efbcab"
+  "sha256": "6020ac1902c7c4dfaa6053b52466dcc33ccf03675671e3bbb68f15dda3592d9b"
  },
  "scripts/ci/verify_evidence.py": {
   "bytes": 6655,

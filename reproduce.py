@@ -82,6 +82,38 @@ def verify_headline_numbers() -> bool:
     return bool(ok)
 
 
+def verify_pooled_numbers() -> bool:
+    """Assert the committed pooled-F1 summary's headline pooled values.
+
+    pooled_f1_summary.json is the consolidated pooled (whole-test-set) F1 that
+    the Paper 1 rescue table and Paper 2 whitening comparison reference;
+    cosine/mahalanobis/learned values are cross-checked against the committed
+    cascade cells by code/analyses/compute_pooled_f1.py, fisher against the
+    same validated pipeline. Here we assert the rescue-table row and that the
+    learned projection wins pooled F1 over cosine (the Paper 1 rescue).
+    """
+    print("\n=== pooled F1 (committed summary) ===", flush=True)
+    path = SUMMARIES / "pooled_f1_summary.json"
+    if not path.is_file():
+        print("    pooled_f1_summary.json MISSING (run code/analyses/compute_pooled_f1.py)")
+        return False
+    pf = json.loads(path.read_text(encoding="utf-8"))
+    ok = True
+    for key, target, tol in [
+        ("t30_1000_25_cosine", 0.848, 1e-3),
+        ("t30_1000_25_mahalanobis", 0.435, 1e-3),
+        ("t30_1000_25_fisher", 0.462, 6e-3),   # fisher: LAPACK eigh tolerance
+        ("t30_1000_25_learned", 0.891, 1e-3),
+    ]:
+        ok &= _approx(pf[key]["pooled"], target, tol, f"pooled {key}")
+    rescue = pf["t30_1000_25_learned"]["pooled"] > pf["t30_1000_25_cosine"]["pooled"]
+    print(f"    {'learned pooled > cosine pooled (t30 R1000 k25)':<34} = {rescue}  "
+          f"({pf['t30_1000_25_learned']['pooled']:.4f} > {pf['t30_1000_25_cosine']['pooled']:.4f})")
+    ok &= rescue
+    print(f"--> pooled F1: {'PASS' if ok else 'FAIL'}", flush=True)
+    return bool(ok)
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -110,7 +142,12 @@ def reproduce_full() -> bool:
         print(f"    {out.name}: SHA256 {'BIT-FOR-BIT IDENTICAL' if identical else 'DIFFERS'} "
               f"({after[:16]}...)")
         ok &= identical
-    print(f"--> --full bit-for-bit reproduction: {'PASS' if ok else 'FAIL'}", flush=True)
+    # Pooled F1 (no committed cell stores fisher pooled): re-derive from the
+    # embeddings and assert tolerance agreement with the committed summary.
+    if not _run("re-derive pooled_f1_summary (tolerance check)",
+                [PY, "code/analyses/compute_pooled_f1.py", "--check"]):
+        ok = False
+    print(f"--> --full re-derivation: {'PASS' if ok else 'FAIL'}", flush=True)
     return ok
 
 
@@ -131,6 +168,7 @@ def main() -> int:
     ]
     results = {label: _run(label, argv) for label, argv in phases}
     results["headline numbers"] = verify_headline_numbers()
+    results["pooled numbers"] = verify_pooled_numbers()
     if args.full:
         results["--full bit-for-bit"] = reproduce_full()
 
