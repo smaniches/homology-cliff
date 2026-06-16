@@ -6,6 +6,22 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [Unreleased]
 
+## [v1.5.1] — 2026-06-16
+
+Figure-erratum and citation-metadata patch. No result, table, or conclusion changes; all evidence cells and result summaries are byte-identical to v1.5.0.
+
+### Fixed — figure erratum (2026-06-16)
+- **Paper 1, Figure 1 (`fig:cliff_surface`) and Figure 3 (`fig:rescue`)** are now plotted directly from the committed MAIN gap table (`data/results_summaries/v3_final.txt`). The previously plotted values at interior panel sizes and at the t6/t12 scales had been hand-entered and diverged from the committed data; the `R=1000` endpoints, the t30 column, the data tables, and the +16/+33/+47% relative-improvement figures were already correct. The corrected figures show the same monotonic cliff and the same rescue ordering (learned > cosine > Mahalanobis at every scale); the y-axis of Figure 3 was widened and Figure 1's caption now notes that the scale ordering is established for panels `R≥100`. The reliability figure (Figure 2) was already correct (verified against `calibration_results.json`) and is unchanged.
+- **Paper 5, `fig:mapper`** is now generated directly from the committed Mapper graph (`data/results_summaries/mapper_graph.json`): it plots the dominant node per occupied PCA lens bin, colored by positive fraction, and the caption is corrected accordingly. The previously plotted points were hand-entered and did not all match the committed graph. The Pfam-partition results are unchanged.
+- `scripts/build_summary_figure.py` / `figures/cliff_summary.png` regenerated (all panels are parsed from the committed summaries; version label updated; content unchanged).
+
+### Fixed — citation metadata
+- Corrected the Zenodo DOI references. `CITATION.cff`, `README.md`, and `codemeta.json` previously cited `10.5281/zenodo.20143143` as the "concept DOI." That identifier is the **v1.4.7 version DOI**; the **concept DOI is `10.5281/zenodo.20143142`** (it resolves to the latest version) and is now the canonical citation DOI. For the record, the version DOIs are v1.4.7 → 10.5281/zenodo.20143143 and v1.5.0 → 10.5281/zenodo.20719001.
+
+### Changed
+- `version` 1.5.0 → 1.5.1 and dates → 2026-06-16 in `CITATION.cff`, `codemeta.json`, `README.md`, and `pyproject.toml`.
+- `MANIFEST.sha256.json`: refreshed hashes for the edited paper PDFs and `.tex` sources, the citation-metadata files, and the regenerated summary figure (entry count unchanged at 9,488).
+
 ## [v1.5.0] — 2026-06-15
 
 This release adds externally-verifiable engineering quality gates and a transparent **erratum**: a stale committed artifact and a code defect — neither affecting any core finding — were corrected after a full write-free reproduction audit in which the headline homology-cliff result reproduced bit-for-bit from the committed embeddings and seeds.

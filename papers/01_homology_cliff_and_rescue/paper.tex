@@ -7,7 +7,7 @@
 \newtheorem{proposition}{Proposition}
 \title{The Homology Cliff in Frozen ESM-2 Biosecurity Retrieval: Characterization, Pre-Registered Null Controls, Cross-Family Mechanism, and a Deployable Rescue}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC. Correspondence: santiago@topologica.llc.}}
-\date{April 12, 2026 (v1.1; erratum 2026-06-15)}
+\date{April 12, 2026 (v1.1; erratum 2026-06-15; figure erratum 2026-06-16)}
 \begin{document}
 \maketitle
 
@@ -16,6 +16,8 @@ Frozen protein language models (PLMs) increasingly feed biosecurity retrieval pi
 \end{abstract}
 
 \paragraph{Erratum (2026-06-15).} The reliability figure (Fig.~\ref{fig:reliability}) is now plotted from the script-computed reliability table rather than hand-entered diagram read-offs; all cited values (distant precision $3/44=0.068$, ECE close 0.069 / distant 0.294, the $+0.745$ cliff gap) are unchanged and were independently reproduced bit-for-bit from the committed embeddings and seeds. A stale-artifact correction to the Paper 3 calibration table and a deduplication fix to the Paper 2 Mapper-augmentation number are documented in \texttt{CHANGELOG.md}.
+
+\paragraph{Erratum (2026-06-16).} Figures~\ref{fig:cliff_surface} and~\ref{fig:rescue} are now plotted directly from the committed MAIN gap table (\texttt{data/results\_summaries/v3\_final.txt}). Their previously plotted values at interior panel sizes and at the t6/t12 scales had been hand-entered and diverged from the committed data; the $R{=}1000$ endpoints, the t30 column, the rescue table, and the $+16/+33/+47\%$ relative-improvement figures were already correct. No table, number, or conclusion changes; the corrected figures show the same monotonic cliff and the same rescue ordering (learned $>$ cosine $>$ Mahalanobis at every scale).
 
 \section{Introduction}
 Frozen protein language models \cite{lin2023evolutionary,elnaggar2022prottrans,brandes2022proteinbert,madani2023progen} now serve as general-purpose feature extractors for downstream retrieval, classification, and design tasks. A common deployment pattern is cosine $k$-NN retrieval: given a query protein, retrieve the $k$ nearest panel members in frozen embedding space and vote their labels. For biosecurity applications, where the query set contains potentially novel threats and the panel contains known-toxin exemplars, retrieval performance on proteins distant from any panel member is the safety-critical metric.
@@ -74,11 +76,11 @@ Verified to 4 decimals in 75 of 75 cells.
 \begin{figure}[h]\centering
 \begin{tikzpicture}
 \begin{axis}[width=11cm,height=6cm,xlabel={panel size $R$},ylabel={close-distant $F_1$ gap ($k=25$ cosine)},xmode=log,log basis x=10,grid=major,legend pos=south east,xtick={50,100,250,500,1000},xticklabels={50,100,250,500,1000},ymin=0.2,ymax=0.8]
-\addplot[blue,mark=o,thick] coordinates {(50,0.289)(100,0.430)(250,0.575)(500,0.618)(1000,0.585)}; \addlegendentry{t6 (8M)}
-\addplot[red,mark=square,thick] coordinates {(50,0.410)(100,0.535)(250,0.660)(500,0.692)(1000,0.710)}; \addlegendentry{t12 (35M)}
-\addplot[black,mark=triangle,thick] coordinates {(50,0.295)(100,0.560)(250,0.681)(500,0.725)(1000,0.745)}; \addlegendentry{t30 (150M)}
+\addplot[blue,mark=o,thick] coordinates {(50,0.289)(100,0.424)(250,0.536)(500,0.571)(1000,0.585)}; \addlegendentry{t6 (8M)}
+\addplot[red,mark=square,thick] coordinates {(50,0.249)(100,0.501)(250,0.626)(500,0.668)(1000,0.709)}; \addlegendentry{t12 (35M)}
+\addplot[black,mark=triangle,thick] coordinates {(50,0.442)(100,0.541)(250,0.710)(500,0.734)(1000,0.745)}; \addlegendentry{t30 (150M)}
 \end{axis}\end{tikzpicture}
-\caption{\textbf{The cliff grows with scale and panel size.} Close-distant $F_1$ gap at $k=25$ cosine, 10-seed mean per cell. Larger PLMs produce larger cliffs; larger panels amplify the cliff.}\label{fig:cliff_surface}
+\caption{\textbf{The cliff grows with scale and panel size.} Close-distant $F_1$ gap at $k=25$ cosine, 10-seed mean per cell. Larger panels amplify the cliff at every scale; larger PLMs produce larger cliffs at panels $R\geq100$ (at the smallest panel, $R=50$, the scale ordering has not yet stabilized).}\label{fig:cliff_surface}
 \end{figure}
 
 \begin{center}\small
@@ -140,10 +142,10 @@ where $Z_\pm$ are $L_2$-normalized projections of the positive and negative pane
 
 \begin{figure}[h]\centering
 \begin{tikzpicture}
-\begin{axis}[width=11cm,height=5.5cm,xlabel={scale},ylabel={distant-stratum $F_1$},ybar=3pt,bar width=10pt,grid=major,legend pos=north west,ymin=0,ymax=0.22,symbolic x coords={t6,t12,t30},xtick=data]
-\addplot[fill=blue!50] coordinates {(t6,0.122) (t12,0.135) (t30,0.120)}; \addlegendentry{cosine baseline}
-\addplot[fill=red!50] coordinates {(t6,0.110) (t12,0.108) (t30,0.087)}; \addlegendentry{Mahalanobis}
-\addplot[fill=green!60] coordinates {(t6,0.141) (t12,0.180) (t30,0.177)}; \addlegendentry{learned projection}
+\begin{axis}[width=11cm,height=5.5cm,xlabel={scale},ylabel={distant-stratum $F_1$},ybar=3pt,bar width=10pt,grid=major,legend pos=north west,ymin=0,ymax=0.4,symbolic x coords={t6,t12,t30},xtick=data]
+\addplot[fill=blue!50] coordinates {(t6,0.297) (t12,0.173) (t30,0.120)}; \addlegendentry{cosine baseline}
+\addplot[fill=red!50] coordinates {(t6,0.098) (t12,0.050) (t30,0.087)}; \addlegendentry{Mahalanobis}
+\addplot[fill=green!60] coordinates {(t6,0.345) (t12,0.231) (t30,0.177)}; \addlegendentry{learned projection}
 \end{axis}\end{tikzpicture}
 \caption{\textbf{Distant-stratum $F_1$ by scale, $R=1000$ $k=25$.} Learned projection wins every scale; relative improvement grows with scale: +16\% (t6), +33\% (t12), +47\% (t30). Mahalanobis loses at every scale.}\label{fig:rescue}
 \end{figure}

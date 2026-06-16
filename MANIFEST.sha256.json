@@ -64,12 +64,12 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 23582,
-  "sha256": "20c58550858d4fe68f6cf9e3740015fd98042f8f02b2603e5c3925b666bce90f"
+  "bytes": 25986,
+  "sha256": "31ebcfadd82e6b4f62f20ad16769e42eb70bc8eea1a9425421cace980c94f782"
  },
  "CITATION.cff": {
   "bytes": 610,
-  "sha256": "3b52589ca749a7f1122f0a4dbd5a48f4e612a8e3de241d9f78e582bc77af9b49"
+  "sha256": "92e7df44738497a3971888cfdad01ec4222da85337b5bcfb54170b1fa88ad0dc"
  },
  "CODE_OF_CONDUCT.md": {
   "bytes": 1163,
@@ -108,8 +108,8 @@
   "sha256": "9194f3083f0698324d283114487a873e04d0c153dff67fa9bd89285df6ec4cb6"
  },
  "README.md": {
-  "bytes": 21408,
-  "sha256": "6caae0c99b222f2e076483ec8dc2b16e34434f48f511384487c9d7da70d6eeb3"
+  "bytes": 21614,
+  "sha256": "f91772f463f180444a2bdc8b196a51d9084dc1cf3a9487b6aac0790db5be276d"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -209,7 +209,7 @@
  },
  "codemeta.json": {
   "bytes": 1167,
-  "sha256": "68696204f6c4fbdd427cbec9420331b7fd9994efe484e1ada952aa9780cf4bc4"
+  "sha256": "cfe72fde3509884a9045785abf5f074c024ade5615ab778afa4245b828feb60f"
  },
  "data/annotations/proteins_25k_pfam.json": {
   "bytes": 14117086,
@@ -37772,16 +37772,16 @@
   "sha256": "ebe839db9bb28795e236c682a014857f92105e7a2f07df71b2cccd4de903d384"
  },
  "figures/cliff_summary.png": {
-  "bytes": 193249,
-  "sha256": "8c590728c1d4057413902c30a16800f51e218101da0d559adb287f80d92e93ab"
+  "bytes": 193259,
+  "sha256": "e387785e92aa4051ac2e21f64993835b518ac3a85236caa989beac74128e6548"
  },
  "papers/01_homology_cliff_and_rescue/paper.pdf": {
-  "bytes": 269225,
-  "sha256": "d3e124fe3aee988875f32ff3e2a652109ddc61421e519c03253759286282fc07"
+  "bytes": 270963,
+  "sha256": "e49a8817564f65258353645659ac0936974846c3c00af9b52e1326bd2e476390"
  },
  "papers/01_homology_cliff_and_rescue/paper.tex": {
-  "bytes": 18691,
-  "sha256": "e16ea5ccb42a03962d349e1a2466b16fed8b2bfa5cba088444a8d3ce490ef74f"
+  "bytes": 19476,
+  "sha256": "8643af64dad59be8bde0a9350d452052496be6031b6e588d52fe3c0a9355699f"
  },
  "papers/01_homology_cliff_and_rescue/references.bib": {
   "bytes": 7154,
@@ -37868,12 +37868,12 @@
   "sha256": "7cdc8747a5ebe127b152379d1dc5ac5ae872a12d2a13a30250cdceda9ab851c7"
  },
  "papers/05_cross_family_and_mapper/paper.pdf": {
-  "bytes": 180172,
-  "sha256": "253460312d215627b5218af907ad5e8a8afa37d629fbf4223fb92da0f995fd67"
+  "bytes": 196855,
+  "sha256": "cb737a540e051215362384b7874149d56c01ee32d68784c7451efd232a26d1a6"
  },
  "papers/05_cross_family_and_mapper/paper.tex": {
-  "bytes": 8300,
-  "sha256": "015f93976d5ab83c94d1c28b1549a2cedd4be45c8b57e7f95823c7d4ce5ca846"
+  "bytes": 9734,
+  "sha256": "7eb1f797a4d70143406963ec6ffb7573ec1894a8926d24b431f97bb240ff22f7"
  },
  "papers/05_cross_family_and_mapper/references.bib": {
   "bytes": 7390,
@@ -37893,7 +37893,7 @@
  },
  "pyproject.toml": {
   "bytes": 7280,
-  "sha256": "49b5104e8599c32f767e304e0ffb3eae445f27117abb2b1a6e74d4cf41e9c123"
+  "sha256": "a12591d953d15c79402ef079332aa99487f6faf6dc5dd629a68b16f06e4c34d5"
  },
  "reproduce.py": {
   "bytes": 6234,
@@ -37913,7 +37913,7 @@
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10705,
-  "sha256": "d335c2d428a0e3025c3223d8c66e42e3b9879da7127087f8e77d38d79038796e"
+  "sha256": "899a2b57604144318359e770a99e1bab20eb0c3478fa1d6330fb444b43efbcab"
  },
  "scripts/ci/verify_evidence.py": {
   "bytes": 6655,

@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.5.0 &nbsp;·&nbsp; **Date:** June 15, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI:** [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143)
+**Version:** v1.5.1 &nbsp;·&nbsp; **Date:** June 16, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -118,9 +118,9 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.5.0",
-  "doi": "10.5281/zenodo.20143143",
-  "doi_url": "https://doi.org/10.5281/zenodo.20143143",
+  "version": "1.5.1",
+  "doi": "10.5281/zenodo.20143142",
+  "doi_url": "https://doi.org/10.5281/zenodo.20143142",
   "orcid": "0009-0005-6480-1987",
   "citation_file": "CITATION.cff",
   "codemeta": "codemeta.json",
@@ -182,7 +182,7 @@ See `reproducibility/GPU_EXECUTION_GUIDE.md`. Two unfinished but scaffolded expe
 
 ## Zenodo DOI
 
-The compendium is permanently archived at Zenodo with DOI [**10.5281/zenodo.20143143**](https://doi.org/10.5281/zenodo.20143143) (concept DOI; each tagged release mints its own version DOI). Deposit metadata is in `.zenodo.json`; the badge at the top of this README always resolves to the latest version.
+The compendium is permanently archived at Zenodo. The **concept DOI** [**10.5281/zenodo.20143142**](https://doi.org/10.5281/zenodo.20143142) always resolves to the latest version; each tagged release also receives its own version DOI (v1.4.7 → [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143); v1.5.0 → [10.5281/zenodo.20719001](https://doi.org/10.5281/zenodo.20719001)). Deposit metadata is in `.zenodo.json`; the badge at the top of this README resolves to the latest version.
 
 ## Files to read in order if you have one hour
 
@@ -201,8 +201,8 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = jun, version = {1.5.0},
-  doi = {10.5281/zenodo.20143143},
+  year = {2026}, month = jun, version = {1.5.1},
+  doi = {10.5281/zenodo.20143142},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},
   license = {CC-BY-4.0 (papers), MIT (code)}
