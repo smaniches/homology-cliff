@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-title: "Homology Cliff in Frozen Protein Language Models: Research Compendium v1.4.7"
+title: "Homology Cliff in Frozen Protein Language Models: Research Compendium v1.5.0"
 message: "If you use this compendium or its findings, please cite."
 authors:
   - family-names: Maniches
     given-names: Santiago
     orcid: "https://orcid.org/0009-0005-6480-1987"
     affiliation: "TOPOLOGICA LLC"
-version: 1.4.7
-date-released: 2026-05-12
+version: 1.5.0
+date-released: 2026-06-15
 doi: "10.5281/zenodo.20143143"
 repository-code: "https://github.com/smaniches/homology-cliff"
 license: [MIT, CC-BY-4.0]

@@ -49,7 +49,13 @@ emb = load_embeddings("t30")
 def build_biased_panel(R, seed, biased_pool_idx):
     """R/2 positive from biased_pool_idx (if positive there), R/2 negative uniform."""
     rng = np.random.default_rng(seed + R)
-    biased_pool = np.array([i for i in biased_pool_idx if labels[i] == 1], dtype=int)
+    # Deduplicate the positive pool. The Mapper cover is 30%-overlapping, so a
+    # boundary protein appears in several nodes' member lists; without np.unique
+    # it recurs in biased_pool and rng.choice(..., replace=False) -- which removes
+    # POSITIONS, not VALUES -- can draw the same protein more than once, yielding a
+    # biased panel with fewer than R/2 UNIQUE positives (and a reference vector
+    # double-counted). Dedup makes the biased and uniform arms comparably built.
+    biased_pool = np.unique(np.array([i for i in biased_pool_idx if labels[i] == 1], dtype=int))
     neg_idx = np.where(labels == 0)[0]
     half = R // 2
     if len(biased_pool) < half:

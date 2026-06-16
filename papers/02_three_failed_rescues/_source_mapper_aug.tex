@@ -6,14 +6,16 @@
 \date{April 12, 2026}
 \begin{document}
 \maketitle
+
+\noindent\textbf{Erratum (2026-06-15).} This standalone draft is superseded by the consolidated \texttt{paper.tex}. The biased-panel positive pool is now deduplicated (the overlapping Mapper cover otherwise let boundary proteins be sampled more than once, giving fewer than 500 unique positives); the corrected rescue is $-0.0080$ (95\% CI $[-0.035,+0.018]$), versus $+0.0018$ as originally reported. The CI still spans zero and H1 remains rejected; the conclusion is unchanged. The per-seed table and totals below reflect the corrected (deduplicated) biased arm; the uniform arm is unchanged.
 \begin{abstract}
-A Mapper decomposition of the frozen ESM-2 t30 embedding of our 24{,}885-protein biosecurity test set finds 149 nodes, of which 6 are all-positive and 30 have positive fraction $>0.5$. The positive class forms a coherent, spatially-localized cluster on the PCA lens. We pre-registered H1: a reference panel biased toward positive-enriched Mapper nodes rescues distant-stratum $F_1$ over uniform sampling by at least $+0.02$ with 95\% CI excluding zero. Across 10 seeds at t30 $R{=}1000$ $k{=}25$, the rescue is $+0.0018$, 95\% CI $[-0.027, +0.029]$, solidly including zero. H1 rejected. This joins the cascade-, Fisher-, and Mahalanobis-based attempts: the cliff cannot be rescued by panel composition or by post-hoc distance substitution. Only a supervised linear projection of the embedding space itself (learned-projection companion) improves distant-stratum $F_1$ significantly. The cliff is a property of the embedding space geometry, not of panel sampling strategy or metric choice.
+A Mapper decomposition of the frozen ESM-2 t30 embedding of our 24{,}885-protein biosecurity test set finds 149 nodes, of which 6 are all-positive and 30 have positive fraction $>0.5$. The positive class forms a coherent, spatially-localized cluster on the PCA lens. We pre-registered H1: a reference panel biased toward positive-enriched Mapper nodes rescues distant-stratum $F_1$ over uniform sampling by at least $+0.02$ with 95\% CI excluding zero. Across 10 seeds at t30 $R{=}1000$ $k{=}25$, the rescue is $-0.0080$, 95\% CI $[-0.035, +0.018]$, solidly including zero. H1 rejected. This joins the cascade-, Fisher-, and Mahalanobis-based attempts: the cliff cannot be rescued by panel composition or by post-hoc distance substitution. Only a supervised linear projection of the embedding space itself (learned-projection companion) improves distant-stratum $F_1$ significantly. The cliff is a property of the embedding space geometry, not of panel sampling strategy or metric choice.
 \end{abstract}
 
 \section{Setup}
-Mapper: PCA lens to 2D (33\% explained variance), 10$\times$10 cover with 30\% overlap, DBSCAN clustering ($\varepsilon{=}0.05$, min\_samples 5) on cosine distance per pre-image. 149 nodes, sizes 5--3579, 6 all-positive, 30 with pos\_frac $>0.5$. Top positive-enriched node: bin (7,4), $n{=}1708$, pos\_frac $0.885$. The top 1 positive node alone has 1131 positive proteins.
+Mapper: PCA lens to 2D (33\% explained variance), 10$\times$10 cover with 30\% overlap, DBSCAN clustering ($\varepsilon{=}0.05$, min\_samples 5) on cosine distance per pre-image. 149 nodes, sizes 5--3579, 6 all-positive, 30 with pos\_frac $>0.5$. Top positive-enriched node: bin (7,4), $n{=}1708$, pos\_frac $0.885$. The top 1 positive node alone has 1512 positive proteins.
 
-Biased panel: $R/2 = 500$ positive members drawn from the top-1 positive-enriched Mapper node (1131 positives available); $R/2 = 500$ negative members drawn uniformly from the 17{,}752-negative pool. Seed rule matches the main pre-reg.
+Biased panel: $R/2 = 500$ positive members drawn from the top-1 positive-enriched Mapper node (1512 positives available); $R/2 = 500$ negative members drawn uniformly from the 17{,}752-negative pool. Seed rule matches the main pre-reg.
 
 \section{Result}
 \begin{center}
@@ -21,23 +23,23 @@ Biased panel: $R/2 = 500$ positive members drawn from the top-1 positive-enriche
 \toprule
 seed & uniform distant $F_1$ & biased distant $F_1$ \\
 \midrule
-20260410 & 0.1200 & 0.1081 \\
-20260411 & 0.1013 & 0.1446 \\
-20260412 & 0.1488 & 0.1017 \\
-20260413 & 0.1270 & 0.1429 \\
-20260414 & 0.1159 & 0.1282 \\
-20260415 & 0.0984 & 0.1481 \\
-20260416 & 0.0857 & 0.0600 \\
-20260417 & 0.1846 & 0.1500 \\
-20260418 & 0.0571 & 0.1250 \\
-20260419 & 0.1644 & 0.1124 \\
+20260410 & 0.1200 & 0.1127 \\
+20260411 & 0.1013 & 0.1163 \\
+20260412 & 0.1488 & 0.1345 \\
+20260413 & 0.1270 & 0.1096 \\
+20260414 & 0.1159 & 0.1250 \\
+20260415 & 0.0984 & 0.1220 \\
+20260416 & 0.0857 & 0.0612 \\
+20260417 & 0.1846 & 0.1111 \\
+20260418 & 0.0571 & 0.1379 \\
+20260419 & 0.1644 & 0.0930 \\
 \midrule
-mean     & 0.1203 & 0.1221 \\
+mean     & 0.1203 & 0.1123 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Rescue = biased mean $-$ uniform mean $= +0.0018$. Bootstrap 95\% CI (5000 resamples, 10 seeds each): $[-0.0274, +0.0293]$. Includes zero. H1 rejected.
+Rescue = biased mean $-$ uniform mean $= -0.0080$. Bootstrap 95\% CI (5000 resamples, 10 seeds each): $[-0.0353, +0.0176]$. Includes zero. H1 rejected.
 
 \section{Why it fails}
 Positives on the t30 embedding manifold are clustered in a contiguous region (PCA bins (6,3)-(8,8)), with 93.9\% of the top-2 Mapper nodes being positive. Any panel sampled with $R/2{=}500$ positives from a class with 7{,}133 members already covers this region densely. Further biasing toward the largest positive node does not add information the panel did not already contain.

@@ -36,7 +36,7 @@ A public benchmark for frozen protein language model retrieval on biosecurity-re
 | 3 | Fisher-Rao whitening | 0.094 | 0.461 | 0 / 18 | Maniches 2026 (rejected) |
 | 4 | Mahalanobis Ledoit-Wolf | 0.087 | 0.435 | 0 / 18 | Maniches 2026 (rejected) |
 | 5 | Cosine+Mahalanobis cascade | 0.074 | 0.538 | 0 / 18 | Maniches 2026 (rejected) |
-| 6 | Mapper-biased panel augmentation | 0.122 (+0.002) | 0.850 | 0 / 18 | Maniches 2026 (rejected) |
+| 6 | Mapper-biased panel augmentation | 0.112 (-0.008) | 0.850 | 0 / 18 | Maniches 2026 (rejected) |
 
 ## How to submit
 

@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.4.7 &nbsp;·&nbsp; **Date:** May 12, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI:** [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143)
+**Version:** v1.5.0 &nbsp;·&nbsp; **Date:** June 15, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI:** [10.5281/zenodo.20143143](https://doi.org/10.5281/zenodo.20143143)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -77,7 +77,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,481 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,487 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
@@ -92,7 +92,7 @@ All four pre-registrations were committed **before** the corresponding experimen
 
 ## Honest limitations
 
-This is a v1.4.7 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.5.0 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
 - Reference counts are 24 (Paper 1), 25 (Paper 2), 8 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
@@ -109,7 +109,7 @@ This compendium was produced by one independent researcher with AI-collaboration
 2. **Every cell is on disk.** All 9,360 per-cell results are committed as .npz files, not as summary statistics. Each file has the full schema `{cell, shuffle, close, moderate, distant}` with n, f1, bootstrap CI, precision, recall for each stratum. You can recompute any aggregate number in any paper from the cells.
 3. **Deterministic seeds.** Every stochastic operation uses `numpy.random.default_rng(seed)` with the seed specified in the filename. `default_rng(seed + 7777777)` is used for the full-pool null. Re-running produces byte-identical outputs.
 4. **Git history.** Every claim's introduction to a paper is tied to a commit. The git log shows, for example, that the cross-family finding (`c097202`) was committed AFTER the Pfam data completion and BEFORE the v1.0.1 tag. Nothing was back-dated.
-5. **Self-audited errors.** `PROBLEMS.md` lists ten specific errors caught and corrected during authoring (six in v0, four in the v1.4.4 raised-bar pre-public audit pass), including one where I used the wrong framing for a finding ("Mahalanobis rescues the cliff by +0.376") and corrected it after the cascade experiment decisively rejected the implied rescue hypothesis, and four code/calibration/overclaim issues caught at v1.4.4 and documented as items 8-10 in `PROBLEMS.md`. Being willing to write these down is the strongest signal I can offer that the work is honest.
+5. **Self-audited errors.** `PROBLEMS.md` lists nine specific errors caught and corrected during authoring (six in v0, three in the v1.4.4 raised-bar pre-public audit pass), including one where I used the wrong framing for a finding ("Mahalanobis rescues the cliff by +0.376") and corrected it after the cascade experiment decisively rejected the implied rescue hypothesis, and three code/calibration/overclaim issues caught at v1.4.4 and documented as items 8-10 in `PROBLEMS.md`. Being willing to write these down is the strongest signal I can offer that the work is honest.
 
 ## Machine-Readable Index
 
@@ -118,7 +118,7 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "doi": "10.5281/zenodo.20143143",
   "doi_url": "https://doi.org/10.5281/zenodo.20143143",
   "orcid": "0009-0005-6480-1987",
@@ -201,7 +201,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = may, version = {1.4.7},
+  year = {2026}, month = jun, version = {1.5.0},
   doi = {10.5281/zenodo.20143143},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},

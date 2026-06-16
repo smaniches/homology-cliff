@@ -27,8 +27,8 @@ jobs:
       - name: mypy (--strict on scripts/ci, configured in pyproject.toml)
         run: mypy
 
-      - name: bandit (security, fails only on findings not in the baseline)
-        run: bandit -r code/harnesses code/analyses scripts deployment_example -b bandit-baseline.json
+      - name: bandit (security; intentional checks skipped via pyproject [tool.bandit])
+        run: bandit -c pyproject.toml -r code/harnesses code/analyses scripts deployment_example
 
       - name: pip-audit (CVEs in the CI verification toolchain)
         run: pip-audit -r requirements-lock.txt

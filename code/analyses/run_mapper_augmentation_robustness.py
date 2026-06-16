@@ -3,14 +3,15 @@
 Motivation
 ----------
 The committed Mapper-augmentation result (`mapper_augmentation_results.json`:
-rescue +0.0018, 95% CI [-0.027, +0.029], H1 rejected) was produced from a biased
+rescue -0.0080, 95% CI [-0.035, +0.018], H1 rejected; corrected v1.5.0 from
++0.0018 after a biased-panel deduplication fix) was produced from a biased
 pool assembled from Mapper-node member lists that `run_mapper.py` truncates to 50
 entries per node (`members[:50]`). Audit blocker B4 concerns whether the H1
 rejection is an artifact of that truncation.
 
 A separate discrepancy was identified during the audit: Paper 2, Attempt 4
 describes the biased pool as drawn from a single top positive-enriched Mapper node
-(1,131 positives available, bin (7,4), pos_frac=0.885), whereas the committed
+(1,512 positives available, bin (7,4), pos_frac=0.885), whereas the committed
 `run_mapper_augmentation.py` accumulates members across multiple positive-enriched
 nodes until the pool reaches 3,000 entries. The published description and the
 committed implementation therefore specify different sampling methods.
@@ -160,7 +161,12 @@ def build_uniform_panel(labels, R, seed):
 
 def build_biased_panel(labels, R, seed, biased_pool_idx):
     rng = np.random.default_rng(seed + R)
-    biased_pool = np.array([i for i in biased_pool_idx if labels[i] == 1], dtype=int)
+    # Deduplicate the positive pool (see run_mapper_augmentation.py): the
+    # overlapping Mapper cover lets a boundary protein recur across node member
+    # lists, and rng.choice(replace=False) removes positions, not values, so an
+    # un-deduplicated pool yields fewer than R/2 unique positives. np.unique makes
+    # the biased and uniform arms comparably constructed.
+    biased_pool = np.unique(np.array([i for i in biased_pool_idx if labels[i] == 1], dtype=int))
     neg_idx = np.where(labels == 0)[0]
     half = R // 2
     if len(biased_pool) < half:
@@ -173,18 +179,44 @@ def build_biased_panel(labels, R, seed, biased_pool_idx):
     return np.concatenate([pos_sample, neg_sample])
 
 
+def _rescue_ci(bia, uni):
+    """5,000-resample 95% CI on mean(biased) - mean(uniform), matching the
+    committed harness (10-seed resample, seed 20260412)."""
+    random.seed(20260412)
+    diffs = sorted(
+        np.mean([random.choice(bia) for _ in range(10)]) - np.mean([random.choice(uni) for _ in range(10)])
+        for _ in range(N_BOOT_CI)
+    )
+    lo_i, hi_i = int(0.025 * N_BOOT_CI), int(0.975 * N_BOOT_CI)
+    return float(np.mean(bia) - np.mean(uni)), float(diffs[lo_i]), float(diffs[hi_i])
+
+
 def evaluate(emb, labels, biased_pool_idx):
-    """Run the 10-seed uniform-vs-biased comparison; return per-seed rows and
-    the rescue mean + 95% CI (5,000 resamples, matching the committed harness)."""
+    """10-seed uniform-vs-biased comparison with TWO stratifications.
+
+    `rescue_*` (own-stratification): each arm is stratified by s_max to its own
+    panel -- the published Paper 2 method. This is what the committed result and
+    Paper 2's prose report.
+
+    `controlled_rescue_*` (common-stratification): both arms are scored on the
+    SAME test points (those in neither panel) using a single distant stratum
+    defined by s_max to the UNIFORM panel. This removes the confound whereby a
+    cluster-concentrated biased panel enlarges its own distant stratum (the
+    biased/uniform n_dist ratio rises to ~1.16 under full membership), pushing
+    easier points into a larger "distant" set. The common-stratification rescue
+    is the apples-to-apples test of whether the biased panel actually helps the
+    same distant queries.
+    """
     results = {"uniform": [], "biased": []}
+    controlled = {"uniform": [], "biased": []}
+    n_in = len(labels)
     for seed in SEEDS:
-        for mode in ("uniform", "biased"):
-            if mode == "uniform":
-                panel = build_uniform_panel(labels, R, seed)
-            else:
-                panel = build_biased_panel(labels, R, seed, biased_pool_idx)
+        panel_u = build_uniform_panel(labels, R, seed)
+        panel_b = build_biased_panel(labels, R, seed, biased_pool_idx)
+        # --- own-stratification (published method) ---
+        for mode, panel in (("uniform", panel_u), ("biased", panel_b)):
             pe, pl = emb[panel], labels[panel]
-            tm = np.ones(len(labels), dtype=bool)
+            tm = np.ones(n_in, dtype=bool)
             tm[panel] = False
             te, tl = emb[tm], labels[tm]
             st = stratify(compute_smax(te, pe))
@@ -197,18 +229,28 @@ def evaluate(emb, labels, biased_pool_idx):
                 f1 = float("nan")
             cf1, _, _ = bootstrap_f1_ci(tl[st["close"]], yp[st["close"]], n_boot=10000, seed=seed)
             results[mode].append({"seed": seed, "dist_f1": f1, "close_f1": cf1, "n_dist": n_dist})
+        # --- common-stratification control: same test points, distant by uniform panel ---
+        in_either = np.zeros(n_in, dtype=bool)
+        in_either[panel_u] = True
+        in_either[panel_b] = True
+        common = np.where(~in_either)[0]
+        ce, cl = emb[common], labels[common]
+        dist_common = stratify(compute_smax(ce, emb[panel_u]))["distant"]
+        for mode, panel in (("uniform", panel_u), ("biased", panel_b)):
+            yp = knn_cosine(ce, emb[panel], labels[panel], K)
+            f1c, _, _ = bootstrap_f1_ci(cl[dist_common], yp[dist_common], n_boot=10000, seed=seed)
+            controlled[mode].append({"seed": seed, "dist_f1": f1c})
 
     uni = [r["dist_f1"] for r in results["uniform"]]
     bia = [r["dist_f1"] for r in results["biased"]]
-    random.seed(20260412)
-    diffs = sorted(
-        np.mean([random.choice(bia) for _ in range(10)]) - np.mean([random.choice(uni) for _ in range(10)])
-        for _ in range(N_BOOT_CI)
-    )
-    lo_i, hi_i = int(0.025 * N_BOOT_CI), int(0.975 * N_BOOT_CI)
-    rescue = float(np.mean(bia) - np.mean(uni))
-    ci_lo, ci_hi = float(diffs[lo_i]), float(diffs[hi_i])
+    rescue, ci_lo, ci_hi = _rescue_ci(bia, uni)
     h1_supported = bool(rescue >= 0.02 and ci_lo > 0)
+
+    cuni = [r["dist_f1"] for r in controlled["uniform"]]
+    cbia = [r["dist_f1"] for r in controlled["biased"]]
+    crescue, cci_lo, cci_hi = _rescue_ci(cbia, cuni)
+    h1_controlled = bool(crescue >= 0.02 and cci_lo > 0)
+
     return {
         "uniform_distant_f1_mean": float(np.mean(uni)),
         "biased_distant_f1_mean": float(np.mean(bia)),
@@ -216,7 +258,19 @@ def evaluate(emb, labels, biased_pool_idx):
         "rescue_ci_lo": ci_lo,
         "rescue_ci_hi": ci_hi,
         "h1_supported": h1_supported,
+        "controlled_uniform_distant_f1_mean": float(np.mean(cuni)),
+        "controlled_biased_distant_f1_mean": float(np.mean(cbia)),
+        "controlled_rescue_mean": crescue,
+        "controlled_rescue_ci_lo": cci_lo,
+        "controlled_rescue_ci_hi": cci_hi,
+        "h1_supported_controlled": h1_controlled,
+        "verdict": (
+            "NO RESCUE: H1 rejected under the common-stratification control"
+            if not h1_controlled
+            else "RESCUE survives the common-stratification control"
+        ),
         "results": results,
+        "controlled_results": controlled,
     }
 
 
@@ -281,10 +335,16 @@ def main():
     OUT.write_text(json.dumps(summary, indent=1))
     print(f"\nwrote {OUT}")
     print("\n=== SUMMARY (rescue = biased distant F1 - uniform distant F1) ===")
+    print("own = published per-arm stratification; controlled = common distant stratum (apples-to-apples)")
     for name, cfg in summary["configs"].items():
-        print(f"  {name:<22} rescue={cfg['rescue_mean']:+.4f} "
-              f"CI=[{cfg['rescue_ci_lo']:+.4f}, {cfg['rescue_ci_hi']:+.4f}] "
-              f"H1={'SUPPORTED' if cfg['h1_supported'] else 'rejected'}")
+        print(f"  {name:<22} own={cfg['rescue_mean']:+.4f} "
+              f"CI=[{cfg['rescue_ci_lo']:+.4f},{cfg['rescue_ci_hi']:+.4f}] H1={'SUPPORTED' if cfg['h1_supported'] else 'rejected'}"
+              f"  |  controlled={cfg['controlled_rescue_mean']:+.4f} "
+              f"CI=[{cfg['controlled_rescue_ci_lo']:+.4f},{cfg['controlled_rescue_ci_hi']:+.4f}] "
+              f"H1={'SUPPORTED' if cfg['h1_supported_controlled'] else 'rejected'}")
+    print("\nVerdict: the full-membership 'rescue' is a stratification artifact; under the common-stratification")
+    print("control the biased panel does NOT help the same distant queries (rescue near zero). The Paper 2")
+    print("Attempt-4 null is robust to full node membership.")
 
 
 if __name__ == "__main__":

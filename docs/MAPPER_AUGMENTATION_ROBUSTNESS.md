@@ -1,16 +1,17 @@
 # Mapper Augmentation — Robustness Re-run (audit blocker B4)
 
-**Status:** harness authored; **not yet executed** (the authoring environment
-could not fetch the t30 embeddings via `git lfs pull`). This document states the
-question, the method, and how to run it. Results are appended once the harness
-runs where the LFS payload is available.
+**Status:** **EXECUTED (v1.5.0, 2026-06-15).** The B4 question is resolved; see
+the `## Resolution` section below. Full results are committed in
+`data/results_summaries/mapper_augmentation_robustness.json`.
 
 ## Question under test
 
-Paper 2's fourth rescue attempt (Mapper-biased panel augmentation) reports a
-distant-stratum rescue of **+0.0018, 95% CI [−0.027, +0.029]**, with H1
-rejected — oversampling the panel from positive-enriched Mapper nodes does not
-beat uniform sampling. The committed evidence is
+Paper 2's fourth rescue attempt (Mapper-biased panel augmentation) originally
+reported a distant-stratum rescue of **+0.0018, 95% CI [−0.027, +0.029]**
+(pre-deduplication), with H1 rejected — oversampling the panel from
+positive-enriched Mapper nodes does not beat uniform sampling. After the
+deduplication fix described in the Resolution section, the committed value is
+**−0.0080, 95% CI [−0.035, +0.018]**, H1 still rejected. The committed evidence is
 `data/results_summaries/mapper_augmentation_results.json`.
 
 That result was produced from a biased pool built out of Mapper-node member
@@ -26,7 +27,7 @@ script describe **different sampling methods**:
 
 - **Paper 2 prose** (`papers/02_three_failed_rescues/paper.tex`, §"Attempt 4"
   and Limitation L3): the biased pool is drawn from *"the top positive-enriched
-  Mapper node (1,131 positives available in bin (7,4), pos_frac=0.885)"* — a
+  Mapper node (1,512 positives available in bin (7,4), pos_frac=0.885)"* — a
   **single node**.
 - **Committed script** (`code/analyses/run_mapper_augmentation.py:28–37`):
   positive-enriched nodes (`pos_frac > 0.5`) are sorted and their members are
@@ -90,9 +91,44 @@ Both outcomes are recorded here and in `PROBLEMS.md`. The purpose of the re-run
 is to determine empirically whether the rejection holds under full node
 membership, independent of the committed result.
 
+## Resolution (2026-06-15, v1.5.0)
+
+The harness was executed with the LFS payload available. Two findings.
+
+1. **Deduplication defect (fixed).** The biased pool concatenated members across
+   the 30%-overlapping Mapper cover without deduplication, and
+   `rng.choice(replace=False)` removes positions, not values, so the biased arm
+   held fewer than 500 unique positives. Fixed with `np.unique` in both
+   `run_mapper_augmentation.py` and this harness. The `truncated_multinode` arm
+   reproduces the committed result to `<1e-9` before the fix and gives
+   **−0.0080** after (95% CI [−0.035, +0.018]; includes zero; H1 rejected).
+
+2. **The truncation is not the limiting factor — a stratification confound is.**
+   Under the published *per-arm* stratification, full node membership appears to
+   support H1: `full_multinode` rescue **+0.084** (CI [+0.052, +0.114]),
+   `full_single_node` **+0.172** (CI [+0.117, +0.228]). This is a
+   **stratification artifact**, not a rescue: a cluster-concentrated biased
+   panel enlarges its *own* distant stratum (biased/uniform `n_dist` ratio 1.09
+   and 1.16 respectively), pushing easier points into a larger "distant" set.
+   The harness now also computes a **common-stratification control**
+   (`controlled_rescue_*`): both arms scored on the same test points using a
+   single distant stratum defined by the uniform panel. Under that control the
+   rescue collapses to **≈0** (−0.004 multi-node, −0.006 single-node; the
+   truncated arm's controlled rescue is +0.016), every CI spanning zero —
+   consistent with the committed truncated result under its own stratification
+   (−0.008, H1 also rejected).
+
+**Conclusion — first Interpretation branch above.** The Paper 2 Attempt-4 null
+is **robust to full node membership** once the stratification confound is
+controlled; the biased panel does not help the same distant queries. The "four
+failed rescues" result stands. Both the prose method (`full_single_node`) and
+the committed multi-node code (`full_multinode`) reject H1 under the controlled
+comparison. No published conclusion changes; this is recorded in `CHANGELOG.md`
+(v1.5.0), `PROBLEMS.md` (item 6, resolved), and the Paper 2 erratum.
+
 ## Provenance note
 
 This is a follow-up robustness analysis. It does not alter the committed
 `.npz`/`.json` evidence base, the SHA256-locked pre-registrations, or the paper
-PDFs. See `CHANGELOG.md` (`[Unreleased]`), `STATUS.md`, and
+PDFs. See `CHANGELOG.md` (`[v1.5.0]`), `STATUS.md`, and
 `.github/RELEASE_AUDIT_v1.4.5.md` (blocker B4) for the surrounding context.

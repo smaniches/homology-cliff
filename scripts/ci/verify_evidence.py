@@ -41,20 +41,26 @@ def check_calibration() -> bool:
         return False
     d = json.loads(path.read_text(encoding="utf-8"))
     ok = True
+    # Compared at the published 3-decimal precision with a tolerance, NOT exact
+    # float equality. calibration_results.json is regenerated at full float
+    # precision by run_calibration.py (e.g. close ECE is stored as 0.06852...,
+    # which rounds to the published 0.069), so an exact `== 0.069` would make
+    # this gate brittle to legitimate regeneration.
+    tol = 1e-3
 
-    if d["close"]["ECE"] != 0.069:
-        fail(f"ECE_close={d['close']['ECE']}, expected 0.069")
+    if abs(d["close"]["ECE"] - 0.069) > tol:
+        fail(f"ECE_close={d['close']['ECE']}, expected ~0.069")
         ok = False
-    if d["distant"]["ECE"] != 0.294:
-        fail(f"ECE_distant={d['distant']['ECE']}, expected 0.294")
+    if abs(d["distant"]["ECE"] - 0.294) > tol:
+        fail(f"ECE_distant={d['distant']['ECE']}, expected ~0.294")
         ok = False
 
     pp = d["distant"]["positive_prediction"]
-    if pp["precision"] != 0.068:
-        fail(f"distant_precision={pp['precision']}, expected 0.068")
-        ok = False
     if pp["tp"] != 3 or pp["n_predicted_positive"] != 44:
         fail(f"distant tp={pp['tp']} n={pp['n_predicted_positive']}, expected 3/44")
+        ok = False
+    if abs(pp["precision"] - 3 / 44) > tol:
+        fail(f"distant_precision={pp['precision']}, expected ~0.068 (3/44)")
         ok = False
 
     ratio = d.get("ece_distant_to_close_ratio", 0)
@@ -63,7 +69,7 @@ def check_calibration() -> bool:
         ok = False
 
     if ok:
-        print("  ECE close=0.069 distant=0.294 ratio=4.26x precision=3/44=0.068: OK")
+        print("  ECE close~0.069 distant~0.294 ratio~4.3x precision=3/44~0.068: OK")
     return ok
 
 

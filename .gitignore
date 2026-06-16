@@ -5,6 +5,8 @@
 *.bbl
 *.blg
 *.synctex.gz
+*.fls
+*.fdb_latexmk
 __pycache__/
 *.pyc
 .pytest_cache/

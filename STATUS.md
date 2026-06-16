@@ -2,8 +2,8 @@
 
 Current state of the homology-cliff research compendium.
 
-**Version:** v1.4.7 (+ unreleased documentation pass)  
-**Last updated:** 2026-05-28  
+**Version:** v1.5.0  
+**Last updated:** 2026-06-15  
 **Maintainer:** Santiago Maniches (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)), TOPOLOGICA LLC.
 
 ---
@@ -12,7 +12,7 @@ Current state of the homology-cliff research compendium.
 
 | Check | Workflow | What it verifies |
 |---|---|---|
-| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,481 entries total; LFS pointer stubs skipped) |
+| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,487 entries total; LFS pointer stubs skipped) |
 | Pre-registration locks | `manifest.yml` | 2 SHA256-locked pre-reg files are byte-identical to their locked state |
 | Cell filename inventory | `tests.yml` | 9,360 .npz filenames present (3000 main + 3000 negctrl + 3000 fullnull + 180 cascade + 180 fisher) |
 | Smoke imports | `smoke.yml` | All harnesses and analysis scripts import without error on a fresh clone |
@@ -39,15 +39,16 @@ Current state of the homology-cliff research compendium.
 ## Open items from v1.4.5 audit
 
 Documented in `.github/RELEASE_AUDIT_v1.4.5.md`. The documentation-only
-blockers are addressed in the current `[Unreleased]` changelog entry; the
-scientific item (B4) has a non-destructive robustness harness provided and is
-pending execution with LFS data.
+blockers are addressed in the changelog; the scientific item (B4) is now
+**resolved in v1.5.0** — the robustness harness was executed and the Mapper
+rejection holds under full node membership (see the B4 row below and
+`docs/MAPPER_AUGMENTATION_ROBUSTNESS.md`).
 
 | # | Issue | Category | Status |
 |---|---|---|---|
 | B2 | Precision/recall fields in .npz schema always NaN | Schema | **Addressed** — disclosed at the `StratumResult` declaration and `PROBLEMS.md` item 11 as intentionally unpopulated; only F1 + bootstrap CI are pre-registered |
 | B3 | "near 0.5" wording in `v3_aggregate.py` print statement | Wording | **Fixed** — banner now states the gap-near-zero criterion and that F1 collapses toward 0 under full-pool permutation |
-| B4 | Mapper augmentation uses truncated node membership (50/node) | Scientific | **Open** — robustness harness `code/analyses/run_mapper_augmentation_robustness.py` provided; pending execution (needs `git lfs pull`). A prose-vs-script discrepancy in Paper 2 §Attempt 4 is also documented. See `docs/MAPPER_AUGMENTATION_ROBUSTNESS.md` |
+| B4 | Mapper augmentation uses truncated node membership (50/node) | Scientific | **Resolved (v1.5.0)** — robustness harness executed: under a common-stratification control the full-membership "rescue" collapses to ≈0 (it was a stratification artifact), so the Attempt-4 null holds. A biased-panel deduplication defect was also fixed (rescue +0.0018 → −0.0080; 95% CI still includes zero; H1 still rejected). The prose-vs-script discrepancy is recorded in the Paper 2 erratum. See `docs/MAPPER_AUGMENTATION_ROBUSTNESS.md` |
 | B5 | Missing `PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md` | Provenance | **Fixed** — docstring no longer references the non-existent file; states accurate provenance (no dedicated SHA256 lock; only Mahalanobis + cascade are locked) |
 | B6 | README `v3_aggregate.py` recipe did not flag LFS requirement | Wording | **Fixed** — recipe step now notes `git lfs pull` is required |
 | B7 | README label-rule auditability wording | Wording | **Fixed** — auditability claim now explicitly conditional on trusting the withheld label-curation rule |
