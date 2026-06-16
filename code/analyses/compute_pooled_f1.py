@@ -174,6 +174,9 @@ def main() -> int:
         worst = 0.0
         for key in gen_keys:
             for fld in ("close", "moderate", "distant", "pooled", "gap"):
+                if fld not in summary[key] or fld not in committed[key]:
+                    print(f"FAIL: field '{fld}' missing in cell '{key}'.")
+                    return 1
                 worst = max(worst, abs(summary[key][fld] - committed[key][fld]))
         tol = 6e-3  # fisher uses LAPACK eigh (platform-sensitive); cosine/maha/learned tighter
         print(f"--check: worst field drift vs committed summary = {worst:.2e} (tol {tol})")
