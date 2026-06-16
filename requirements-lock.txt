@@ -15,7 +15,7 @@
 # (Dependabot opens those PRs), regenerate from the same tool set.
 numpy==2.4.3
 scipy==1.17.1
-scikit-learn==1.8.0
+scikit-learn==1.9.0
 pytest==9.0.3
 pytest-cov==7.1.0
 coverage==7.13.5
