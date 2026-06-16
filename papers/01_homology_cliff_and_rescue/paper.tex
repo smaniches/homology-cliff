@@ -17,7 +17,7 @@ Frozen protein language models (PLMs) increasingly feed biosecurity retrieval pi
 
 \paragraph{Erratum (2026-06-15).} The reliability figure (Fig.~\ref{fig:reliability}) is now plotted from the script-computed reliability table rather than hand-entered diagram read-offs; all cited values (distant precision $3/44=0.068$, ECE close 0.069 / distant 0.294, the $+0.745$ cliff gap) are unchanged and were independently reproduced bit-for-bit from the committed embeddings and seeds. A stale-artifact correction to the Paper 3 calibration table and a deduplication fix to the Paper 2 Mapper-augmentation number are documented in \texttt{CHANGELOG.md}.
 
-\paragraph{Erratum (2026-06-16).} Figures~\ref{fig:cliff_surface} and~\ref{fig:rescue} are now plotted directly from the committed MAIN gap table (\texttt{data/results\_summaries/v3\_final.txt}). Their previously plotted values at interior panel sizes and at the t6/t12 scales had been hand-entered and diverged from the committed data; the $R{=}1000$ endpoints, the t30 column, the rescue table, and the $+16/+33/+47\%$ relative-improvement figures were already correct. No table, number, or conclusion changes; the corrected figures show the same cliff and the same rescue ordering (learned $>$ cosine $>$ Mahalanobis at every scale).
+\paragraph{Erratum (2026-06-16).} Figures~\ref{fig:cliff_surface} and~\ref{fig:rescue} are now plotted directly from the committed MAIN gap table (\texttt{data/results\_summaries/v3\_final.txt}); their previously plotted values at interior panel sizes and at the t6/t12 scales had been hand-entered and diverged from the committed data (the $R{=}1000$ endpoints, the t30 column, and the $+16/+33/+47\%$ relative-improvement figures were already correct). The rescue table's Fisher-Rao row was also brought into exact agreement with the committed Fisher cells (close $0.478\to0.484$, distant $0.094\to0.099$, pooled $0.461\to0.462$; the cosine/Mahalanobis/learned rows already matched). No conclusion changes; the corrected figures show the same cliff and the same rescue ordering (learned $>$ cosine $>$ Mahalanobis at every scale). Pooled-$F_1$ values throughout the compendium are reproducible via \texttt{code/analyses/compute\_pooled\_f1.py}.
 
 \section{Introduction}
 Frozen protein language models \cite{lin2023evolutionary,elnaggar2022prottrans,brandes2022proteinbert,madani2023progen} now serve as general-purpose feature extractors for downstream retrieval, classification, and design tasks. A common deployment pattern is cosine $k$-NN retrieval: given a query protein, retrieve the $k$ nearest panel members in frozen embedding space and vote their labels. For biosecurity applications, where the query set contains potentially novel threats and the panel contains known-toxin exemplars, retrieval performance on proteins distant from any panel member is the safety-critical metric.
@@ -157,7 +157,7 @@ t30 $R{=}1000$ $k{=}25$ & close & moderate & distant & pooled \\
 \midrule
 cosine & 0.866 & 0.393 & 0.120 & 0.848 \\
 Mahalanobis & 0.456 & 0.118 & 0.087 & 0.435 \\
-Fisher-Rao & 0.478 & 0.130 & 0.094 & 0.461 \\
+Fisher-Rao & 0.484 & 0.130 & 0.099 & 0.462 \\
 \textbf{learned} & \textbf{0.901} & \textbf{0.525} & \textbf{0.177} & \textbf{0.891} \\
 \bottomrule
 \end{tabular}

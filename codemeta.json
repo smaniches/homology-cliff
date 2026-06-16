@@ -2,7 +2,7 @@
   "@context": "https://w3id.org/codemeta/3.0",
   "@type": "SoftwareSourceCode",
   "name": "Homology Cliff Research Compendium",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "identifier": "https://doi.org/10.5281/zenodo.20143142",
   "codeRepository": "https://github.com/smaniches/homology-cliff",
   "dateCreated": "2026-04-11",

@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.5.1 &nbsp;·&nbsp; **Date:** June 16, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
+**Version:** v1.5.2 &nbsp;·&nbsp; **Date:** June 16, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -118,7 +118,7 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "doi": "10.5281/zenodo.20143142",
   "doi_url": "https://doi.org/10.5281/zenodo.20143142",
   "orcid": "0009-0005-6480-1987",
@@ -201,7 +201,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = jun, version = {1.5.1},
+  year = {2026}, month = jun, version = {1.5.2},
   doi = {10.5281/zenodo.20143142},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},
