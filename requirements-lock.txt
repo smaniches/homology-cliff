@@ -13,9 +13,9 @@
 # Generated from the verified working toolchain and validated by the lint and
 # tests workflows on ubuntu-latest + Python 3.11. When bumping versions
 # (Dependabot opens those PRs), regenerate from the same tool set.
-numpy==2.4.3
+numpy==2.4.6
 scipy==1.17.1
-scikit-learn==1.8.0
+scikit-learn==1.9.0
 pytest==9.1.0
 pytest-cov==7.1.0
 coverage==7.14.1
