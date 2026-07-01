@@ -20,6 +20,6 @@ pytest==9.1.0
 pytest-cov==7.1.0
 coverage==7.14.1
 ruff==0.15.17
-mypy==1.20.1
+mypy==2.1.0
 bandit==1.9.4
 pip-audit==2.10.1
