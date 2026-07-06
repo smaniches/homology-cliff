@@ -24,8 +24,8 @@
   "sha256": "79733fbebdc1c58ecbadada5b6be06800c6b4d44d08c19c6f65d1faf3b49c9be"
  },
  ".github/dependabot.yml": {
-  "bytes": 736,
-  "sha256": "5a41fa4a641c655c6ca560f5b5bc0ca7df43e1df528444638775cf70776a9f0d"
+  "bytes": 1281,
+  "sha256": "66f9f20d49049e288d0b2fbc6f5b150c803836b5988a37ebf0a59b20dbddd620"
  },
  ".github/workflows/evidence.yml": {
   "bytes": 744,
@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 30071,
-  "sha256": "71f3602e6dc2c2192b68fb9db680462cb6b2433dfcbf5a0bc8b8cea64e251d45"
+  "bytes": 30663,
+  "sha256": "8547c9a7d1d7768972978dd5d91d2064baa07bf5428c44835496912eef763820"
  },
  "CITATION.cff": {
   "bytes": 610,
