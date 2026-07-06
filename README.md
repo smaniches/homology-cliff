@@ -77,7 +77,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,488 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,490 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
@@ -92,10 +92,10 @@ All four pre-registrations were committed **before** the corresponding experimen
 
 ## Honest limitations
 
-This is a v1.5.0 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.5.2 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
-- Reference counts are 24 (Paper 1), 25 (Paper 2), 8 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
+- Reference counts are 24 (Paper 1), 25 (Paper 2), 7 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
 - Cross-family partition analyzed at one seed (20260410); 10-seed extension is deferred.
 - ESM-2 t33 (650M) and external PLMs (ProtT5, SaProt, ESM-3) require GPU and are deferred to the PLM benchmark extension. The Colab notebook `code/colab_notebook/plm_benchmark.ipynb` and the execution guide `reproducibility/GPU_EXECUTION_GUIDE.md` make this one-click-runnable.
 - Adversarial phase 2 (BLOSUM-guided edits of the 3 distant true-positive targets P0C1X3, Q6RY98, P13208) is provided as a Kaggle scaffold, not executed.

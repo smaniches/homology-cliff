@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 28563,
-  "sha256": "171da4867e88251e40e76efad15dd2d3c467e8707da7dcee6331e60f2411a820"
+  "bytes": 30071,
+  "sha256": "71f3602e6dc2c2192b68fb9db680462cb6b2433dfcbf5a0bc8b8cea64e251d45"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -109,7 +109,7 @@
  },
  "README.md": {
   "bytes": 21614,
-  "sha256": "246141c0c4bca58c26c60a487dbfc849d41ed3c420541f9074ac5df97a535881"
+  "sha256": "0f10910af603ba0b49e90ce1ea8d2086d358ad91e64db11f9a611bb222af81ca"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -117,7 +117,7 @@
  },
  "REVIEWER.md": {
   "bytes": 4379,
-  "sha256": "464c59e504a5694511f2c8e7d14e7866cb32ce55323d233587116a46adc817e5"
+  "sha256": "1e5e280c957776af02c20ad0e275123af97b7287252ff6586b65db3ddaaf7b08"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -125,7 +125,7 @@
  },
  "STATUS.md": {
   "bytes": 5255,
-  "sha256": "b73e5dfbcd182f42af93e53407a8ce31f6ea468fad99dbace617ceca0d47b16e"
+  "sha256": "9f9585f7999e6be5b999ac9fb6c2eaef37fc8d1788c8df45115df804de407b41"
  },
  "code/analyses/compute_pooled_f1.py": {
   "bytes": 7549,
