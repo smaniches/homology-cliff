@@ -6,6 +6,14 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [Unreleased]
 
+### Fixed — documentation consistency
+- **Manifest entry-count references corrected to 9,490** in `README.md`, `STATUS.md`, and `REVIEWER.md`. The v1.5.2 release added two tracked artifacts (`code/analyses/compute_pooled_f1.py` and `data/results_summaries/pooled_f1_summary.json`), taking `MANIFEST.sha256.json` from 9,488 to 9,490 entries, but the current-state count in these three documents was not refreshed at the time. Verified with `python scripts/ci/verify_manifest.py` (9,490 entries: 125 real-file hashes matched, 9,365 LFS pointer stubs skipped, 0 missing, 0 mismatches). The historical v1.5.0/v1.5.1 changelog entries, which correctly record 9,488 for those releases, are left unchanged.
+- **Paper 3 reference count corrected to 7** in the README `Honest limitations` section (was 8). `papers/03_calibration_collapse/paper.tex` cites seven unique references and the compiled `paper.pdf` bibliography contains seven entries; the same count method reproduces the stated 24/25/17/4 counts for Papers 1, 2, 4, and 5 exactly.
+
+### Changed
+- Refreshed stale current-version labels from `v1.5.0` to `v1.5.2`: the README `Honest limitations` opening line and the `STATUS.md` version header (now dated 2026-07-06). Historical `v1.5.0` references that record when a specific item was resolved are unchanged.
+- `MANIFEST.sha256.json`: refreshed the LF-committed hashes for the edited `README.md`, `STATUS.md`, `REVIEWER.md`, and this `CHANGELOG.md`. No entries added or removed; the count remains 9,490.
+
 ## [v1.5.2] — 2026-06-16
 
 Pooled-F1 provenance + Paper 2 Attempt-2 correction. No conclusion changes; all evidence cells and result summaries are byte-identical to v1.5.0.
