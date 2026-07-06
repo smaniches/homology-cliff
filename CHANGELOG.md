@@ -12,7 +12,8 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ### Changed
 - Refreshed stale current-version labels from `v1.5.0` to `v1.5.2`: the README `Honest limitations` opening line and the `STATUS.md` version header (now dated 2026-07-06). Historical `v1.5.0` references that record when a specific item was resolved are unchanged.
-- `MANIFEST.sha256.json`: refreshed the LF-committed hashes for the edited `README.md`, `STATUS.md`, `REVIEWER.md`, and this `CHANGELOG.md`. No entries added or removed; the count remains 9,490.
+- `.github/dependabot.yml`: moved the `pip` and `github-actions` update cadence from monthly to weekly and grouped each ecosystem's updates into a single batched PR (`groups: "*"`). Weekly cadence surfaces a CVE in the verification toolchain (which includes `pip-audit` and `bandit`) within a week rather than up to a month while the repository is under active external review; grouping matches the maintainer's existing practice of landing dependency bumps as one batch. No runtime dependency is added or unpinned; the GPU floors in `pyproject.toml` are untouched.
+- `MANIFEST.sha256.json`: refreshed the LF-committed hashes for the edited `README.md`, `STATUS.md`, `REVIEWER.md`, `.github/dependabot.yml`, and this `CHANGELOG.md`. No entries added or removed; the count remains 9,490.
 
 ## [v1.5.2] — 2026-06-16
 
