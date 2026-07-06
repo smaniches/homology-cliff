@@ -7,7 +7,11 @@ subprocess.check_call([
 ])
 import torch, numpy as np, json, urllib.request
 from transformers import EsmTokenizer, EsmModel
-from Bio.SubsMat.MatrixInfo import blosum62
+# Bio.SubsMat was removed in Biopython 1.80; substitution_matrices (Biopython
+# >=1.75) is the current API. The loaded Array supports blosum62.get((a, b), default)
+# with identical BLOSUM62 scores, so downstream cells are unchanged.
+from Bio.Align import substitution_matrices
+blosum62 = substitution_matrices.load("BLOSUM62")
 device = 'cuda'
 
 # Fetch 3 target sequences from UniProt

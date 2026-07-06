@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 30663,
-  "sha256": "8547c9a7d1d7768972978dd5d91d2064baa07bf5428c44835496912eef763820"
+  "bytes": 31783,
+  "sha256": "c8e6f0451a57b8b5e70c16ed96fe550228ece04de996f0f5a7ec7e8a0e2d7598"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -108,8 +108,8 @@
   "sha256": "9194f3083f0698324d283114487a873e04d0c153dff67fa9bd89285df6ec4cb6"
  },
  "README.md": {
-  "bytes": 21614,
-  "sha256": "0f10910af603ba0b49e90ce1ea8d2086d358ad91e64db11f9a611bb222af81ca"
+  "bytes": 21979,
+  "sha256": "9db207b5ca93636eb769bb79e4a4da552ddb2cb0ec0ee5d5b8b68e8e12169090"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -184,8 +184,8 @@
   "sha256": "8843398f1e6d65557213e5a32e340d2d74ef5b4924052ddfa8a12692b9eeb002"
  },
  "code/kaggle_notebooks/adv_cell1_setup.py": {
-  "bytes": 1224,
-  "sha256": "421f5b30e6bbd4e13c561c6d93751632190609944014527ae6245da39c0bc31d"
+  "bytes": 1507,
+  "sha256": "fc8a52d82025fb84c8ba284b81175cd03f99b89648a8a1391fc6930fe47ff9e5"
  },
  "code/kaggle_notebooks/adv_cell2_edits.py": {
   "bytes": 1862,

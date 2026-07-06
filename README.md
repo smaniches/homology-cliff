@@ -48,7 +48,9 @@ We characterize the cliff across a 3,000-cell pre-registered factorial, show it 
 | 4 | **Methods and Pre-Registrations** | 9,360-cell factorial template, seed-variance gate, SHA256 pre-registration pattern | `papers/04_methods_and_preregistrations/paper.pdf` |
 | 5 | **Cross-Family and Mapper Topology** | 20 of 20 evaluable distant false alarms are cross-family (Wilson 95% CI on within-family rate $[0\%, 17\%]$); panel expansion within failing families is unlikely to rescue | `papers/05_cross_family_and_mapper/paper.pdf` |
 
-Read order for first-time readers: **1 → 5 → 3 → 2 → 4**. Paper 1 gives you the phenomenon and the fix. Paper 5 shows why the fix has to be embedding-space rather than panel-side. Paper 3 gives you the calibration reason to distrust distant positive predictions regardless of metric. Paper 2 shows the three additional rescues that do not work. Paper 4 gives you the methodological scaffolding to replicate this pattern on your own PLM retrieval problem.
+Paper 2's directory is named `papers/02_three_failed_rescues/` for historical reasons: it originally documented three rescues, and the Mapper-biased panel augmentation was pre-registered and added as the fourth. The path is retained as a stable identifier matching the archived Zenodo deposit; the paper's title ("Four Failed Rescue Attempts") and contents are authoritative.
+
+Read order for first-time readers: **1 → 5 → 3 → 2 → 4**. Paper 1 gives you the phenomenon and the fix. Paper 5 shows why the fix has to be embedding-space rather than panel-side. Paper 3 gives you the calibration reason to distrust distant positive predictions regardless of metric. Paper 2 shows the four rescues that do not work. Paper 4 gives you the methodological scaffolding to replicate this pattern on your own PLM retrieval problem.
 
 ## What you can do with this repository in 15 minutes
 
