@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 32631,
-  "sha256": "b4b95dc1102a3e4f1dbdc04ab03b0928cb8881a2f62b8d98b87fdbbafcb35970"
+  "bytes": 33484,
+  "sha256": "c90b48b03a94acf3348f6b4fad06d2daa1b419cde41a20abfc67c76c2eb2558c"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -37917,7 +37917,7 @@
  },
  "requirements-lock.txt": {
   "bytes": 1069,
-  "sha256": "40c5e541f27cc1936419e75da35d6c9c9a8a516a845ac1a9442d899914858c44"
+  "sha256": "2f5f45b8ab94012d07e6624b37217ce3cedf277f47ebd0aaf48777eb632928ee"
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10705,
