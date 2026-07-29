@@ -101,31 +101,36 @@ _STRATUM_TO_CELL_SUFFIX = {"close": "close_f1", "moderate": "mod_f1", "distant":
                            "pooled": "pooled_f1"}
 
 
-def committed_cascade_pooled() -> tuple[dict, dict]:
+def committed_cascade_pooled() -> tuple[dict, dict, dict]:
     """Per-stratum + pooled F1 already stored in the cascade cells (cosine/maha/learned/cascade).
 
-    Returns (pooled, incomplete):
+    Returns (pooled, incomplete, duplicates):
       pooled: {(scale, R, k, metric): {"close":..., "moderate":..., "distant":..., "pooled":...}},
         mean over whatever seed cells are actually on disk. Covers all fields eval_cell()
         produces (except "gap", which is derived as close - distant and so is implied by the
         close/distant checks) so a regression in stratification -- not just the whole-test-set
         pooled aggregate -- is caught by the cross-check.
-      incomplete: {(scale, R, k): sorted list of seeds actually found}, populated only for
-        groups whose on-disk seed set does not exactly equal SEEDS. A group missing even one
+      incomplete: {(scale, R, k): sorted list of distinct seeds actually found}, populated only
+        for groups whose on-disk seed set does not exactly equal SEEDS. A group missing even one
         of its 10 expected seed files would otherwise silently average over the seeds present
         and still count as "matched" in main()'s group-count check, hiding incomplete evidence
         behind a nine-seed mean that happens to land within tolerance.
+      duplicates: {(scale, R, k): {seed: [filenames]}} for any seed value backed by more than
+        one file (e.g. a zero-padded or otherwise misnamed duplicate). Seed *values* are
+        deduplicated by set membership for the `incomplete` check, so two files that parse to
+        the same seed integer would otherwise still look like a complete 10-seed group while
+        `acc` silently accumulates an 11-file weighted average under the hood.
     """
     import re
     pat = re.compile(r"cascade_(t\d+)_(\d+)_(\d+)_(\d+)\.npz")
     acc: dict = {}
-    seeds_seen: dict = {}
+    seed_files: dict = {}  # (scale, R, k) -> {seed: [filenames]}
     for f in CASCADE_DIR.glob("cascade_*.npz"):
         m = pat.match(f.name)
         if not m:
             continue
         scale, R, k, seed = m[1], int(m[2]), int(m[3]), int(m[4])
-        seeds_seen.setdefault((scale, R, k), set()).add(seed)
+        seed_files.setdefault((scale, R, k), {}).setdefault(seed, []).append(f.name)
         # cascade cells store only scalar/string arrays, so pickle is not needed
         with np.load(f, allow_pickle=False) as z:
             for met in ("cosine", "mahalanobis", "learned", "cascade"):
@@ -134,10 +139,15 @@ def committed_cascade_pooled() -> tuple[dict, dict]:
                 for fld, suffix in _STRATUM_TO_CELL_SUFFIX.items():
                     entry[fld].append(float(z[f"{met}_{suffix}"]))
     expected_seeds = set(SEEDS)
-    incomplete = {g: sorted(s) for g, s in seeds_seen.items() if s != expected_seeds}
+    incomplete = {g: sorted(sf) for g, sf in seed_files.items() if set(sf) != expected_seeds}
+    duplicates = {
+        g: {seed: names for seed, names in sf.items() if len(names) > 1}
+        for g, sf in seed_files.items()
+        if any(len(names) > 1 for names in sf.values())
+    }
     pooled = {key: {fld: float(np.mean(v)) for fld, v in fields.items()}
               for key, fields in acc.items()}
-    return pooled, incomplete
+    return pooled, incomplete, duplicates
 
 
 def main() -> int:
@@ -148,7 +158,17 @@ def main() -> int:
 
     labels, _ = rc.load_labels()
     summary: dict = {}
-    cas, incomplete_seed_groups = committed_cascade_pooled()
+    cas, incomplete_seed_groups, duplicate_seed_files = committed_cascade_pooled()
+    if duplicate_seed_files:
+        print(f"FAIL: duplicate cascade cell files for the same seed in "
+              f"{len(duplicate_seed_files)} (scale, R, k) group(s):")
+        for g, dups in sorted(duplicate_seed_files.items()):
+            for seed, names in sorted(dups.items()):
+                print(f"  {g} seed {seed}: {names}")
+        print("Aborting before the expensive re-derivation -- a duplicate/misnamed file would "
+              "silently weight that seed's contribution to the mean. Remove or rename the "
+              "extra file(s) first.")
+        return 1
     if incomplete_seed_groups:
         print(f"FAIL: cascade cell seed set incomplete for {len(incomplete_seed_groups)} "
               f"(scale, R, k) group(s) (expected seeds {sorted(SEEDS)}):")
