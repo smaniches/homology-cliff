@@ -101,22 +101,31 @@ _STRATUM_TO_CELL_SUFFIX = {"close": "close_f1", "moderate": "mod_f1", "distant":
                            "pooled": "pooled_f1"}
 
 
-def committed_cascade_pooled() -> dict:
+def committed_cascade_pooled() -> tuple[dict, dict]:
     """Per-stratum + pooled F1 already stored in the cascade cells (cosine/maha/learned/cascade).
 
-    Returns {(scale, R, k, metric): {"close":..., "moderate":..., "distant":..., "pooled":...}},
-    mean over the 10 seed cells. Covers all fields eval_cell() produces (except "gap", which is
-    derived as close - distant and so is implied by the close/distant checks) so a regression in
-    stratification -- not just the whole-test-set pooled aggregate -- is caught by the cross-check.
+    Returns (pooled, incomplete):
+      pooled: {(scale, R, k, metric): {"close":..., "moderate":..., "distant":..., "pooled":...}},
+        mean over whatever seed cells are actually on disk. Covers all fields eval_cell()
+        produces (except "gap", which is derived as close - distant and so is implied by the
+        close/distant checks) so a regression in stratification -- not just the whole-test-set
+        pooled aggregate -- is caught by the cross-check.
+      incomplete: {(scale, R, k): sorted list of seeds actually found}, populated only for
+        groups whose on-disk seed set does not exactly equal SEEDS. A group missing even one
+        of its 10 expected seed files would otherwise silently average over the seeds present
+        and still count as "matched" in main()'s group-count check, hiding incomplete evidence
+        behind a nine-seed mean that happens to land within tolerance.
     """
     import re
     pat = re.compile(r"cascade_(t\d+)_(\d+)_(\d+)_(\d+)\.npz")
     acc: dict = {}
+    seeds_seen: dict = {}
     for f in CASCADE_DIR.glob("cascade_*.npz"):
         m = pat.match(f.name)
         if not m:
             continue
-        scale, R, k = m[1], int(m[2]), int(m[3])
+        scale, R, k, seed = m[1], int(m[2]), int(m[3]), int(m[4])
+        seeds_seen.setdefault((scale, R, k), set()).add(seed)
         # cascade cells store only scalar/string arrays, so pickle is not needed
         with np.load(f, allow_pickle=False) as z:
             for met in ("cosine", "mahalanobis", "learned", "cascade"):
@@ -124,8 +133,11 @@ def committed_cascade_pooled() -> dict:
                 entry = acc.setdefault(key, {fld: [] for fld in _STRATUM_TO_CELL_SUFFIX})
                 for fld, suffix in _STRATUM_TO_CELL_SUFFIX.items():
                     entry[fld].append(float(z[f"{met}_{suffix}"]))
-    return {key: {fld: float(np.mean(v)) for fld, v in fields.items()}
-            for key, fields in acc.items()}
+    expected_seeds = set(SEEDS)
+    incomplete = {g: sorted(s) for g, s in seeds_seen.items() if s != expected_seeds}
+    pooled = {key: {fld: float(np.mean(v)) for fld, v in fields.items()}
+              for key, fields in acc.items()}
+    return pooled, incomplete
 
 
 def main() -> int:
@@ -136,7 +148,17 @@ def main() -> int:
 
     labels, _ = rc.load_labels()
     summary: dict = {}
-    cas = committed_cascade_pooled()
+    cas, incomplete_seed_groups = committed_cascade_pooled()
+    if incomplete_seed_groups:
+        print(f"FAIL: cascade cell seed set incomplete for {len(incomplete_seed_groups)} "
+              f"(scale, R, k) group(s) (expected seeds {sorted(SEEDS)}):")
+        for g, found in sorted(incomplete_seed_groups.items()):
+            missing = sorted(set(SEEDS) - set(found))
+            extra = sorted(set(found) - set(SEEDS))
+            print(f"  {g}: found {found}  missing={missing}  extra={extra}")
+        print("Aborting before the expensive re-derivation -- fix or regenerate the affected "
+              "cascade cells first.")
+        return 1
     max_drift = 0.0
     n_matched = 0
     EXPECTED_MATCHES = len(SCALES) * len(RS) * len(KS) * 4  # cosine/mahalanobis/learned/cascade

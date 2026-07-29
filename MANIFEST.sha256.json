@@ -128,8 +128,8 @@
   "sha256": "07d153f482d168605e931c85355999684598e15631038a6c7f598b046028391f"
  },
  "code/analyses/compute_pooled_f1.py": {
-  "bytes": 12115,
-  "sha256": "48370d5a7d08a1875ffcd4a30c54501b73e18eaa2d168dc04ec3e6cc5da7762c"
+  "bytes": 13526,
+  "sha256": "e6db025171c893a7c056fa7bbe37f606a8d5d2a4eee0abff1874af2ef3677a37"
  },
  "code/analyses/fetch_pfam_v3.py": {
   "bytes": 3300,
