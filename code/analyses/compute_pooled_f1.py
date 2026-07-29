@@ -15,11 +15,12 @@ run_fisher.py (imported, not reimplemented), and writes:
 
     data/results_summaries/pooled_f1_summary.json
 
-As an internal correctness check it also re-derives the pooled F1 that the cascade cells
-already store for cosine/mahalanobis/learned and asserts byte-level agreement -- so the
-Fisher values, which have no committed cell to check against, inherit the same validated
-pipeline. Deterministic (seeded panels, exact FAISS, torch.manual_seed(0)); repo-relative;
-no Git-LFS-free fallback (needs `git lfs pull` + faiss, like run_cliff.py --full).
+As an internal correctness check it also re-derives the close/moderate/distant/pooled F1
+that the cascade cells already store for cosine/mahalanobis/learned/cascade and enforces
+agreement within tolerance (aborting on drift, missing cascade evidence, or non-finite
+values) -- so the Fisher values, which have no committed cell to check against, inherit
+the same validated pipeline. Deterministic (seeded panels, exact FAISS, torch.manual_seed(0));
+repo-relative; no Git-LFS-free fallback (needs `git lfs pull` + faiss, like run_cliff.py --full).
 
     python code/analyses/compute_pooled_f1.py            # regenerate the summary
     python code/analyses/compute_pooled_f1.py --check    # regenerate + assert vs committed summary (tolerance)
@@ -28,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -93,8 +95,20 @@ def eval_cell(emb, labels, R, k, metric, seed) -> dict:
     return out
 
 
+# eval_cell()'s stratum names vs. the abbreviated suffixes run_cascade.py stores them
+# under in the raw cells (e.g. "cosine_mod_f1", "cosine_dist_f1").
+_STRATUM_TO_CELL_SUFFIX = {"close": "close_f1", "moderate": "mod_f1", "distant": "dist_f1",
+                           "pooled": "pooled_f1"}
+
+
 def committed_cascade_pooled() -> dict:
-    """Mean pooled F1 already stored in the cascade cells (cosine/maha/learned/cascade)."""
+    """Per-stratum + pooled F1 already stored in the cascade cells (cosine/maha/learned/cascade).
+
+    Returns {(scale, R, k, metric): {"close":..., "moderate":..., "distant":..., "pooled":...}},
+    mean over the 10 seed cells. Covers all fields eval_cell() produces (except "gap", which is
+    derived as close - distant and so is implied by the close/distant checks) so a regression in
+    stratification -- not just the whole-test-set pooled aggregate -- is caught by the cross-check.
+    """
     import re
     pat = re.compile(r"cascade_(t\d+)_(\d+)_(\d+)_(\d+)\.npz")
     acc: dict = {}
@@ -106,8 +120,12 @@ def committed_cascade_pooled() -> dict:
         # cascade cells store only scalar/string arrays, so pickle is not needed
         with np.load(f, allow_pickle=False) as z:
             for met in ("cosine", "mahalanobis", "learned", "cascade"):
-                acc.setdefault((scale, R, k, met), []).append(float(z[f"{met}_pooled_f1"]))
-    return {key: float(np.mean(v)) for key, v in acc.items()}
+                key = (scale, R, k, met)
+                entry = acc.setdefault(key, {fld: [] for fld in _STRATUM_TO_CELL_SUFFIX})
+                for fld, suffix in _STRATUM_TO_CELL_SUFFIX.items():
+                    entry[fld].append(float(z[f"{met}_{suffix}"]))
+    return {key: {fld: float(np.mean(v)) for fld, v in fields.items()}
+            for key, fields in acc.items()}
 
 
 def main() -> int:
@@ -120,6 +138,8 @@ def main() -> int:
     summary: dict = {}
     cas = committed_cascade_pooled()
     max_drift = 0.0
+    n_matched = 0
+    EXPECTED_MATCHES = len(SCALES) * len(RS) * len(KS) * 4  # cosine/mahalanobis/learned/cascade
     for scale in SCALES:
         emb = rc.load_embeddings(scale)
         for R in RS:
@@ -132,18 +152,30 @@ def main() -> int:
                             accs.setdefault(key, []).append(v)
                     cell = {key: float(np.mean(v)) for key, v in accs.items()}
                     summary[f"{scale}_{R}_{k}_{metric}"] = cell
-                    # cross-check vs committed cascade-cell pooled (cosine/maha/learned)
+                    # cross-check vs committed cascade-cell evidence (cosine/maha/learned/cascade):
+                    # close/moderate/distant too, not just the whole-test-set pooled aggregate, so
+                    # a stratification regression can't hide behind an unchanged pooled value.
                     ck = (scale, R, k, metric)
                     if ck in cas:
-                        drift = abs(cell["pooled"] - cas[ck])
-                        max_drift = max(max_drift, drift)
-                        if drift > 1e-6:
-                            print(f"  NOTE {scale}_{R}_{k}_{metric}: reproduced pooled "
-                                  f"{cell['pooled']:.6f} vs committed cascade {cas[ck]:.6f} (drift {drift:.2e})")
-    n_xcheck = sum(1 for kk in summary
-                   if any(kk.endswith(m) for m in ("cosine", "mahalanobis", "learned", "cascade")))
-    print(f"cross-check vs committed cascade-cell pooled (cosine/maha/learned/cascade): "
-          f"max drift = {max_drift:.2e} over {n_xcheck} cells")
+                        n_matched += 1
+                        for fld in ("close", "moderate", "distant", "pooled"):
+                            drift = abs(cell[fld] - cas[ck][fld])
+                            if not math.isfinite(drift):
+                                print(f"FAIL: {scale}_{R}_{k}_{metric}.{fld}: drift is non-finite "
+                                      f"(reproduced={cell[fld]!r}, committed={cas[ck][fld]!r}). Aborting.")
+                                return 1
+                            max_drift = max(max_drift, drift)
+                            if drift > 1e-6:
+                                print(f"  NOTE {scale}_{R}_{k}_{metric}.{fld}: reproduced "
+                                      f"{cell[fld]:.6f} vs committed cascade {cas[ck][fld]:.6f} "
+                                      f"(drift {drift:.2e})")
+    print(f"cross-check vs committed cascade-cell evidence (cosine/maha/learned/cascade, "
+          f"close/moderate/distant/pooled): max drift = {max_drift:.2e} over {n_matched} cells")
+    if n_matched != EXPECTED_MATCHES:
+        print(f"FAIL: only {n_matched}/{EXPECTED_MATCHES} cells matched committed cascade evidence "
+              f"under {CASCADE_DIR} -- cascade cells are missing or incomplete, so the cross-check "
+              f"did not actually validate the pipeline. Aborting.")
+        return 1
     CROSS_TOL = 1e-3
     if max_drift > CROSS_TOL:
         print(f"FAIL: reproduced pooled drifted from the committed cascade cells by {max_drift:.2e} "
@@ -152,6 +184,9 @@ def main() -> int:
     # Paper 2 Attempt-3: reproduce the cascade-vs-cosine pooled-F1 penalty range from this run.
     pens = [summary[f"{s}_{R}_{k}_cascade"]["pooled"] - summary[f"{s}_{R}_{k}_cosine"]["pooled"]
             for s in SCALES for R in RS for k in KS]
+    if not all(math.isfinite(p) for p in pens):
+        print(f"FAIL: non-finite cascade-vs-cosine penalty encountered: {pens}. Aborting.")
+        return 1
     print(f"Attempt-3 cascade pooled-F1 penalty (cascade - cosine): "
           f"{min(pens):+.3f} to {max(pens):+.3f} over {len(pens)} groups (10-seed mean)")
 
@@ -173,14 +208,27 @@ def main() -> int:
             return 1
         worst = 0.0
         for key in gen_keys:
+            # fisher uses LAPACK eigh (platform-sensitive) so gets a looser tolerance;
+            # cosine/mahalanobis/learned/cascade are tightly reproducible and use the
+            # same CROSS_TOL as the cascade cross-check above.
+            metric = key.rsplit("_", 1)[-1]
+            tol = 6e-3 if metric == "fisher" else CROSS_TOL
             for fld in ("close", "moderate", "distant", "pooled", "gap"):
                 if fld not in summary[key] or fld not in committed[key]:
                     print(f"FAIL: field '{fld}' missing in cell '{key}'.")
                     return 1
-                worst = max(worst, abs(summary[key][fld] - committed[key][fld]))
-        tol = 6e-3  # fisher uses LAPACK eigh (platform-sensitive); cosine/maha/learned tighter
-        print(f"--check: worst field drift vs committed summary = {worst:.2e} (tol {tol})")
-        return 0 if worst <= tol else 1
+                d = abs(summary[key][fld] - committed[key][fld])
+                if not math.isfinite(d):
+                    print(f"FAIL: {key}.{fld} drift is non-finite "
+                          f"(summary={summary[key][fld]!r}, committed={committed[key][fld]!r}).")
+                    return 1
+                if d > tol:
+                    print(f"FAIL: {key}.{fld} drift {d:.2e} exceeds tolerance {tol} "
+                          f"for metric '{metric}'.")
+                    return 1
+                worst = max(worst, d)
+        print(f"--check: worst field drift vs committed summary = {worst:.2e}")
+        return 0
 
     OUT.write_text(json.dumps(summary, indent=1, sort_keys=True), encoding="utf-8")
     print(f"wrote {OUT} ({len([k for k in summary if not k.startswith('_')])} cells)")

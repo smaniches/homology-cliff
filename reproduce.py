@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -111,9 +112,24 @@ def verify_pooled_numbers() -> bool:
           f"({pf['t30_1000_25_learned']['pooled']:.4f} > {pf['t30_1000_25_cosine']['pooled']:.4f})")
     ok &= rescue
     # Paper 2 Attempt-3: cascade loses to cosine on pooled F1 in all 18 groups (penalty -0.046..-0.236)
+    # The pre-registered grid is 3 scales x 3 panel sizes x 2 neighbor counts; assert the
+    # actual "_cascade" keys are exactly this set (not just 18-of-something) before trusting
+    # the penalty range computed from them.
+    expected_groups = {f"{s}_{R}_{k}_cascade"
+                       for s in ("t6", "t12", "t30")
+                       for R in (100, 500, 1000)
+                       for k in (5, 25)}
+    actual_groups = {g for g in pf if g.endswith("_cascade")}
+    groups_ok = actual_groups == expected_groups
+    if not groups_ok:
+        print(f"    cascade group set mismatch: missing {sorted(expected_groups - actual_groups)}, "
+              f"extra {sorted(actual_groups - expected_groups)}")
     pens = [pf[g]["pooled"] - pf[g.replace("_cascade", "_cosine")]["pooled"]
-            for g in pf if g.endswith("_cascade")]
-    cascade_ok = bool(pens) and len(pens) == 18 and max(pens) < 0.0 and abs(min(pens) - (-0.236)) <= 0.005
+            for g in sorted(actual_groups)]
+    finite = bool(pens) and all(math.isfinite(p) for p in pens)
+    cascade_ok = (groups_ok and finite and len(pens) == 18 and max(pens) < 0.0
+                  and abs(min(pens) - (-0.236)) <= 0.005
+                  and abs(max(pens) - (-0.046)) <= 0.005)
     pen_range = f"{min(pens):+.3f}..{max(pens):+.3f}" if pens else "N/A"
     print(f"    {'cascade loses to cosine, 18 groups (penalty)':<34} = "
           f"{pen_range} over {len(pens)} groups  {'OK' if cascade_ok else 'MISMATCH'}")

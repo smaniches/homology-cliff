@@ -21,16 +21,17 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [v1.5.3] — 2026-06-16
 
-Reproducibility-tooling hardening for the pooled-F1 provenance added in v1.5.2 (addresses automated-review feedback on PR #32). No paper, result, or conclusion change; all evidence cells and result summaries are byte-identical to v1.5.0.
+Reproducibility-tooling hardening for the pooled-F1 provenance added in v1.5.2 (addresses automated-review feedback on PR #32). No paper, result, or conclusion change; all raw evidence cells (`data/cells/`) and every other result summary are byte-identical to v1.5.0 -- the sole exception is `data/results_summaries/pooled_f1_summary.json` itself, which this release deliberately expands (see below).
 
 ### Changed -- code/analyses/compute_pooled_f1.py
-- The cross-check against the committed cascade cells is now **enforced**: if the reproduced cosine/Mahalanobis/learned/cascade pooled F1 drifts from the committed cascade evidence by more than 1e-3, the script aborts (previously it only printed a note, so a real pipeline drift could still pass).
-- `--check` now **fails** if the committed `pooled_f1_summary.json` is missing, and verifies the regenerated cell set matches the committed one exactly (previously a missing file silently regenerated and passed, and dropped cells were skipped).
+- The cross-check against the committed cascade cells is now **enforced**: if the reproduced cosine/Mahalanobis/learned/cascade pooled F1 drifts from the committed cascade evidence by more than 1e-3, the script aborts (previously it only printed a note, so a real pipeline drift could still pass). It also now aborts if fewer than the expected 72 cells actually matched committed cascade evidence (previously an empty/incomplete cascade directory would silently report zero drift without validating anything), and if any drift or cascade-vs-cosine penalty value is non-finite (previously a NaN could pass silently).
+- The cross-check now compares **close/moderate/distant F1 as well as pooled** against the raw cascade cells (previously pooled-only, so a stratification regression could hide behind an unchanged whole-test-set aggregate).
+- `--check` now **fails** if the committed `pooled_f1_summary.json` is missing, and verifies the regenerated cell set matches the committed one exactly (previously a missing file silently regenerated and passed, and dropped cells were skipped). The per-field tolerance is now applied per-metric (tight for cosine/mahalanobis/learned/cascade, looser only for Fisher-Rao's platform-sensitive LAPACK eigh) instead of one blanket tolerance for every metric, and rejects non-finite field drifts explicitly.
 - Added the **cascade** metric so the script reproduces the Paper 2 Attempt-3 pooled-F1 penalty range (-0.046 to -0.236) cited in the v1.5.2 erratum, and prints that range. `pooled_f1_summary.json` expands from 72 to 90 cells (the 18 cascade cells).
 - `np.load(..., allow_pickle=False)` for the cascade cells (they store only scalar/string arrays).
 
 ### Changed
-- `reproduce.py` pooled check now also asserts the cascade penalty range (18 groups, all negative, min ~= -0.236).
+- `reproduce.py` pooled check now also asserts the cascade penalty range (18 groups, all negative, bounded at both endpoints: min ~= -0.236, max ~= -0.046) against the exact expected pre-registered group set (3 scales x 3 panel sizes x 2 neighbor counts), and rejects non-finite penalty values.
 - `version` 1.5.2 -> 1.5.3 (CITATION.cff, codemeta.json, README.md, pyproject.toml); `figures/cliff_summary.png` version label and `MANIFEST.sha256.json` refreshed.
 
 ## [v1.5.2] — 2026-06-16
