@@ -15,9 +15,20 @@ suite -- then prints each headline number from the committed result
 summaries and asserts it against its expected range.
 
 --full additionally re-executes `code/analyses/run_calibration.py` and
-`code/analyses/run_mapper_augmentation.py` and asserts the regenerated
-JSON is byte-identical (SHA256) to the committed artifact, i.e. the
-numbers reproduce bit-for-bit from the committed embeddings and seeds.
+`code/analyses/run_mapper_augmentation.py`:
+  - `calibration_results.json` must be byte-identical (SHA256) to the
+    committed artifact -- the numbers reproduce bit-for-bit.
+  - `mapper_augmentation_results.json` is compared field-aware instead
+    (see `mapper_results_match()`): exact schema, R/k/scale, arm names,
+    seed values/ordering, and n_dist; dist_f1 and the rescue mean/CI to
+    1e-12 (float round-trip noise only); close_f1 alone to 1e-4. FAISS/BLAS
+    threshold behavior can produce bounded cross-platform drift in
+    close_f1 (observed: 6.156e-05, Windows/Python 3.13 vs the Linux-
+    committed value) even though dist_f1, the rescue statistics actually
+    computed from it, and the H1 conclusion are unaffected. Universal
+    bit-for-bit identity is NOT claimed for this artifact. Either way,
+    the regenerated file is restored to its committed bytes afterward --
+    `--full` never leaves the working tree modified.
 
 Exit code 0 iff every phase passes; non-zero on the first failure.
 Paths are resolved relative to this file (REPO_ROOT); no absolute paths,
@@ -26,6 +37,7 @@ runs from any clone on any platform.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import math
@@ -138,12 +150,167 @@ def verify_pooled_numbers() -> bool:
     return bool(ok)
 
 
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def _sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+@contextlib.contextmanager
+def _preserved(path: Path):
+    """Snapshot `path`'s bytes on entry; restore them on exit no matter what
+    happens inside the with-block (a re-derivation subprocess crash, a raised
+    exception during comparison, or simply a comparison mismatch). `--full`
+    re-derives artifacts to CHECK them against the committed evidence, not to
+    replace them -- the working tree must be unchanged (`git status` clean)
+    after every run, whether that run passes or fails. Yields the original
+    bytes (None if `path` did not exist beforehand).
+    """
+    original = path.read_bytes() if path.is_file() else None
+    try:
+        yield original
+    finally:
+        if original is not None:
+            path.write_bytes(original)
+
+
+def _calibration_matches(original: bytes | None, regenerated: bytes) -> tuple[bool, str]:
+    """calibration_results.json: strict SHA256 byte-identity (unchanged)."""
+    if original is None:
+        return False, "    calibration_results.json: no committed artifact to compare against"
+    ident = _sha256(original) == _sha256(regenerated)
+    return ident, (f"    calibration_results.json: SHA256 "
+                   f"{'BIT-FOR-BIT IDENTICAL' if ident else 'DIFFERS'} "
+                   f"({_sha256(regenerated)[:16]}...)")
+
+
+_MAPPER_ARMS = ("uniform", "biased")
+_MAPPER_RESULT_KEYS = {"seed", "dist_f1", "close_f1", "n_dist"}
+_MAPPER_EXACT_TOL = 1e-12   # float round-trip noise only: dist_f1, rescue_mean, rescue_ci_lo/hi
+_MAPPER_CLOSE_F1_TOL = 1e-4  # FAISS/BLAS cross-platform threshold drift in close_f1 only
+
+
+def mapper_results_match(committed: dict, generated: dict) -> tuple[bool, str]:
+    """Field-aware comparison for mapper_augmentation_results.json.
+
+    Cross-platform bit-for-bit identity is NOT guaranteed for this artifact:
+    FAISS/BLAS threshold behavior in the k-NN + bootstrap pipeline can produce
+    bounded floating-point drift in `close_f1` between platforms (observed:
+    6.156e-05 on a Windows/Python 3.13 re-derivation vs the Linux-committed
+    value at results.uniform[2].close_f1), even though the seeds, panel
+    construction, and every other value are identical. `dist_f1` -- what the
+    Mapper H1 rescue hypothesis and rescue_mean/CI are actually computed from
+    -- and every structural/exact field are still required to match exactly
+    (up to 1e-12, i.e. float round-trip noise only).
+
+    Checks, in order: exact top-level key set; exact arm name set (must be
+    {"uniform", "biased"}); exact R/k/scale; exact rescue_mean/rescue_ci_lo/
+    rescue_ci_hi (1e-12); per arm, exact result-list length, then per entry
+    (compared positionally, so seed *ordering* is enforced, not just the
+    value set): exact result-entry key set, exact seed, exact n_dist, exact
+    dist_f1 (1e-12), and close_f1 within 1e-4. Any non-finite value anywhere
+    a float comparison is expected is rejected outright.
+
+    Returns (ok, message). `message` always reports the single worst float
+    drift found (JSON path, committed value, generated value, tolerance
+    applied) regardless of pass/fail, plus every specific violation on
+    failure.
+    """
+    violations: list[str] = []
+    worst: tuple[float, str, float, float, float] | None = None  # (drift, path, committed, generated, tol)
+
+    def check_exact(path: str, c_val, g_val) -> None:
+        if c_val != g_val:
+            violations.append(f"{path}: committed={c_val!r} generated={g_val!r} (exact match required)")
+
+    def check_float(path: str, c_val: float, g_val: float, tol: float) -> None:
+        nonlocal worst
+        if not (isinstance(c_val, (int, float)) and isinstance(g_val, (int, float))
+                and math.isfinite(c_val) and math.isfinite(g_val)):
+            violations.append(f"{path}: non-finite or non-numeric value "
+                              f"(committed={c_val!r}, generated={g_val!r})")
+            return
+        drift = abs(c_val - g_val)
+        if worst is None or drift > worst[0]:
+            worst = (drift, path, c_val, g_val, tol)
+        if drift > tol:
+            violations.append(f"{path}: committed={c_val!r} generated={g_val!r} "
+                              f"drift={drift:.3e} exceeds tolerance {tol:.0e}")
+
+    if set(committed) != set(generated):
+        violations.append(f"top-level keys: committed={sorted(committed)} generated={sorted(generated)}")
+    c_arms = set(committed.get("results", {})) if isinstance(committed.get("results"), dict) else set()
+    g_arms = set(generated.get("results", {})) if isinstance(generated.get("results"), dict) else set()
+    if c_arms != set(_MAPPER_ARMS) or g_arms != set(_MAPPER_ARMS):
+        violations.append(f"results arm names: committed={sorted(c_arms)} generated={sorted(g_arms)} "
+                          f"expected={sorted(_MAPPER_ARMS)}")
+
+    if not violations:  # only compare per-field once the top-level shape is sane
+        check_exact("R", committed["R"], generated["R"])
+        check_exact("k", committed["k"], generated["k"])
+        check_exact("scale", committed["scale"], generated["scale"])
+        check_float("rescue_mean", committed["rescue_mean"], generated["rescue_mean"], _MAPPER_EXACT_TOL)
+        check_float("rescue_ci_lo", committed["rescue_ci_lo"], generated["rescue_ci_lo"], _MAPPER_EXACT_TOL)
+        check_float("rescue_ci_hi", committed["rescue_ci_hi"], generated["rescue_ci_hi"], _MAPPER_EXACT_TOL)
+
+        for arm in _MAPPER_ARMS:
+            c_list, g_list = committed["results"][arm], generated["results"][arm]
+            if len(c_list) != len(g_list):
+                violations.append(f"results.{arm}: length committed={len(c_list)} generated={len(g_list)}")
+                continue
+            for i, (c_entry, g_entry) in enumerate(zip(c_list, g_list)):
+                if set(c_entry) != _MAPPER_RESULT_KEYS or set(g_entry) != _MAPPER_RESULT_KEYS:
+                    violations.append(f"results.{arm}[{i}]: keys committed={sorted(c_entry)} "
+                                      f"generated={sorted(g_entry)} expected={sorted(_MAPPER_RESULT_KEYS)}")
+                    continue
+                check_exact(f"results.{arm}[{i}].seed", c_entry["seed"], g_entry["seed"])
+                check_exact(f"results.{arm}[{i}].n_dist", c_entry["n_dist"], g_entry["n_dist"])
+                check_float(f"results.{arm}[{i}].dist_f1", c_entry["dist_f1"], g_entry["dist_f1"],
+                           _MAPPER_EXACT_TOL)
+                check_float(f"results.{arm}[{i}].close_f1", c_entry["close_f1"], g_entry["close_f1"],
+                           _MAPPER_CLOSE_F1_TOL)
+
+    ok = not violations
+    lines = []
+    if worst is not None:
+        drift, path, c_val, g_val, tol = worst
+        lines.append(f"    mapper_augmentation_results.json: worst drift @ {path}: "
+                    f"committed={c_val!r} generated={g_val!r} drift={drift:.3e} tol={tol:.0e}")
+    if violations:
+        lines.append(f"    mapper_augmentation_results.json: MISMATCH ({len(violations)} violation(s)):")
+        lines.extend(f"      {v}" for v in violations)
+    else:
+        lines.append("    mapper_augmentation_results.json: within field-aware tolerance "
+                     "(schema/R/k/scale/seeds/n_dist/dist_f1/rescue exact; close_f1 <= 1e-4)")
+    return ok, "\n".join(lines)
+
+
+def _mapper_matches(original: bytes | None, regenerated: bytes) -> tuple[bool, str]:
+    if original is None:
+        return False, "    mapper_augmentation_results.json: no committed artifact to compare against"
+    try:
+        committed = json.loads(original)
+        generated = json.loads(regenerated)
+    except json.JSONDecodeError as e:
+        return False, f"    mapper_augmentation_results.json: JSON decode error: {e}"
+    return mapper_results_match(committed, generated)
+
+
+def _reproduce_and_restore(script: str, out: Path, compare) -> bool:
+    """Run `script` to regenerate `out`, compare it against the committed bytes
+    via `compare(original, regenerated) -> (ok, message)`, then always restore
+    `out` to its original committed bytes (see `_preserved`)."""
+    with _preserved(out) as original:
+        if not _run(f"re-derive {out.name}", [PY, script]):
+            return False
+        if not out.is_file():
+            print(f"    {out.name}: script did not produce the expected output file")
+            return False
+        ok, message = compare(original, out.read_bytes())
+        print(message)
+        return ok
 
 
 def reproduce_full() -> bool:
-    """Re-derive the summary artifacts and assert byte-identity to committed.
+    """Re-derive the summary artifacts and check them against committed evidence.
 
     Called only when --full is explicitly requested. A missing dependency (faiss,
     and transitively torch inside knn_learned) or an unhydrated Git-LFS payload is a
@@ -155,6 +322,14 @@ def reproduce_full() -> bool:
     lazy `import torch` and run_cliff.load_embeddings()'s is_lfs_stub() check both
     raise inside the re-derivation subprocesses below, so `_run()` already reports
     those as FAIL via a non-zero subprocess exit code.)
+
+    calibration_results.json must be byte-identical (strict SHA256).
+    mapper_augmentation_results.json is checked field-aware instead
+    (mapper_results_match) -- see that function's docstring for why universal
+    bit-for-bit identity is not claimed for it. Either artifact's regenerated
+    bytes are restored to the committed originals afterward regardless of
+    outcome (_preserved / _reproduce_and_restore): --full never leaves the
+    working tree modified.
     """
     try:
         import faiss  # noqa: F401
@@ -166,20 +341,10 @@ def reproduce_full() -> bool:
         return False
 
     ok = True
-    targets = [
-        ("code/analyses/run_calibration.py", SUMMARIES / "calibration_results.json"),
-        ("code/analyses/run_mapper_augmentation.py", SUMMARIES / "mapper_augmentation_results.json"),
-    ]
-    for script, out in targets:
-        before = _sha256(out) if out.is_file() else None
-        if not _run(f"re-derive {out.name}", [PY, script]):
-            ok = False
-            continue
-        after = _sha256(out)
-        identical = before == after
-        print(f"    {out.name}: SHA256 {'BIT-FOR-BIT IDENTICAL' if identical else 'DIFFERS'} "
-              f"({after[:16]}...)")
-        ok &= identical
+    ok &= _reproduce_and_restore("code/analyses/run_calibration.py",
+                                 SUMMARIES / "calibration_results.json", _calibration_matches)
+    ok &= _reproduce_and_restore("code/analyses/run_mapper_augmentation.py",
+                                 SUMMARIES / "mapper_augmentation_results.json", _mapper_matches)
     # Pooled F1 (no committed cell stores fisher pooled): re-derive from the
     # embeddings and assert tolerance agreement with the committed summary.
     if not _run("re-derive pooled_f1_summary (tolerance check)",
@@ -192,7 +357,8 @@ def reproduce_full() -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Reproduce and verify the homology-cliff compendium.")
     ap.add_argument("--full", action="store_true",
-                    help="also re-derive summary artifacts and assert byte-identity (needs LFS + faiss)")
+                    help="also re-derive summary artifacts and check them against committed evidence "
+                         "(calibration: byte-identical; mapper: field-aware tolerance) -- needs LFS + faiss")
     args = ap.parse_args()
 
     print(f"homology-cliff reproduction  |  repo root: {REPO_ROOT}")

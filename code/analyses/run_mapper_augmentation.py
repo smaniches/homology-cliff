@@ -112,7 +112,7 @@ print(f"Distant F1 biased mean:  {np.mean(bia_dist):.4f}")
 print(f"Rescue = biased - uniform: {np.mean(bia_dist)-np.mean(uni_dist):+.4f}")
 print(f"95% CI on rescue: [{diffs[125]:+.4f}, {diffs[4875]:+.4f}]")
 
-with open(OUT, 'w') as f:
+with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
     json.dump({'R': R, 'k': k, 'scale': 't30', 'results': results,
                'rescue_mean': float(np.mean(bia_dist)-np.mean(uni_dist)),
                'rescue_ci_lo': float(diffs[125]), 'rescue_ci_hi': float(diffs[4875])}, f, indent=1)
