@@ -1,7 +1,8 @@
 # Reviewer Quick-Start Guide
 
-Five commands to verify the compendium's central claims. Estimated time:
-15 minutes (clone + LFS pull + tests), plus 2-10 minutes per spot-check.
+Five commands to verify the compendium's central claims, plus one optional
+full single-command reproduction. Estimated time: 15 minutes (clone + LFS
+pull + tests), plus 2-10 minutes per spot-check.
 
 **Maintainer:** Santiago Maniches (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)), TOPOLOGICA LLC.
 
@@ -15,7 +16,7 @@ cd homology-cliff
 git lfs pull                              # ~188 MB of binary evidence
 pip install numpy scipy scikit-learn pytest
 
-python scripts/ci/verify_manifest.py      # 9,490 manifest entries
+python scripts/ci/verify_manifest.py      # 9,492 manifest entries
 python scripts/ci/verify_prereg_locks.py  # 2 SHA256-locked pre-registrations
 ```
 
@@ -28,10 +29,12 @@ pre-registration hashes match.
 pytest tests/ -v
 ```
 
-Expected with LFS pulled: 40 passed, 0 failed. Without LFS: 37 passed,
-3 skipped (the three data-dependent cell tests skip cleanly when .npz
-files are LFS pointer stubs; the verifier and cell-inventory tests do
-not need LFS payload).
+Expected with LFS pulled: 88 passed, 0 failed. Without LFS: 84 passed,
+4 skipped (three data-dependent cell tests in `test_cell_schema.py` plus
+one real-cascade-evidence shape test in `test_pooled_f1_seed_integrity.py`
+skip cleanly when the relevant .npz files are LFS pointer stubs; every
+other test, including the verifier, cell-inventory, and the synthetic-
+fixture cascade seed-integrity tests, does not need LFS payload).
 
 ## 3. Reproduce the headline cliff gap
 
@@ -70,6 +73,26 @@ python code/analyses/v3_aggregate.py | head -80
 
 Expected: 300 main groups, 300 negctrl groups, 300 fullnull groups. The
 MAIN gap table shows the cliff growing with model scale and panel size.
+
+## 6. Full single-command reproduction (optional; needs LFS + faiss)
+
+```bash
+python reproduce.py --full
+```
+
+Re-runs everything above plus a bit-for-bit re-derivation of the two summary
+artifacts that depend on the k-NN + bootstrap pipeline. `calibration_results.json`
+must be exactly byte-identical (SHA256) to the committed file. **This is not
+true of `mapper_augmentation_results.json` across platforms**: FAISS/BLAS
+threshold behavior can produce bounded floating-point drift in its contextual
+`close_f1` values between platforms -- observed once at 6.156e-05 on a
+Windows/Python 3.13 run against a Linux-committed artifact -- so it is instead
+checked field-aware (exact schema, seeds, seed ordering, n_dist, `dist_f1`,
+and rescue mean/CI to 1e-12; `close_f1` alone to 1e-4; see `reproduce.py`'s
+`mapper_results_match()`). A drift within tolerance is expected and does not
+indicate a problem; either way, the regenerated file is restored to its
+committed bytes afterward, so `git status` should be empty when `--full`
+finishes regardless of outcome.
 
 ---
 
