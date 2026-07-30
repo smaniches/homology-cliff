@@ -15,7 +15,7 @@ cd homology-cliff
 git lfs pull                              # ~188 MB of binary evidence
 pip install numpy scipy scikit-learn pytest
 
-python scripts/ci/verify_manifest.py      # 9,490 manifest entries
+python scripts/ci/verify_manifest.py      # 9,491 manifest entries
 python scripts/ci/verify_prereg_locks.py  # 2 SHA256-locked pre-registrations
 ```
 
@@ -28,10 +28,12 @@ pre-registration hashes match.
 pytest tests/ -v
 ```
 
-Expected with LFS pulled: 40 passed, 0 failed. Without LFS: 37 passed,
-3 skipped (the three data-dependent cell tests skip cleanly when .npz
-files are LFS pointer stubs; the verifier and cell-inventory tests do
-not need LFS payload).
+Expected with LFS pulled: 53 passed, 0 failed. Without LFS: 49 passed,
+4 skipped (three data-dependent cell tests in `test_cell_schema.py` plus
+one real-cascade-evidence shape test in `test_pooled_f1_seed_integrity.py`
+skip cleanly when the relevant .npz files are LFS pointer stubs; every
+other test, including the verifier, cell-inventory, and the synthetic-
+fixture cascade seed-integrity tests, does not need LFS payload).
 
 ## 3. Reproduce the headline cliff gap
 

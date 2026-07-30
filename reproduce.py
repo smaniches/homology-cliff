@@ -143,13 +143,27 @@ def _sha256(path: Path) -> str:
 
 
 def reproduce_full() -> bool:
-    """Re-derive the summary artifacts and assert byte-identity to committed."""
+    """Re-derive the summary artifacts and assert byte-identity to committed.
+
+    Called only when --full is explicitly requested. A missing dependency (faiss,
+    and transitively torch inside knn_learned) or an unhydrated Git-LFS payload is a
+    FAILURE here, not a silent skip: --full promises to actually re-derive from the
+    committed evidence, so if it cannot run, that is an INCOMPLETE reproduction and
+    must produce a non-zero exit code -- never a printed "COMPLETE -- all phases
+    reproduced/verified" after quietly skipping the very thing --full was asked to do.
+    (torch and LFS-pointer-stub failures need no special case here: knn_learned's
+    lazy `import torch` and run_cliff.load_embeddings()'s is_lfs_stub() check both
+    raise inside the re-derivation subprocesses below, so `_run()` already reports
+    those as FAIL via a non-zero subprocess exit code.)
+    """
     try:
         import faiss  # noqa: F401
     except ImportError:
-        print("\n[--full] faiss not importable; skipping bit-for-bit re-derivation.")
-        print("         install faiss-cpu and `git lfs pull` to run --full.")
-        return True
+        print("\n[--full] FAIL: faiss is not importable, so the requested full "
+              "bit-for-bit re-derivation cannot run.")
+        print("         install faiss-cpu (see the GPU floors in pyproject.toml) and run "
+              "`git lfs pull`, or omit --full to run the CI-grade (non-LFS) checks only.")
+        return False
 
     ok = True
     targets = [

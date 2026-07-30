@@ -12,7 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.5.3 &nbsp;·&nbsp; **Date:** June 16, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
+**Version:** v1.5.3 &nbsp;·&nbsp; **Date:** July 30, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -79,7 +79,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,490 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,491 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
@@ -203,7 +203,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = jun, version = {1.5.3},
+  year = {2026}, month = jul, version = {1.5.3},
   doi = {10.5281/zenodo.20143142},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},

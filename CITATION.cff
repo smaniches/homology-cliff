@@ -7,7 +7,7 @@ authors:
     orcid: "https://orcid.org/0009-0005-6480-1987"
     affiliation: "TOPOLOGICA LLC"
 version: 1.5.3
-date-released: 2026-06-16
+date-released: 2026-07-30
 doi: "10.5281/zenodo.20143142"
 repository-code: "https://github.com/smaniches/homology-cliff"
 license: [MIT, CC-BY-4.0]

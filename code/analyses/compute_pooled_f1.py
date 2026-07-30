@@ -101,45 +101,88 @@ _STRATUM_TO_CELL_SUFFIX = {"close": "close_f1", "moderate": "mod_f1", "distant":
                            "pooled": "pooled_f1"}
 
 
-def committed_cascade_pooled() -> tuple[dict, dict, dict]:
+def expected_cascade_filenames() -> set[str]:
+    """The canonical 180-filename set: 3 scales x 3 panel sizes x 2 neighbor counts x 10 seeds."""
+    return {f"cascade_{s}_{R}_{k}_{seed}.npz"
+            for s in SCALES for R in RS for k in KS for seed in SEEDS}
+
+
+def cascade_inventory_mismatch() -> tuple[list[str], list[str]]:
+    """(missing, unexpected): exact-filename-set diff against the canonical 180-name grid,
+    checked before any cascade cell is loaded (no np.load call happens here).
+
+    Uses full filename matching, not prefix/glob-partial matching, against the exact
+    canonical name -- unlike the per-file regex parser in committed_cascade_pooled()
+    (`pat.match(f.name)` with no `$`/fullmatch anchor), a malformed or noncanonical name
+    that still matches the `cascade_*.npz` glob (a stray suffix, a zero-padded duplicate,
+    a typo'd field) cannot silently fail the regex and vanish from every check unnoticed:
+    it simply is not a member of the canonical set, so it surfaces here as `unexpected`.
+    """
+    actual = {f.name for f in CASCADE_DIR.glob("cascade_*.npz")}
+    expected = expected_cascade_filenames()
+    return sorted(expected - actual), sorted(actual - expected)
+
+
+def committed_cascade_pooled() -> tuple[dict, dict, dict, list, dict]:
     """Per-stratum + pooled F1 already stored in the cascade cells (cosine/maha/learned/cascade).
 
-    Returns (pooled, incomplete, duplicates):
+    Returns (pooled, incomplete, duplicates, unexpected_groups, mismatched):
       pooled: {(scale, R, k, metric): {"close":..., "moderate":..., "distant":..., "pooled":...}},
-        mean over whatever seed cells are actually on disk. Covers all fields eval_cell()
-        produces (except "gap", which is derived as close - distant and so is implied by the
-        close/distant checks) so a regression in stratification -- not just the whole-test-set
-        pooled aggregate -- is caught by the cross-check.
-      incomplete: {(scale, R, k): sorted list of distinct seeds actually found}, populated only
-        for groups whose on-disk seed set does not exactly equal SEEDS. A group missing even one
-        of its 10 expected seed files would otherwise silently average over the seeds present
-        and still count as "matched" in main()'s group-count check, hiding incomplete evidence
-        behind a nine-seed mean that happens to land within tolerance.
+        mean over whatever seed cells are actually on disk and pass the mismatch check below.
+        Covers all fields eval_cell() produces (except "gap", which is derived as close - distant
+        and so is implied by the close/distant checks) so a regression in stratification -- not
+        just the whole-test-set pooled aggregate -- is caught by the cross-check.
+      incomplete: {(scale, R, k): sorted list of distinct seeds actually found}, one entry per
+        *expected* group (built from the SCALES x RS x KS grid, not just groups observed on disk)
+        whose on-disk seed set does not exactly equal SEEDS -- including a group with zero files
+        on disk at all, which a check that only iterates observed groups would never see.
       duplicates: {(scale, R, k): {seed: [filenames]}} for any seed value backed by more than
         one file (e.g. a zero-padded or otherwise misnamed duplicate). Seed *values* are
         deduplicated by set membership for the `incomplete` check, so two files that parse to
         the same seed integer would otherwise still look like a complete 10-seed group while
         `acc` silently accumulates an 11-file weighted average under the hood.
+      unexpected_groups: sorted [(scale, R, k), ...] for any group present on disk whose key
+        falls outside the expected SCALES x RS x KS grid. A fully-populated (all 10 correct
+        SEEDS present) but wrongly-keyed group would otherwise pass both the incomplete and
+        duplicate checks -- its seed *set* is fine -- while never being validated by the
+        per-group cross-check loop below, which only ever visits the expected grid.
+      mismatched: {filename: (parsed, embedded)} for any cell whose (scale, R, k, seed) tuple
+        embedded inside the .npz itself (run_cascade.py writes these fields alongside the F1
+        values) disagrees with the identity parsed from its filename -- e.g. a file overwritten
+        with another seed's payload. Excluded from `acc`/`seed_files`: neither the pooled means
+        nor the completeness/duplicate bookkeeping should trust a cell whose own content
+        contradicts its name.
     """
     import re
     pat = re.compile(r"cascade_(t\d+)_(\d+)_(\d+)_(\d+)\.npz")
     acc: dict = {}
     seed_files: dict = {}  # (scale, R, k) -> {seed: [filenames]}
+    mismatched: dict = {}
     for f in CASCADE_DIR.glob("cascade_*.npz"):
         m = pat.match(f.name)
         if not m:
             continue
         scale, R, k, seed = m[1], int(m[2]), int(m[3]), int(m[4])
-        seed_files.setdefault((scale, R, k), {}).setdefault(seed, []).append(f.name)
         # cascade cells store only scalar/string arrays, so pickle is not needed
         with np.load(f, allow_pickle=False) as z:
+            embedded = (str(z["scale"]), int(z["R"]), int(z["k"]), int(z["seed"]))
+            if embedded != (scale, R, k, seed):
+                mismatched[f.name] = ((scale, R, k, seed), embedded)
+                continue
+            seed_files.setdefault((scale, R, k), {}).setdefault(seed, []).append(f.name)
             for met in ("cosine", "mahalanobis", "learned", "cascade"):
                 key = (scale, R, k, met)
                 entry = acc.setdefault(key, {fld: [] for fld in _STRATUM_TO_CELL_SUFFIX})
                 for fld, suffix in _STRATUM_TO_CELL_SUFFIX.items():
                     entry[fld].append(float(z[f"{met}_{suffix}"]))
     expected_seeds = set(SEEDS)
-    incomplete = {g: sorted(sf) for g, sf in seed_files.items() if set(sf) != expected_seeds}
+    expected_groups = {(s, R, k) for s in SCALES for R in RS for k in KS}
+    incomplete = {}
+    for g in expected_groups:
+        found = sorted(seed_files.get(g, {}))
+        if set(found) != expected_seeds:
+            incomplete[g] = found
+    unexpected_groups = sorted(g for g in seed_files if g not in expected_groups)
     duplicates = {
         g: {seed: names for seed, names in sf.items() if len(names) > 1}
         for g, sf in seed_files.items()
@@ -147,7 +190,7 @@ def committed_cascade_pooled() -> tuple[dict, dict, dict]:
     }
     pooled = {key: {fld: float(np.mean(v)) for fld, v in fields.items()}
               for key, fields in acc.items()}
-    return pooled, incomplete, duplicates
+    return pooled, incomplete, duplicates, unexpected_groups, mismatched
 
 
 def main() -> int:
@@ -156,9 +199,44 @@ def main() -> int:
                     help="regenerate and assert agreement with the committed summary (tolerance)")
     args = ap.parse_args()
 
+    missing_cascade_files, unexpected_cascade_files = cascade_inventory_mismatch()
+    if missing_cascade_files or unexpected_cascade_files:
+        print(f"FAIL: cascade cell inventory under {CASCADE_DIR} does not exactly match the "
+              f"canonical 180-file grid (3 scales x 3 panel sizes x 2 neighbor counts x "
+              f"10 seeds).")
+        if missing_cascade_files:
+            print(f"  missing ({len(missing_cascade_files)}): {missing_cascade_files}")
+        if unexpected_cascade_files:
+            print(f"  unexpected ({len(unexpected_cascade_files)}): {unexpected_cascade_files}")
+        print("Aborting before loading any cascade evidence -- fix the file set (remove/rename "
+              "unexpected files, restore missing ones) before re-running.")
+        return 1
+
     labels, _ = rc.load_labels()
     summary: dict = {}
-    cas, incomplete_seed_groups, duplicate_seed_files = committed_cascade_pooled()
+    # Defense in depth: the checks below (seed-set completeness, duplicate seed files,
+    # unexpected (scale, R, k) groups, embedded-vs-filename identity) are all guaranteed
+    # vacuous once the exact-inventory gate above passes, but are retained so a bug in that
+    # gate does not silently disable the finer-grained checks it is meant to subsume.
+    (cas, incomplete_seed_groups, duplicate_seed_files,
+     unexpected_seed_groups, mismatched_seed_cells) = committed_cascade_pooled()
+    if mismatched_seed_cells:
+        print(f"FAIL: {len(mismatched_seed_cells)} cascade cell file(s) whose embedded "
+              f"(scale, R, k, seed) fields disagree with the identity implied by their filename:")
+        for name, (parsed, embedded) in sorted(mismatched_seed_cells.items()):
+            print(f"  {name}: filename implies {parsed}, embedded fields say {embedded}")
+        print("Aborting before the expensive re-derivation -- a cell's content does not match its "
+              "filename (e.g. an overwritten/copied file), so its data cannot be trusted for any "
+              "group. Fix or regenerate the affected cascade cell(s) first.")
+        return 1
+    if unexpected_seed_groups:
+        print(f"FAIL: cascade cells found for {len(unexpected_seed_groups)} (scale, R, k) "
+              f"group(s) outside the expected {len(SCALES)}x{len(RS)}x{len(KS)} pre-registered "
+              f"grid: {unexpected_seed_groups}")
+        print("Aborting before the expensive re-derivation -- these cells do not belong to any "
+              "cited group; verify they are not misnamed copies of a real group before removing "
+              "them.")
+        return 1
     if duplicate_seed_files:
         print(f"FAIL: duplicate cascade cell files for the same seed in "
               f"{len(duplicate_seed_files)} (scale, R, k) group(s):")
@@ -234,8 +312,10 @@ def main() -> int:
 
     summary["_doc"] = ("Pooled (whole-test-set) F1 + per-stratum F1 + close-distant gap, 10-seed mean, "
                        "reproduced from committed embeddings via run_cliff/run_fisher. Keys: scale_R_k_metric. "
-                       "cosine/mahalanobis/learned pooled cross-checked == committed cascade cells; fisher pooled "
-                       "inherits the same validated pipeline. Regenerate with code/analyses/compute_pooled_f1.py.")
+                       "cosine/mahalanobis/learned/cascade close/moderate/distant/pooled fields are all "
+                       "cross-checked against the committed cascade cells (data/cells/cascade/) within tolerance; "
+                       "fisher (no committed cell to check against) inherits the same validated pipeline. "
+                       "Regenerate with code/analyses/compute_pooled_f1.py.")
 
     if args.check:
         if not OUT.is_file():
