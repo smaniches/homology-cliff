@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 36128,
-  "sha256": "a75ff155e285b2c3c1b2bf59081f35148f0ae1e7df967f6aa317a66a9d2b0665"
+  "bytes": 37443,
+  "sha256": "bd8035264b02044345fa2207e2cbf1b97024aa5c0320cabb57345ed2b4da4710"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -37954,6 +37954,10 @@
  "tests/test_numerics_known_answer.py": {
   "bytes": 12236,
   "sha256": "a73c932b0aacbebf1838d47bf43aa0961e6327d5a0e44cf90cc5b501d41c255e"
+ },
+ "tests/test_pooled_f1_seed_integrity.py": {
+  "bytes": 6162,
+  "sha256": "b65d5f82554533aa7eae46186ebd68720b2c5169dd2425029e75b9c33a8961b7"
  },
  "tests/test_verify_manifest.py": {
   "bytes": 4726,
