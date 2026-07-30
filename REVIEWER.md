@@ -29,7 +29,7 @@ pre-registration hashes match.
 pytest tests/ -v
 ```
 
-Expected with LFS pulled: 84 passed, 0 failed. Without LFS: 80 passed,
+Expected with LFS pulled: 88 passed, 0 failed. Without LFS: 84 passed,
 4 skipped (three data-dependent cell tests in `test_cell_schema.py` plus
 one real-cascade-evidence shape test in `test_pooled_f1_seed_integrity.py`
 skip cleanly when the relevant .npz files are LFS pointer stubs; every

@@ -254,6 +254,38 @@ def test_preserved_restores_after_exception(tmp_path):
     assert p.read_bytes() == b"ORIGINAL"
 
 
+def test_preserved_removes_an_artifact_that_did_not_exist_beforehand(tmp_path):
+    """If the artifact was absent on entry and the block created it, it must be
+    removed on exit -- otherwise `--full` run from a checkout missing one of the
+    two committed artifacts would leave a new untracked file behind, making the
+    'never leaves the working tree modified' contract only conditionally true."""
+    p = tmp_path / "absent.json"
+    assert not p.exists()
+    with reproduce._preserved(p) as original:
+        assert original is None
+        p.write_bytes(b"CREATED_BY_RERUN")
+        assert p.exists()
+    assert not p.exists()
+
+
+def test_preserved_removes_a_created_artifact_even_after_exception(tmp_path):
+    p = tmp_path / "absent.json"
+    with pytest.raises(RuntimeError):
+        with reproduce._preserved(p) as _original:
+            p.write_bytes(b"CREATED_THEN_CRASHED")
+            raise RuntimeError("boom")
+    assert not p.exists()
+
+
+def test_preserved_is_a_noop_when_the_artifact_stays_absent(tmp_path):
+    """Nothing created, nothing to clean up -- and no error from unlinking a
+    file that was never there."""
+    p = tmp_path / "absent.json"
+    with reproduce._preserved(p) as original:
+        assert original is None
+    assert not p.exists()
+
+
 def _write_script(tmp_path, name, body):
     script = tmp_path / name
     script.write_text(body, encoding="utf-8")
@@ -310,5 +342,25 @@ def test_reproduce_and_restore_fails_cleanly_if_script_writes_nothing(tmp_path):
     out = tmp_path / "missing_output.json"
     script = _write_script(tmp_path, "noop.py", "pass\n")
     ok = reproduce._reproduce_and_restore(str(script), out, lambda o, g: (True, "unreached"))
+    assert ok is False
+    assert not out.exists()
+
+
+def test_reproduce_and_restore_removes_output_created_from_an_absent_artifact(tmp_path):
+    """End-to-end version of the absent-artifact case: no committed file exists,
+    the re-derivation creates one, the comparison sees original=None (and every
+    real comparator fails on that -- there is nothing to check against), and the
+    created file is cleaned up rather than left in the tree."""
+    out = tmp_path / "absent.json"
+    script = _write_script(tmp_path, "create.py",
+                           f"import pathlib; pathlib.Path(r'{out}').write_bytes(b'CREATED')\n")
+    seen = {}
+
+    def record(original, generated):
+        seen["original"] = original
+        return reproduce._calibration_matches(original, generated)
+
+    ok = reproduce._reproduce_and_restore(str(script), out, record)
+    assert seen["original"] is None
     assert ok is False
     assert not out.exists()

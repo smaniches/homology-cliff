@@ -163,6 +163,12 @@ def _preserved(path: Path):
     replace them -- the working tree must be unchanged (`git status` clean)
     after every run, whether that run passes or fails. Yields the original
     bytes (None if `path` did not exist beforehand).
+
+    If `path` did NOT exist on entry but the with-block created it (a subprocess
+    that writes a fresh artifact when its committed copy is absent), it is
+    removed on exit so the working tree is still unchanged -- the "never leaves
+    the working tree modified" contract holds even from a partial checkout,
+    not only from one where both committed artifacts already exist.
     """
     original = path.read_bytes() if path.is_file() else None
     try:
@@ -170,6 +176,8 @@ def _preserved(path: Path):
     finally:
         if original is not None:
             path.write_bytes(original)
+        elif path.exists():
+            path.unlink()
 
 
 def _calibration_matches(original: bytes | None, regenerated: bytes) -> tuple[bool, str]:
@@ -328,14 +336,15 @@ def reproduce_full() -> bool:
     (mapper_results_match) -- see that function's docstring for why universal
     bit-for-bit identity is not claimed for it. Either artifact's regenerated
     bytes are restored to the committed originals afterward regardless of
-    outcome (_preserved / _reproduce_and_restore): --full never leaves the
-    working tree modified.
+    outcome -- or removed, if the artifact was absent to begin with and the
+    re-derivation created it (_preserved / _reproduce_and_restore): --full
+    never leaves the working tree modified.
     """
     try:
         import faiss  # noqa: F401
     except ImportError:
         print("\n[--full] FAIL: faiss is not importable, so the requested full "
-              "bit-for-bit re-derivation cannot run.")
+              "re-derivation cannot run.")
         print("         install faiss-cpu (see the GPU floors in pyproject.toml) and run "
               "`git lfs pull`, or omit --full to run the CI-grade (non-LFS) checks only.")
         return False
@@ -374,7 +383,7 @@ def main() -> int:
     results["headline numbers"] = verify_headline_numbers()
     results["pooled numbers"] = verify_pooled_numbers()
     if args.full:
-        results["--full bit-for-bit"] = reproduce_full()
+        results["--full artifact agreement"] = reproduce_full()
 
     print("\n" + "=" * 60)
     print("REPRODUCTION SUMMARY")
