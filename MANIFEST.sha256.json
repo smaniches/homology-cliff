@@ -28,8 +28,8 @@
   "sha256": "66f9f20d49049e288d0b2fbc6f5b150c803836b5988a37ebf0a59b20dbddd620"
  },
  ".github/workflows/evidence.yml": {
-  "bytes": 744,
-  "sha256": "1e2b76849110aac64e4faf4dfcbc0fc9451ce331637e61e62af6418606a50893"
+  "bytes": 838,
+  "sha256": "9bc8cc88fc01f379a74d9f20a2dcf75f74981bd6c24ca32c9a19f100345d5bd1"
  },
  ".github/workflows/lint.yml": {
   "bytes": 1165,
