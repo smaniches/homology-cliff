@@ -36,8 +36,8 @@
   "sha256": "ab0c47a24adc753ef6d096f362c13c5ff9e1b8924fb84722de5d6202503b4185"
  },
  ".github/workflows/manifest.yml": {
-  "bytes": 792,
-  "sha256": "dbc01682d3095e35945046f4d639d6d8a7512736e83e2120ccc5b22549ea1b40"
+  "bytes": 869,
+  "sha256": "4f6d08199610f6337ce7d0c771e681ce962aecd117810cbac1408e2a38565c2b"
  },
  ".github/workflows/smoke.yml": {
   "bytes": 1013,
@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 48902,
-  "sha256": "cd036e7b80235be543a14d01a284c999fd21d2d9fc6fe21135d016d2355aa4d0"
+  "bytes": 49641,
+  "sha256": "439fdfd5148e132e657647fa465bcb982890735314eebda9e05b39840dfa4058"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -104,8 +104,8 @@
   "sha256": "1820664ecc4d7c0f4ef2660801a67b348ab69dc06800f7e24a16db701ff6c038"
  },
  "PROBLEMS.md": {
-  "bytes": 8790,
-  "sha256": "9194f3083f0698324d283114487a873e04d0c153dff67fa9bd89285df6ec4cb6"
+  "bytes": 9434,
+  "sha256": "3d498125515dc785e147725f2aa8095ce9ee22e5d8542a455a4fcef79d57c800"
  },
  "README.md": {
   "bytes": 22595,
@@ -146,6 +146,10 @@
  "code/analyses/run_cross_family_partition.py": {
   "bytes": 4163,
   "sha256": "425752f603a165e67e3d80f7d3c1c5dbd1507e748d1f2a76b1aeb22aeb59d1cb"
+ },
+ "code/analyses/run_cross_family_partition_10seed.py": {
+  "bytes": 10287,
+  "sha256": "7337341c9d31bff877355a76d60a3a47c9cddb43089f67bc538e80d2d9879344"
  },
  "code/analyses/run_mapper.py": {
   "bytes": 4106,
@@ -37962,6 +37966,10 @@
  "tests/test_cell_schema.py": {
   "bytes": 4643,
   "sha256": "4760077a9fc75e67f3645dfa74dd6804b8dd20cf1b89b0185ff184c91dcd0279"
+ },
+ "tests/test_cross_family_partition_10seed.py": {
+  "bytes": 4232,
+  "sha256": "84696d3c0474761cbc89fc5ba27fb74359bc82e05efec4a80f38e8b0f6f926e1"
  },
  "tests/test_numerics_known_answer.py": {
   "bytes": 12236,
