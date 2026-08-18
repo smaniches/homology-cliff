@@ -64,8 +64,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 45595,
-  "sha256": "1ade9d08196f8df20c07400b0514e41705a27f8e23974edb2de537d4469b5a0a"
+  "bytes": 48902,
+  "sha256": "cd036e7b80235be543a14d01a284c999fd21d2d9fc6fe21135d016d2355aa4d0"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -109,7 +109,7 @@
  },
  "README.md": {
   "bytes": 22595,
-  "sha256": "6582137fad5960199481b9a5e5d595176df95f665267ca5e2e5193ceb3e8c0de"
+  "sha256": "39d1fa94d3a53107f9a7c851955155c39c8dc9f7d731600758758e4b41918e75"
  },
  "REFEREES.md": {
   "bytes": 7766,
@@ -117,7 +117,7 @@
  },
  "REVIEWER.md": {
   "bytes": 5680,
-  "sha256": "229434ac4953c5261871085e91b1f74f2c6c5a69d08b05de2a9e42b1b7b87684"
+  "sha256": "b0757c9039976a973d56556b7e3fa2bdc6987ac7397090a625ba60717e8b3779"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -125,7 +125,7 @@
  },
  "STATUS.md": {
   "bytes": 5255,
-  "sha256": "fc084f78fc8897e031f47e648f32e16c3a1f922b7012d1cb6ead9bfc5d28056c"
+  "sha256": "5d30f569fe135cf0da439438c0c91a72478c43266ae04518ab209c1f97d92af3"
  },
  "code/analyses/compute_pooled_f1.py": {
   "bytes": 20135,
@@ -37675,6 +37675,14 @@
   "bytes": 13980,
   "sha256": "7d99a0254da5b9c4484c3c0d60475c18fb55acb14629973f7be946fdf95f7036"
  },
+ "data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md": {
+  "bytes": 11958,
+  "sha256": "204953efeb098f7004b5e82586d5db6f721439b0abe9d214256817679a7a6804"
+ },
+ "data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md.sha256": {
+  "bytes": 109,
+  "sha256": "74f4ad6e9695689862254e66f54986ababd57e5d0d1cff82462e702ad55fe59f"
+ },
  "data/prereg/PRE_REGISTRATION_FISHER_CLIFF_v1.md": {
   "bytes": 1895,
   "sha256": "9c08562b83e28e7837c47c8c57e0529c0a8a10bdb270f5085be163b505194f41"
@@ -37686,6 +37694,10 @@
  "data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md": {
   "bytes": 6843,
   "sha256": "139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06"
+ },
+ "data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md.sha256": {
+  "bytes": 104,
+  "sha256": "39ecd3afda761aa1fcef766e9ece28424b3762a6c1e34028d3546c6025aabed2"
  },
  "data/prereg/PRE_REGISTRATION_STRATIFIED_CASCADE_v1.md": {
   "bytes": 1895,
@@ -37932,8 +37944,8 @@
   "sha256": "ce3167daf8713c67f67fd954323256310e2c0fe1f2785563238829a4b020ad3d"
  },
  "scripts/ci/verify_prereg_locks.py": {
-  "bytes": 2970,
-  "sha256": "0f089d32198680a492b91a7109b373dd3fe8ef7586c982b25227594b6c6a94e5"
+  "bytes": 3418,
+  "sha256": "e168b903942c30f16264b64a28561007d1cd6307ba8c7d8adf902f0efdc28c68"
  },
  "scripts/ci/verify_smoke_imports.py": {
   "bytes": 5299,
