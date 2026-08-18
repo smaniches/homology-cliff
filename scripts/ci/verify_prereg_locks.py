@@ -37,6 +37,12 @@ EXPECTED = {
         "139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06",
     "data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_ADDENDUM_FULLNULL.md":
         "f3864d097a0c611d790e6fb15a42e7efb36b2d1b103be4ec1c4f28f99d1004dc",
+    # Confirmatory 10-seed cross-family robustness extension. Locked before any
+    # additional panel seed is run; not yet cited by any paper and not verified
+    # by a runtime harness (CI-only lock). Companion digest is stored beside the
+    # document at PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md.sha256.
+    "data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md":
+        "204953efeb098f7004b5e82586d5db6f721439b0abe9d214256817679a7a6804",
 }
 
 

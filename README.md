@@ -79,7 +79,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,492 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,495 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
