@@ -37739,6 +37739,10 @@
   "bytes": 11979,
   "sha256": "63264fd5f59010917bab902cdff2b3bc6fa0765b354c4b97754c6ecb8d4b1927"
  },
+ "data/results_summaries/cross_family_partition_10seed.json": {
+  "bytes": 242157,
+  "sha256": "332b939622ac2a174124f5378d74d2df074d66561654c7b84e55002608677b7d"
+ },
  "data/results_summaries/mapper_augmentation_results.json": {
   "bytes": 2667,
   "sha256": "7f0c613fdf7d01bbf838612290285b222506dba7b1a14e9b7b089a53c823e474"
