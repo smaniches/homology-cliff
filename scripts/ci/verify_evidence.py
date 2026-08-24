@@ -10,10 +10,12 @@ Checks:
      distant_precision=0.068, ECE ratio between 4.0 and 4.5
   2. cross_family_partition.json: within_family=0, cross_family=20
   3. cross_family_partition_10seed.json: locked seed-level robustness summary
-     passes, AND every derived field (per-seed fractions, across-seed
-     aggregates, decision booleans) is independently recomputed from the raw
-     per-seed counts and must agree with the stored values -- a stale or
-     internally inconsistent derived field fails the check
+     passes, AND every derived field (per-seed cross- and within-family
+     fractions, across-seed aggregates, decision booleans) is independently
+     recomputed from the raw per-seed counts and must agree with the stored
+     values -- a stale or internally inconsistent derived field fails the
+     check, and non-finite stored numerics (NaN, +/-Infinity) are rejected
+     before any tolerance comparison
   4. mapper_augmentation_results.json exists and reports CI including zero
   5. adversarial_results.json: 3 targets present
   6. v3_final.txt exists and is non-empty
@@ -27,6 +29,7 @@ Exit code:
 from __future__ import annotations
 
 import json
+import math
 import statistics
 import sys
 from pathlib import Path
@@ -110,6 +113,27 @@ def _as_count(value: object) -> int | None:
     return value
 
 
+def _finite_or_none(value: object) -> float | None:
+    """Return value as a finite float, or None for anything else.
+
+    Rejects bools, non-numbers, NaN, and +/-Infinity. JSON permits bare
+    NaN/Infinity tokens and Python's json module parses them into floats;
+    a NaN reaching a tolerance comparison like abs(x - y) > tol evaluates
+    False and would fail OPEN, so every stored numeric must pass through
+    this gate before any comparison.
+    """
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    out = float(value)
+    return out if math.isfinite(out) else None
+
+
+def _matches_derived(stored: object, derived: float) -> bool:
+    """True iff stored is a finite number exactly equal to derived."""
+    value = _finite_or_none(stored)
+    return value is not None and value == derived
+
+
 def check_cross_family_10seed(path: Path | None = None) -> bool:
     print("\n[3/8] cross_family_partition_10seed.json")
     if path is None:
@@ -156,30 +180,36 @@ def check_cross_family_10seed(path: Path | None = None) -> bool:
             )
             ok = counts_consistent = False
             continue
-        stored_fraction = r.get("cross_family_fraction")
+        stored_cross_fraction = r.get("cross_family_fraction")
+        stored_within_fraction = r.get("within_family_fraction")
         if n_eval > 0:
-            derived = cross / n_eval
-            derived_fractions.append(derived)
+            derived_cross = cross / n_eval
+            derived_within = within / n_eval
+            derived_fractions.append(derived_cross)
             nonzero_cross_gt_within.append(cross > within)
             # Same float division the runner performs, so exact equality.
-            if (
-                isinstance(stored_fraction, bool)
-                or not isinstance(stored_fraction, (int, float))
-                or float(stored_fraction) != derived
+            for name, stored, derived in (
+                ("cross_family_fraction", stored_cross_fraction, derived_cross),
+                ("within_family_fraction", stored_within_fraction, derived_within),
             ):
-                fail(
-                    f"seed {seed!r}: stored cross_family_fraction="
-                    f"{stored_fraction!r} != derived {derived!r}"
-                )
-                ok = False
+                if not _matches_derived(stored, derived):
+                    fail(
+                        f"seed {seed!r}: stored {name}="
+                        f"{stored!r} != derived {derived!r}"
+                    )
+                    ok = False
         else:
             derived_zero_seeds.append(seed)
-            if stored_fraction is not None:
-                fail(
-                    f"seed {seed!r}: n_evaluable=0 but stored "
-                    f"cross_family_fraction={stored_fraction!r} is not null"
-                )
-                ok = False
+            for name, stored in (
+                ("cross_family_fraction", stored_cross_fraction),
+                ("within_family_fraction", stored_within_fraction),
+            ):
+                if stored is not None:
+                    fail(
+                        f"seed {seed!r}: n_evaluable=0 but stored "
+                        f"{name}={stored!r} is not null"
+                    )
+                    ok = False
 
     stored_zero_seeds = d.get("zero_evaluable_seeds")
     if counts_consistent and stored_zero_seeds != derived_zero_seeds:
@@ -202,15 +232,14 @@ def check_cross_family_10seed(path: Path | None = None) -> bool:
         # 1e-12 absorbs summation-order float noise only (the runner uses
         # np.mean's pairwise summation); any genuine count edit moves a
         # fraction by >= 1/(n_evaluable^2), many orders of magnitude larger.
+        # Non-finite stored values (NaN, +/-Infinity) are rejected before
+        # the tolerance comparison -- NaN would otherwise fail open.
         for key, derived_value in derived_summary.items():
-            observed = summary.get(key)
-            if (
-                isinstance(observed, bool)
-                or not isinstance(observed, (int, float))
-                or abs(float(observed) - derived_value) > 1e-12
-            ):
+            raw = summary.get(key)
+            observed = _finite_or_none(raw)
+            if observed is None or abs(observed - derived_value) > 1e-12:
                 fail(
-                    f"cross_family_fraction_across_seeds[{key!r}]={observed!r} "
+                    f"cross_family_fraction_across_seeds[{key!r}]={raw!r} "
                     f"disagrees with value derived from per-seed counts "
                     f"({derived_value!r})"
                 )
@@ -228,9 +257,10 @@ def check_cross_family_10seed(path: Path | None = None) -> bool:
         "max": 1.0,
     }
     for key, value in expected.items():
-        observed = summary.get(key)
-        if not isinstance(observed, (int, float)) or abs(float(observed) - value) > 1e-12:
-            fail(f"{key}={observed!r}, expected {value!r}")
+        raw = summary.get(key)
+        observed = _finite_or_none(raw)
+        if observed is None or abs(observed - value) > 1e-12:
+            fail(f"{key}={raw!r}, expected {value!r}")
             ok = False
 
     decision = d.get("decision", {})

@@ -95,6 +95,40 @@ def test_stale_aggregate_mean_rejected(tmp_path: Path) -> None:
     assert MOD.check_cross_family_10seed(_write(tmp_path, doc)) is False
 
 
+def test_nan_aggregate_rejected(tmp_path: Path) -> None:
+    """A stored NaN aggregate must be rejected: abs(NaN - x) > tol is False,
+    so without an explicit finiteness gate NaN fails OPEN."""
+    doc = _sealed()
+    doc["cross_family_fraction_across_seeds"]["mean"] = float("nan")
+    assert MOD.check_cross_family_10seed(_write(tmp_path, doc)) is False
+
+
+def test_infinite_aggregate_rejected(tmp_path: Path) -> None:
+    """Stored +/-Infinity aggregates must be rejected before comparison."""
+    for bad in (float("inf"), float("-inf")):
+        doc = _sealed()
+        doc["cross_family_fraction_across_seeds"]["median"] = bad
+        assert MOD.check_cross_family_10seed(_write(tmp_path, doc)) is False
+
+
+def test_nan_per_row_fraction_rejected(tmp_path: Path) -> None:
+    """A stored NaN per-row fraction must be rejected."""
+    doc = _sealed()
+    _seed_row(doc, 20260413)["cross_family_fraction"] = float("nan")
+    assert MOD.check_cross_family_10seed(_write(tmp_path, doc)) is False
+
+
+def test_stale_within_family_fraction_rejected(tmp_path: Path) -> None:
+    """A stored within_family_fraction that disagrees with
+    within_family / n_evaluable must fail even when every cross-family
+    field is untouched."""
+    doc = _sealed()
+    row = _seed_row(doc, 20260414)  # sealed: within=1, n_evaluable=26
+    assert row["within_family_fraction"] == 1 / 26
+    row["within_family_fraction"] = 0.0  # stale, contradicts the counts
+    assert MOD.check_cross_family_10seed(_write(tmp_path, doc)) is False
+
+
 def test_stale_decision_booleans_rejected(tmp_path: Path) -> None:
     """Counts edited so cross no longer beats within, while the stored decision
     object still claims strong robustness, must fail."""
