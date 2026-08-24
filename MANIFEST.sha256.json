@@ -37793,7 +37793,7 @@
  },
  "docs/index.html": {
   "bytes": 20096,
-  "sha256": "63dcd5d3a0a0f442f5a2cb955f7aa48194a4c67ccec9fb01954ac400234d51f0"
+  "sha256": "981a4cb6739fbebc6f3d9ec47213a9cb1890b7752d0db3447d809e4dbc814e65"
  },
  "docs/robots.txt": {
   "bytes": 88,
@@ -37804,8 +37804,8 @@
   "sha256": "ebe839db9bb28795e236c682a014857f92105e7a2f07df71b2cccd4de903d384"
  },
  "figures/cliff_summary.png": {
-  "bytes": 193488,
-  "sha256": "1546f6e78667ac42ac310afb791aba04708cc32dcbc2bfd1bfe51b0fa20bf188"
+  "bytes": 238776,
+  "sha256": "5db7926fbfb88cc9356fe9f85b95a006e31c1b1a7f8eb6c08bc703d96fcac91b"
  },
  "papers/01_homology_cliff_and_rescue/paper.pdf": {
   "bytes": 245329,
@@ -37945,7 +37945,7 @@
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10705,
-  "sha256": "1080d3db2e22598ba5d58c3606eac2e4a30586e26fd20c51f74c935fb14558fb"
+  "sha256": "b0ca57287ccc3863be8987da8c581d89b2c9cc34a9341bf3537bb4c63b7b9056"
  },
  "scripts/ci/verify_evidence.py": {
   "bytes": 16645,
