@@ -120,8 +120,8 @@
   "sha256": "5e50c6e008e754f1af2b0d06db2c5f5559fa5ba8a4932dc0f1baad4f84e585ea"
  },
  "REVIEWER.md": {
-  "bytes": 6029,
-  "sha256": "aa77a95f0a908171f8ca73e64bb1acb546c98f97de999f68104cbb4adf07d965"
+  "bytes": 6036,
+  "sha256": "c63c76f252b07767a52f342fc8c725f8422e27122fd3344ffa17e64b534c3547"
  },
  "SECURITY.md": {
   "bytes": 3279,
@@ -37912,8 +37912,8 @@
   "sha256": "2dfc56fc734e254b3f8d1faed1a5396c34efd631eb47fef73d18d23ba9b2481b"
  },
  "papers/05_cross_family_and_mapper/reproducibility.md": {
-  "bytes": 2285,
-  "sha256": "02b58c99be797d7d6c09268a377f53a38cc4b49da32d636a6c3cd2fb93aa30c6"
+  "bytes": 4878,
+  "sha256": "9772081a7e21fc3353184939dc3640b0f0f7b9da2b502c48ffd8a4669f1e0066"
  },
  "papers/05_cross_family_and_mapper/supplement/README.md": {
   "bytes": 867,
@@ -37948,8 +37948,8 @@
   "sha256": "1080d3db2e22598ba5d58c3606eac2e4a30586e26fd20c51f74c935fb14558fb"
  },
  "scripts/ci/verify_evidence.py": {
-  "bytes": 9598,
-  "sha256": "2a9bf9ec0712c83f700d327c4d438e211b3a0b1d90bc456c5086b2956561d870"
+  "bytes": 16645,
+  "sha256": "613609177079b1297eb92f767bb66ba5669eee9a082926946f6d1c306a287bc3"
  },
  "scripts/ci/verify_manifest.py": {
   "bytes": 4781,
@@ -37990,6 +37990,10 @@
  "tests/test_reproduce_mapper_tolerance.py": {
   "bytes": 14861,
   "sha256": "50770d62ca0ba38c984aa9159597c29539c6c81fd78c6b6f34d6299e3cad13f0"
+ },
+ "tests/test_verify_evidence_10seed.py": {
+  "bytes": 6124,
+  "sha256": "198bfd98a28c43a4f59acefedfe4cd4c6a93c9729b97333dbb2c8188433924c6"
  },
  "tests/test_verify_manifest.py": {
   "bytes": 4726,
