@@ -27,6 +27,10 @@
   "bytes": 1281,
   "sha256": "66f9f20d49049e288d0b2fbc6f5b150c803836b5988a37ebf0a59b20dbddd620"
  },
+ ".github/workflows/confirmatory-10seed.yml": {
+  "bytes": 1591,
+  "sha256": "6f01d3a1fc96d95d8898259cdb7dbd174f7e5583e1d58ab5a21ebf9c0f3b80bf"
+ },
  ".github/workflows/evidence.yml": {
   "bytes": 838,
   "sha256": "9bc8cc88fc01f379a74d9f20a2dcf75f74981bd6c24ca32c9a19f100345d5bd1"
