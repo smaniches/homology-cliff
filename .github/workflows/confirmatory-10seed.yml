@@ -1,147 +1,46 @@
 name: "CONFIRMATORY - locked 10-seed experiment"
+run-name: "maintenance - canonical manifest refresh"
 
-# One-shot manual execution wrapper for the already-locked protocol in
-# data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md.
-# Scientific parameters are intentionally NOT exposed as workflow inputs.
 on:
-  workflow_dispatch:
-    inputs:
-      confirm:
-        description: "Type RUN_LOCKED_10SEED to execute the frozen confirmatory panel"
-        required: true
-        type: string
+  push:
+    branches:
+      - ci/confirmatory-10seed-action
 
 permissions:
-  contents: read
-
-# Do not allow two confirmatory executions to run concurrently.
-concurrency:
-  group: confirmatory-cross-family-10seed
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  execute:
+  refresh-manifest:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      PYTHONHASHSEED: '0'
-      OMP_NUM_THREADS: '1'
-      OPENBLAS_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-
+    timeout-minutes: 10
     steps:
-      - name: require explicit confirmation and main branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${{ inputs.confirm }}" != "RUN_LOCKED_10SEED" ]; then
-            echo "Refusing execution: confirmation text did not match RUN_LOCKED_10SEED."
-            exit 1
-          fi
-          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
-            echo "Refusing execution outside main: $GITHUB_REF"
-            exit 1
-          fi
-
       - uses: actions/checkout@v7
         with:
+          ref: ci/confirmatory-10seed-action
+          fetch-depth: 2
           lfs: false
-          fetch-depth: 1
 
-      - name: require pre-result repository state
+      - name: restore final manual workflow and regenerate canonical manifest
         shell: bash
         run: |
           set -euo pipefail
-          if [ -e data/results_summaries/cross_family_partition_10seed.json ]; then
-            echo "A ten-seed result is already committed; refusing a new confirmatory execution."
+          git show HEAD^:.github/workflows/confirmatory-10seed.yml > .github/workflows/confirmatory-10seed.yml
+          python scripts/update_manifest.py
+          python scripts/update_manifest.py --check
+          git diff --check
+          unexpected="$(git diff --name-only | grep -v -E '^(\.github/workflows/confirmatory-10seed\.yml|MANIFEST\.sha256\.json)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected files changed during manifest refresh:"
+            echo "$unexpected"
             exit 1
           fi
 
-      - name: hydrate only the three frozen Git LFS inputs
+      - name: commit final workflow and canonical manifest
         shell: bash
         run: |
           set -euo pipefail
-          git lfs version
-          git lfs install --local
-          git lfs pull \
-            --include="data/embeddings/embeddings_t30.npy,data/sequences/proteins_25k_sequences.json,data/annotations/proteins_25k_pfam.json" \
-            --exclude=""
-          for p in \
-            data/embeddings/embeddings_t30.npy \
-            data/sequences/proteins_25k_sequences.json \
-            data/annotations/proteins_25k_pfam.json; do
-            test -s "$p"
-            if head -c 64 "$p" | grep -q '^version https://git-lfs.github.com/spec/v1'; then
-              echo "Unresolved Git LFS pointer: $p"
-              exit 1
-            fi
-          done
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
-
-      - name: install minimal pinned execution runtime
-        shell: bash
-        run: |
-          set -euo pipefail
-          # NumPy matches the repository's current verified CI lock. FAISS is
-          # pinned prospectively for this execution; this is not a claim about
-          # the unrecorded FAISS version used for the original single-seed artifact.
-          python -m pip install --quiet "numpy==2.4.6" "faiss-cpu==1.15.0"
-
-      - name: verify frozen preregistration and hydrated input bytes
-        shell: bash
-        run: |
-          set -euo pipefail
-          python scripts/ci/verify_prereg_locks.py
-          python scripts/ci/verify_manifest.py
-
-      - name: record execution environment
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p confirmatory-artifact
-          python - <<'PY' > confirmatory-artifact/runtime.json
-          import json
-          import os
-          import platform
-          import sys
-          import faiss
-          import numpy
-
-          print(json.dumps({
-              "source_commit": os.environ["GITHUB_SHA"],
-              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
-              "python": sys.version,
-              "platform": platform.platform(),
-              "numpy": numpy.__version__,
-              "faiss": getattr(faiss, "__version__", "unknown"),
-              "omp_num_threads": os.environ.get("OMP_NUM_THREADS"),
-          }, indent=1, sort_keys=True))
-          PY
-
-      - name: execute all ten locked seeds without intermediate inspection
-        shell: bash
-        run: |
-          set -euo pipefail
-          python code/analyses/run_cross_family_partition_10seed.py \
-            2>&1 | tee confirmatory-artifact/run.log
-
-      - name: seal result artifact
-        shell: bash
-        run: |
-          set -euo pipefail
-          result=data/results_summaries/cross_family_partition_10seed.json
-          test -s "$result"
-          cp "$result" confirmatory-artifact/
-          sha256sum "$result" > confirmatory-artifact/result.sha256
-          git rev-parse HEAD > confirmatory-artifact/source_commit.txt
-
-      - name: upload immutable review artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: confirmatory-cross-family-10seed-${{ github.run_id }}
-          path: confirmatory-artifact/
-          if-no-files-found: error
-          retention-days: 90
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/confirmatory-10seed.yml MANIFEST.sha256.json
+          git commit -m "Refresh manifest for confirmatory workflow"
+          git push origin HEAD:ci/confirmatory-10seed-action
