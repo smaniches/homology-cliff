@@ -1,41 +1,27 @@
-name: manifest-refresh-once
+name: manifest-verify
+# Verifies MANIFEST.sha256.json against disk content for every real
+# (non-LFS-stub) tracked file, AND verifies all committed pre-registration
+# SHA256 locks: the two published/paper-cited locks plus the forward-looking
+# CI-only cross-family 10-seed lock. Both checks are implemented as standalone
+# scripts in scripts/ci/ so they are runnable locally with the exact same logic
+# CI uses.
 
-on:
-  push:
-    branches:
-      - fix/10seed-runner-preflight-audit
+on: [push, pull_request]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  refresh:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          lfs: false
-          fetch-depth: 2
+        with: {lfs: false}
       - uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
+        with: {python-version: '3.11'}
 
-      - name: restore verifier and refresh manifest
-        shell: bash
-        run: |
-          set -euo pipefail
-          git show HEAD^:.github/workflows/manifest.yml > .github/workflows/manifest.yml
-          python scripts/update_manifest.py
-          python scripts/update_manifest.py --check
-          git diff --check
+      - name: verify manifest hashes against disk
+        run: python scripts/ci/verify_manifest.py
 
-      - name: commit canonical manifest refresh
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/workflows/manifest.yml MANIFEST.sha256.json
-          git diff --cached --check
-          git commit -m "Refresh manifest after 10-seed runner repair"
-          git push origin HEAD:${GITHUB_REF_NAME}
+      - name: verify pre-registration SHA256 locks
+        run: python scripts/ci/verify_prereg_locks.py
