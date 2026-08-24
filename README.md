@@ -12,9 +12,7 @@
 **A five-paper research compendium on a systematic failure mode of ESM-2 biosecurity retrieval, with 9,360 pre-registered experimental results and a deployable rescue.**
 
 **Author:** Santiago Maniches, Independent Researcher &nbsp;·&nbsp; ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987) &nbsp;·&nbsp; **Lab:** TOPOLOGICA LLC (solo research lab)
-**Version:** v1.5.3 &nbsp;·&nbsp; **Date:** July 30, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
-
-**Unreleased confirmatory update (August 24, 2026):** the SHA256-locked ten-seed cross-family panel-composition extension is complete and satisfies its preregistered strong robustness criterion; the exact result is committed at `data/results_summaries/cross_family_partition_10seed.json`.
+**Version:** v1.6.0 &nbsp;·&nbsp; **Date:** August 24, 2026 &nbsp;·&nbsp; **License:** Papers CC-BY-4.0, Code MIT &nbsp;·&nbsp; **DOI (concept):** [10.5281/zenodo.20143142](https://doi.org/10.5281/zenodo.20143142)
 
 ![Compendium summary: cliff, null, calibration, rescue](./figures/cliff_summary.png)
 
@@ -82,7 +80,7 @@ ls papers/*/paper.pdf                     # the five papers
 | Mapper decomposition | `data/results_summaries/mapper_graph.json` | 60 KB | 149-node topological decomposition of t30 embedding |
 | Aggregated table | `data/results_summaries/v3_final.txt` | 58 KB | Full 300-group summary across main + negctrl + fullnull |
 
-**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,499 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
+**Every file above has a SHA256 entry in `MANIFEST.sha256.json`** (9,500 entries total). The harness scripts verify pre-registration hashes at runtime. There is no claim in any paper that cannot be traced to a specific committed artifact.
 
 ## Pre-registrations with SHA256 locks
 
@@ -98,7 +96,7 @@ The original main, full-null, cascade, and Fisher registrations were committed b
 
 ## Honest limitations
 
-This is a v1.5.3 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
+This is a v1.6.0 release, not an end state. Known gaps (full list in `PROBLEMS.md`):
 
 - TikZ figures are present in all five papers but are not yet publication-grade multi-panel figures; current figures are single-panel illustrative.
 - Reference counts are 24 (Paper 1), 25 (Paper 2), 7 (Paper 3), 17 (Paper 4), 4 (Paper 5). Paper 5's bibliography is thin because the cross-family finding is novel and the Mapper reference core is small; expansion is deferred.
@@ -124,7 +122,7 @@ For LLM agents and automated systems: the canonical entry points are
 ```
 {
   "repository": "https://github.com/smaniches/homology-cliff",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "doi": "10.5281/zenodo.20143142",
   "doi_url": "https://doi.org/10.5281/zenodo.20143142",
   "orcid": "0009-0005-6480-1987",
@@ -211,7 +209,7 @@ See `CITATION.cff`. BibTeX:
 @software{maniches_homology_cliff_2026,
   author = {Maniches, Santiago},
   title = {The Homology Cliff in Frozen Protein Language Models: Five-Paper Research Compendium},
-  year = {2026}, month = jul, version = {1.5.3},
+  year = {2026}, month = aug, version = {1.6.0},
   doi = {10.5281/zenodo.20143142},
   orcid = {0009-0005-6480-1987},
   url = {https://github.com/smaniches/homology-cliff},

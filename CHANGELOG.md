@@ -6,6 +6,8 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [Unreleased]
 
+## [v1.6.0] — 2026-08-24
+
 ### Added
 - **Preregistered ten-seed cross-family confirmation executed and archived (2026-08-24).** The SHA256-locked protocol in `data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md` was executed once from `main` via GitHub Actions run `32692013434`. Seed 20260410 reproduced the pre-existing single-seed artifact before continuation. Across all ten fixed panel seeds, CROSS_FAMILY > WITHIN_FAMILY; median per-seed cross-family fraction = 1.000, mean = 0.994, range = 0.962-1.000, and every seed had a nonzero evaluable denominator, so the preregistered strong robustness criterion passed. The exact sealed output is `data/results_summaries/cross_family_partition_10seed.json` (SHA256 `332b939622ac2a174124f5378d74d2df074d66561654c7b84e55002608677b7d`). Recurring accession appearances are not pooled into a binomial interval because the panel seed is the locked robustness unit.
 - **Executable confirmatory cross-family runner** at `code/analyses/run_cross_family_partition_10seed.py`, implementing the already-locked ten-seed protocol without executing it. The runner is import-safe, reproduces seed 20260410 against the committed single-seed detail before continuing, reports the locked per-seed Wilson intervals and unweighted seed-level aggregate, retains full per-accession evaluable histories, withholds the strong claim on any zero-evaluable seed, and refuses to write a result if the existing seed does not reproduce. `tests/test_cross_family_partition_10seed.py` covers only deterministic summary, interval, accession-history, and decision-rule logic; no additional panel seed is run by CI or by this change.
