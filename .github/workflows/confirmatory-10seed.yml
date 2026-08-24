@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
           lfs: false
 
-      - name: restore final manual workflow and regenerate canonical manifest
+      - name: regenerate canonical manifest against final workflow bytes
         shell: bash
         run: |
           set -euo pipefail
@@ -35,12 +35,17 @@ jobs:
             exit 1
           fi
 
-      - name: commit final workflow and canonical manifest
+      - name: commit only the canonical manifest
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/workflows/confirmatory-10seed.yml MANIFEST.sha256.json
+          git add MANIFEST.sha256.json
+          staged="$(git diff --cached --name-only)"
+          if [ "$staged" != "MANIFEST.sha256.json" ]; then
+            echo "Refusing unexpected staged changes: $staged"
+            exit 1
+          fi
           git commit -m "Refresh manifest for confirmatory workflow"
           git push origin HEAD:${{ github.head_ref }}
