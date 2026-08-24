@@ -58,7 +58,7 @@ The five adversarial-referee personas used, per the TOPOLOGICA `adversarial-manu
 
 | Pass | Persona | Findings | Resolution |
 |------|---------|----------|------------|
-| 1 | Logical structure | 20/20 cross-family is striking. Reviewer: "but n=20 is small." | Paper 5 explicitly acknowledges: result at one seed, 10-seed extension deferred. The binary result (0 within-family) is what matters, not the precision of the "100%". |
+| 1 | Logical structure | 20/20 cross-family is striking. Reviewer: "but n=20 is small." | Addressed prospectively rather than rhetorically: a SHA256-locked ten-seed panel-composition extension was run on 2026-08-24. Cross-family false alarms predominated in every seed; median per-seed fraction 1.000, range 0.962-1.000, and the preregistered strong robustness criterion passed. Residual scope is explicitly limited to the tested model, parameters, dataset, and Pfam ontology. |
 | 2 | Mathematical rigor | Mapper parameters not justified. Why PCA-2? Why 10x10? Why DBSCAN? | Standard Mapper defaults per Singh-Mémoli-Carlsson 2007. Cited. |
 | 3 | Empirical honesty | 13.1% of accessions lack Pfam. Excluded from partition. Could this bias the cross-family rate? | Yes, possibly. Documented as L2 in Paper 5 limitations. |
 | 4 | Literature positioning | v1.0 had 0 bibliography entries. Unacceptable. | v1.3.1 cites Singh, Carlsson, Edelsbrunner, Lin (ESM-2). 4 entries. Still thin but coherent. |

@@ -3,7 +3,7 @@
 Current state of the homology-cliff research compendium.
 
 **Version:** v1.5.3  
-**Last updated:** 2026-07-30  
+**Last updated:** 2026-08-24
 **Maintainer:** Santiago Maniches (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)), TOPOLOGICA LLC.
 
 ---
@@ -12,8 +12,8 @@ Current state of the homology-cliff research compendium.
 
 | Check | Workflow | What it verifies |
 |---|---|---|
-| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,495 entries total; LFS pointer stubs skipped) |
-| Pre-registration locks | `manifest.yml` | 2 SHA256-locked pre-reg files are byte-identical to their locked state |
+| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,499 entries total; LFS pointer stubs skipped) |
+| Pre-registration locks | `manifest.yml` | 3 SHA256-locked pre-registration files are byte-identical to their locked state |
 | Cell filename inventory | `tests.yml` | 9,360 .npz filenames present (3000 main + 3000 negctrl + 3000 fullnull + 180 cascade + 180 fisher) |
 | Smoke imports | `smoke.yml` | All harnesses and analysis scripts import without error on a fresh clone |
 | No hardcoded Windows paths | `smoke.yml` | No `C:\TOPOLOGICA_BIOSECURITY` references remain in `code/` |
@@ -57,7 +57,7 @@ rejection holds under full node membership (see the B4 row below and
 
 - No third-party replication report has been filed
 - No OpenTimestamps or other external timestamp proof on pre-registration files (SHA256 hash integrity is verified; absolute lock-time relies on git history)
-- Cross-family Pfam partition analyzed at one seed only (20260410); 10-seed extension deferred
+- Preregistered cross-family panel-composition confirmation completed across all ten fixed seeds; the strong robustness criterion passed. Generalization beyond t30/R=1000/k=25, this dataset, and the Pfam ontology remains unvalidated, and no third-party replication is on file.
 - Learned-projection calibration under the projection not measured
 - No external PLM comparison completed (ProtT5, SaProt, ESM-3 deferred)
 

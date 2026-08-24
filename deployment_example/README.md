@@ -27,7 +27,7 @@ for i in result["route_to_human"]:
 
 ## Why "route to human" is mandatory for distant-stratum positives
 
-Paper 3 shows distant-stratum Expected Calibration Error is 4x higher than close-stratum, and that the highest-confidence distant bin had 3 predictions, 0 correct. Paper 5 shows 100% of evaluable distant false alarms are cross-family, meaning panel expansion cannot fix them. No confidence threshold can be trusted on the distant stratum. Human review is the correct intervention.
+Paper 3 shows distant-stratum Expected Calibration Error is about 4x higher than close-stratum, and that the highest-confidence distant bin had 3 predictions, 0 correct. Paper 5 now includes a preregistered ten-seed panel-composition confirmation: cross-family false alarms predominate in every seed (median fraction 1.000, range 0.962-1.000). This disfavors relying on within-family panel expansion as a general fix, but does not prove that expansion can never help an individual query. No confidence threshold has been validated as safe on the distant stratum in this work; human review remains the deployment recommendation.
 
 ## Dependencies
 

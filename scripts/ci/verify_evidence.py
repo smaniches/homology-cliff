@@ -9,11 +9,12 @@ Checks:
   1. calibration_results.json: ECE_close=0.069, ECE_distant=0.294,
      distant_precision=0.068, ECE ratio between 4.0 and 4.5
   2. cross_family_partition.json: within_family=0, cross_family=20
-  3. mapper_augmentation_results.json exists and reports CI including zero
-  4. adversarial_results.json: 3 targets present
-  5. v3_final.txt exists and is non-empty
-  6. All 5 paper PDFs exist
-  7. docs/CLAIMS_TO_EVIDENCE.md exists
+  3. cross_family_partition_10seed.json: locked seed-level robustness summary passes
+  4. mapper_augmentation_results.json exists and reports CI including zero
+  5. adversarial_results.json: 3 targets present
+  6. v3_final.txt exists and is non-empty
+  7. All 5 paper PDFs exist
+  8. docs/CLAIMS_TO_EVIDENCE.md exists
 
 Exit code:
   0  if all checks pass
@@ -34,7 +35,7 @@ def fail(msg: str) -> None:
 
 
 def check_calibration() -> bool:
-    print("\n[1/7] calibration_results.json")
+    print("\n[1/8] calibration_results.json")
     path = SUMMARIES / "calibration_results.json"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -74,7 +75,7 @@ def check_calibration() -> bool:
 
 
 def check_cross_family() -> bool:
-    print("\n[2/7] cross_family_partition.json")
+    print("\n[2/8] cross_family_partition.json")
     path = SUMMARIES / "cross_family_partition.json"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -97,8 +98,80 @@ def check_cross_family() -> bool:
     return ok
 
 
+def check_cross_family_10seed() -> bool:
+    print("\n[3/8] cross_family_partition_10seed.json")
+    path = SUMMARIES / "cross_family_partition_10seed.json"
+    if not path.is_file():
+        fail(f"missing: {path}")
+        return False
+    d = json.loads(path.read_text(encoding="utf-8"))
+    ok = True
+
+    expected_seeds = list(range(20260410, 20260420))
+    rows = d.get("per_seed", [])
+    if [r.get("seed") for r in rows] != expected_seeds:
+        fail("ten-seed result does not contain the exact locked seed sequence")
+        ok = False
+    if len(rows) != 10 or any(r.get("n_evaluable", 0) <= 0 for r in rows):
+        fail("expected exactly ten nonzero-evaluable seed rows")
+        ok = False
+    if any(r.get("cross_family", 0) <= r.get("within_family", 0) for r in rows):
+        fail("cross-family does not exceed within-family in every seed")
+        ok = False
+
+    summary = d.get("cross_family_fraction_across_seeds", {})
+    expected = {
+        "mean": 0.9941130298273156,
+        "median": 1.0,
+        "min": 25 / 26,
+        "max": 1.0,
+    }
+    for key, value in expected.items():
+        observed = summary.get(key)
+        if not isinstance(observed, (int, float)) or abs(float(observed) - value) > 1e-12:
+            fail(f"{key}={observed!r}, expected {value!r}")
+            ok = False
+
+    decision = d.get("decision", {})
+    for key in (
+        "cross_gt_within_every_nonzero_seed",
+        "median_cross_family_fraction_ge_0_80",
+        "all_ten_seeds_nonzero_evaluable",
+        "strong_robustness_claim",
+    ):
+        if decision.get(key) is not True:
+            fail(f"decision[{key!r}] is not true")
+            ok = False
+
+    accession = d.get("accession_summary", {})
+    observed_accessions = (
+        accession.get("n_unique_evaluable_accessions"),
+        accession.get("n_always_cross_family"),
+        accession.get("n_always_within_family"),
+        accession.get("n_mixed"),
+    )
+    if observed_accessions != (102, 101, 1, 0):
+        fail(f"accession summary={observed_accessions}, expected (102, 101, 1, 0)")
+        ok = False
+
+    protocol = d.get("protocol", {})
+    if protocol.get("seeds") != expected_seeds or protocol.get("R") != 1000 or protocol.get("k") != 25:
+        fail("protocol metadata does not match the locked ten-seed design")
+        ok = False
+    if protocol.get("scale") != "t30" or protocol.get("distant_threshold") != 0.9:
+        fail("protocol scale/threshold does not match the locked design")
+        ok = False
+    if protocol.get("robustness_unit") != "panel_seed" or protocol.get("pooled_binomial_interval") is not False:
+        fail("robustness-unit metadata drifted from the preregistration")
+        ok = False
+
+    if ok:
+        print("  10 seeds; median=1.000 mean=0.994113 min=0.961538; strong rule: OK")
+    return ok
+
+
 def check_mapper_augmentation() -> bool:
-    print("\n[3/7] mapper_augmentation_results.json")
+    print("\n[4/8] mapper_augmentation_results.json")
     path = SUMMARIES / "mapper_augmentation_results.json"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -121,7 +194,7 @@ def check_mapper_augmentation() -> bool:
 
 
 def check_adversarial() -> bool:
-    print("\n[4/7] adversarial_results.json")
+    print("\n[5/8] adversarial_results.json")
     path = SUMMARIES / "adversarial_results.json"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -145,7 +218,7 @@ def check_adversarial() -> bool:
 
 
 def check_v3_final() -> bool:
-    print("\n[5/7] v3_final.txt")
+    print("\n[6/8] v3_final.txt")
     path = SUMMARIES / "v3_final.txt"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -159,7 +232,7 @@ def check_v3_final() -> bool:
 
 
 def check_paper_pdfs() -> bool:
-    print("\n[6/7] paper PDFs")
+    print("\n[7/8] paper PDFs")
     ok = True
     for n in range(1, 6):
         pattern = list((REPO_ROOT / "papers").glob(f"{n:02d}_*/paper.pdf"))
@@ -172,7 +245,7 @@ def check_paper_pdfs() -> bool:
 
 
 def check_claims_doc() -> bool:
-    print("\n[7/7] docs/CLAIMS_TO_EVIDENCE.md")
+    print("\n[8/8] docs/CLAIMS_TO_EVIDENCE.md")
     path = REPO_ROOT / "docs" / "CLAIMS_TO_EVIDENCE.md"
     if not path.is_file():
         fail(f"missing: {path}")
@@ -192,6 +265,7 @@ def main() -> int:
     results = [
         check_calibration(),
         check_cross_family(),
+        check_cross_family_10seed(),
         check_mapper_augmentation(),
         check_adversarial(),
         check_v3_final(),

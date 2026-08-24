@@ -217,3 +217,32 @@ def test_strong_rule_requires_cross_majority_and_median_threshold() -> None:
     failing = list(passing)
     failing[0] = _row(0, [("X", "WITHIN_FAMILY")])
     assert MOD.aggregate(failing)["decision"]["strong_robustness_claim"] is False
+
+
+def test_committed_confirmatory_result_matches_locked_summary() -> None:
+    """The archived result must continue to support exactly the preregistered claim."""
+    path = Path(__file__).resolve().parents[1] / "data" / "results_summaries" / "cross_family_partition_10seed.json"
+    d = json.loads(path.read_text(encoding="utf-8"))
+    assert [row["seed"] for row in d["per_seed"]] == list(MOD.SEEDS)
+    assert len(d["per_seed"]) == 10
+    assert all(row["n_evaluable"] > 0 for row in d["per_seed"])
+    assert all(row["cross_family"] > row["within_family"] for row in d["per_seed"])
+
+    s = d["cross_family_fraction_across_seeds"]
+    assert s["mean"] == pytest.approx(0.9941130298273156)
+    assert s["median"] == pytest.approx(1.0)
+    assert s["min"] == pytest.approx(25 / 26)
+    assert s["max"] == pytest.approx(1.0)
+
+    assert d["zero_evaluable_seeds"] == []
+    assert d["decision"] == {
+        "cross_gt_within_every_nonzero_seed": True,
+        "median_cross_family_fraction_ge_0_80": True,
+        "all_ten_seeds_nonzero_evaluable": True,
+        "strong_robustness_claim": True,
+    }
+    a = d["accession_summary"]
+    assert a["n_unique_evaluable_accessions"] == 102
+    assert a["n_always_cross_family"] == 101
+    assert a["n_always_within_family"] == 1
+    assert a["n_mixed"] == 0

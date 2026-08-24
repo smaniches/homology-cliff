@@ -30,8 +30,8 @@ A pre-committed void rule from earlier TOPOLOGICA work on GO annotation pipeline
 **Q8. Why did the panel-only shuffle null fail its pre-registered criterion?**
 The pre-registration required "distant F1 at chance = 0.5" under the null. But shuffling only the panel labels (while leaving test labels intact) preserves the 28.7% test class prior, and chance F1 in this class-imbalanced regime is not 0.5. This was caught within the session. A corrected pre-registration (the full-pool permutation null) was SHA256-locked before running the stricter test, and passed 300/300.
 
-**Q9. What does "100% cross-family" mean, exactly?**
-At t30 R=1000 k=25 cosine seed 20260410: 41 distant-stratum proteins received a positive prediction while the true label was negative. Of those, 20 had both a Pfam annotation on the query and at least one Pfam annotation on the positive-voting panel members. In all 20 cases, the intersection of the query's Pfam set with the union of its positive-voters' Pfam sets was empty. Not one of those 20 failures was caused by within-family confusion.
+**Q9. What does the cross-family result mean, exactly?**
+At the original t30 R=1000 k=25 cosine seed 20260410, 41 distant-stratum proteins were false positives and 20 were evaluable under the Pfam annotation rule; all 20 were cross-family. That historical 20/20 result was then tested prospectively under a SHA256-locked ten-seed panel-composition protocol. Across seeds 20260410-20260419, cross-family false alarms predominated in every seed; the per-seed cross-family fraction had median 1.000, mean 0.994, and range 0.962-1.000, and all ten seeds had nonzero evaluable denominators, so the preregistered strong robustness criterion passed. This means the predominance is robust to the tested reference-panel draws. It does not mean every error is cross-family: two within-family appearances occurred, both for the same accession, and Pfam is a coarse family definition.
 
 **Q10. Does cross-family = cross-CATH? Cross-InterPro? Cross-fold?**
 Only cross-Pfam as of v1.3.1. Pfam is a coarse family definition. A finer-grained analysis using InterPro superfamily or CATH fold could reveal distant-family-but-shared-superfamily relationships the Pfam test misses. This is in `PROBLEMS.md` as deferred.
@@ -81,4 +81,4 @@ Each paper has a distinct scientific claim targeting a distinct audience. Paper 
 Length. One paper covering all five would be 50+ pages, which is outside most journals' limits. Separate papers are also easier to iterate on; we can update Paper 5 (cross-family) without touching Papers 1–4.
 
 **Q23. What comes next?**
-v1.5 target: PLM benchmark extension, 10-seed cross-family extension, arXiv submission for Papers 1 and 5. v2.0 target: external PLM comparison (ProtT5, SaProt, ESM-3, Foldseek) and a stronger learned metric using proper triplet loss with hard negative mining.
+The preregistered 10-seed cross-family panel-composition extension is complete. Next priorities are external submission of Papers 1 and 5, third-party replication, and the external-PLM / stronger-metric extensions (ProtT5, SaProt, ESM-3, Foldseek, and proper hard-negative triplet learning).
