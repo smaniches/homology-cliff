@@ -28,8 +28,8 @@
   "sha256": "66f9f20d49049e288d0b2fbc6f5b150c803836b5988a37ebf0a59b20dbddd620"
  },
  ".github/workflows/confirmatory-10seed.yml": {
-  "bytes": 1591,
-  "sha256": "6f01d3a1fc96d95d8898259cdb7dbd174f7e5583e1d58ab5a21ebf9c0f3b80bf"
+  "bytes": 4975,
+  "sha256": "0e1843a88e964ee9c8e3958f561ea51cbd2175146e57d1ace2c2fdee2eba3b84"
  },
  ".github/workflows/evidence.yml": {
   "bytes": 838,
