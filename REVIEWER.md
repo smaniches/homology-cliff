@@ -16,8 +16,8 @@ cd homology-cliff
 git lfs pull                              # ~188 MB of binary evidence
 pip install numpy scipy scikit-learn pytest
 
-python scripts/ci/verify_manifest.py      # 9,495 manifest entries
-python scripts/ci/verify_prereg_locks.py  # 2 SHA256-locked pre-registrations
+python scripts/ci/verify_manifest.py      # 9,499 manifest entries
+python scripts/ci/verify_prereg_locks.py  # 3 SHA256-locked pre-registrations
 ```
 
 Expected: all manifest entries verified (0 missing, 0 mismatches); both
@@ -29,7 +29,7 @@ pre-registration hashes match.
 pytest tests/ -v
 ```
 
-Expected with LFS pulled: 88 passed, 0 failed. Without LFS: 84 passed,
+Expected with LFS pulled: 99 passed, 0 failed. Without LFS: 95 passed,
 4 skipped (three data-dependent cell tests in `test_cell_schema.py` plus
 one real-cascade-evidence shape test in `test_pooled_f1_seed_integrity.py`
 skip cleanly when the relevant .npz files are LFS pointer stubs; every
@@ -104,8 +104,11 @@ These checks use committed JSON summary files (not LFS-tracked):
 # ECE and calibration (Paper 3):
 python -c "import json; d=json.load(open('data/results_summaries/calibration_results.json')); print(f\"ECE close={d['close']['ECE']} distant={d['distant']['ECE']} ratio={d['ece_distant_to_close_ratio']:.2f}x\")"
 
-# Cross-family partition (Paper 5):
+# Cross-family partition, original seed (Paper 5):
 python -c "import json; d=json.load(open('data/results_summaries/cross_family_partition.json')); print(f\"within={d['within_family']} cross={d['cross_family']} evaluable={d['n_evaluable']}\")"
+
+# Preregistered ten-seed panel-composition confirmation (Paper 5):
+python -c "import json; d=json.load(open('data/results_summaries/cross_family_partition_10seed.json')); s=d['cross_family_fraction_across_seeds']; print(f\"mean={s['mean']:.6f} median={s['median']:.3f} min={s['min']:.3f} max={s['max']:.3f}\"); print(d['decision'])"
 ```
 
 ---

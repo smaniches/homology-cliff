@@ -3,21 +3,26 @@
 \usepackage{amsmath,amssymb,booktabs,hyperref}
 \usepackage{pgfplots}\pgfplotsset{compat=1.18}
 \usepackage[numbers,sort&compress]{natbib}
-\title{The Homology Cliff is Cross-Family, Not Within-Family: Pfam Partition of Distant False Alarms and Mapper Topology of the Toxin Manifold}
+\title{Cross-Family Predominance in the Homology Cliff: Preregistered Pfam Robustness Across Reference Panels and Mapper Topology}
 \author{Santiago Maniches\thanks{ORCID 0009-0005-6480-1987. TOPOLOGICA LLC.}}
-\date{April 12, 2026 (v1.1; figure erratum 2026-06-16)}
+\date{April 12, 2026 (v1.2; confirmatory 10-seed extension 2026-08-24; figure erratum 2026-06-16)}
+\hypersetup{
+  pdftitle={Cross-Family Predominance in the Homology Cliff: Preregistered Pfam Robustness Across Reference Panels and Mapper Topology},
+  pdfauthor={Santiago Maniches (ORCID 0009-0005-6480-1987)},
+  pdfsubject={Preregistered cross-family robustness analysis of distant false alarms in frozen ESM-2 retrieval}
+}
 \begin{document}
 \maketitle
 \begin{abstract}
-We partition the distant-stratum false alarms of frozen ESM-2 t30 cosine $k$-NN retrieval by Pfam family membership. At $R{=}1000$ $k{=}25$ seed 20260410, 41 distant-stratum proteins receive a positive prediction while the true label is negative. Of these, 20 are evaluable (both query and at least one positive-voting panel member carry Pfam annotations); 21 are excluded due to missing annotations on the query or all positive-voting neighbors. Of the 20 evaluable cases, \textbf{zero} share any Pfam identifier with the neighbors who voted them positive. By Wilson 95\% confidence interval on a 20/20 result, the population within-family rate is at most $17\%$. This is consistent with cross-family failures dominating the cliff in this dataset, and inconsistent with the within-family distant-homology hypothesis as the primary mechanism. Complementary Mapper decomposition (149 nodes, 6 all-positive, positive class spatially localized on PCA lens) shows positives cluster densely; the cross-family cliff failures are retrievals from this cluster applied to queries that happen to lie near the cluster periphery in cosine space for reasons unrelated to Pfam family. The biosecurity deployment implication: panel expansion with additional known-toxin homologs is unlikely to rescue the cliff in this regime, because the failures we examined did not arise from missing within-family homologs. The candidate mechanism-level intervention is embedding-space surgery (learned projection, Paper 1).
+We partition distant-stratum false alarms of frozen ESM-2 t30 cosine $k$-NN retrieval by Pfam family membership. At the original $R{=}1000$, $k{=}25$ panel seed 20260410, 41 distant-stratum proteins receive a positive prediction while the true label is negative. Twenty are evaluable under the prespecified annotation rule, and all 20 are CROSS\_FAMILY (zero shared Pfam identifiers with the positive-voting neighbors; per-seed Wilson 95\% interval for the within-family fraction $[0,0.161]$). A subsequently SHA256-locked confirmatory extension repeated the unchanged analysis across the ten already-fixed panel seeds 20260410--20260419. Cross-family false alarms predominated in every seed. The per-seed cross-family fraction had median 1.000, mean 0.994, and range 0.962--1.000; all ten seeds had nonzero evaluable denominators, satisfying the preregistered strong robustness criterion. Across seeds, 102 unique accessions were evaluable: 101 were always cross-family, one was always within-family, and none switched status. The seed, not the recurring accession appearance, is the preregistered robustness unit. Complementary Mapper decomposition provides exploratory geometric context but is not a causal test. The combined evidence disfavors a purely within-family panel-coverage explanation for the cliff in this tested regime; it does not imply that within-family errors are absent or that Pfam exhausts biological relatedness. For deployment, within-family panel expansion should not be relied on as the sole rescue; distant positive predictions still require review, and the panel-only learned projection from Paper 1 is the supported intervention tested here.
 \end{abstract}
 
 \paragraph{Erratum (2026-06-16).} The Mapper scatter (Fig.~\ref{fig:mapper}) is now generated directly from the committed Mapper graph (\texttt{data/results\_summaries/mapper\_graph.json}): it plots the dominant node per occupied PCA lens bin, colored by positive fraction. The previously plotted point values were hand-entered and did not all match the committed graph; the Pfam partition results and all numerical claims are unchanged.
 
 \section{Setup}
-Test set: 24{,}885 proteins, 7{,}133 positive (28.7\%). Embeddings: frozen ESM-2 t30 (150M params, 640d), $L_2$-normalized. Panel: 1{,}000 class-balanced, seed 20260410. Distant stratum: $s_{\max} < 0.90$ (154 proteins). Positive prediction: $\text{votes} \cdot 2 \ge k = 25$. False alarm: predicted positive, actual label 0. Pfam annotations: UniProt ID-mapping + search batch-50, 21{,}615 of 24{,}885 accessions (86.9\% coverage) in \texttt{data/annotations/proteins\_25k\_pfam.json}.
+Test set: 24{,}885 proteins, 7{,}133 positive (28.7\%). Embeddings: frozen ESM-2 t30 (150M parameters, 640d), $L_2$-normalized. Every panel contains 1{,}000 class-balanced proteins; $k=25$; distant stratum $s_{\max}<0.90$; positive prediction when $\text{votes}\cdot 2 \ge k$. Pfam annotations cover 21{,}615 of 24{,}885 accessions (86.9\%) in \texttt{data/annotations/proteins\_25k\_pfam.json}. The confirmatory extension changes only the reference-panel seed. All ten seeds, the evaluability rule, Pfam partition, aggregation, and decision rule were locked in \texttt{data/prereg/PRE\_REGISTRATION\_CROSS\_FAMILY\_10SEED\_v1.md} before any additional seed was run.
 
-\section{Result: zero within-family false alarms}
+\section{Single-seed result: zero within-family false alarms}
 \begin{center}
 \begin{tabular}{lr}
 \toprule
@@ -33,10 +38,36 @@ false alarms with $\ge 1$ positive-voter Pfam known & 20 \\
 \end{tabular}
 \end{center}
 
-Every one of the 20 fully-annotated distant false alarms has zero Pfam overlap with the panel members that voted it positive. The positive-voting neighbors belong to Pfam families distinct from the query's own Pfam family.
+Every one of the 20 evaluable distant false alarms at seed 20260410 has zero Pfam overlap with the panel members that voted it positive. This original result remains unchanged and is committed in \texttt{data/results\_summaries/cross\_family\_partition.json}.
+
+\section{Confirmatory robustness across preregistered panel seeds}
+\begin{center}\small
+\begin{tabular}{rrrrrrr}
+\toprule
+seed & distant & distant FP & evaluable & within & cross & cross fraction \\
+\midrule
+20260410 & 154 & 41  & 20 & 0 & 20 & 1.000 \\
+20260411 & 187 & 67  & 30 & 0 & 30 & 1.000 \\
+20260412 & 174 & 100 & 49 & 1 & 48 & 0.980 \\
+20260413 & 187 & 52  & 27 & 0 & 27 & 1.000 \\
+20260414 & 169 & 56  & 26 & 1 & 25 & 0.962 \\
+20260415 & 175 & 50  & 24 & 0 & 24 & 1.000 \\
+20260416 & 165 & 64  & 44 & 0 & 44 & 1.000 \\
+20260417 & 163 & 49  & 23 & 0 & 23 & 1.000 \\
+20260418 & 162 & 63  & 31 & 0 & 31 & 1.000 \\
+20260419 & 175 & 57  & 30 & 0 & 30 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Across ten preregistered reference-panel seeds, cross-family errors predominated in every seed. The per-seed cross-family fraction had a median of 1.00, mean of 0.994, and range 0.962--1.00, satisfying the preregistered criterion for robustness to reference-panel composition. No seed had a zero evaluable denominator.
+
+The secondary accession summary contains 102 unique evaluable accessions: 101 are always CROSS\_FAMILY, one (Q5DFZ7) is always WITHIN\_FAMILY in the seeds where it is evaluable, and none are mixed. The two within-family appearances of Q5DFZ7 occur in seeds 20260412 and 20260414 and share PF05980 in both. Across all seeds there are 304 evaluable appearances (302 cross-family, 2 within-family), but those appearances are not independent because accessions recur. Consistent with the preregistration, we therefore do not pool them into a binomial confidence interval; the panel seed is the robustness unit. The full per-seed and per-accession audit trail is committed in \texttt{data/results\_summaries/cross\_family\_partition\_10seed.json}.
 
 \section{What this disfavors}
-A common prior belief about PLM retrieval cliffs is that they arise from within-family distant-homology gaps: if the panel contains no close homolog of a test toxin from family $F$, retrieval will pick up the next-nearest panel members which are still toxins from $F$, but at reduced confidence. Under that prior, panel expansion with more members of family $F$ would close the gap. Our result substantially weakens this prior for this dataset and seed: the 20 evaluable distant false alarms we examined did not arise from missing within-family homologs but from neighbors in entirely different Pfam families that the frozen ESM-2 embedding places near the query despite no family-level similarity. The Wilson 95\% CI on the population within-family rate is $[0\%, 17\%]$ given 20/20 cross-family observations; we do not claim the rate is zero in the population, only that within-family failures are unlikely to be the dominant mechanism in this regime.
+A natural explanation for the cliff is a within-family coverage gap: a distant query from family $F$ lacks a close panel homolog from $F$, so adding more members of $F$ should repair retrieval. The original 20/20 result and the preregistered ten-seed panel-composition extension both disfavor that explanation as the dominant mechanism in this dataset and fixed t30/$R{=}1000$/$k{=}25$ regime. Cross-family false alarms outnumber within-family false alarms in every panel seed, and the worst observed seed is still 25/26 (0.962) cross-family among evaluable cases.
+
+The result is not categorical. Within-family errors do occur, as shown by Q5DFZ7 in two seeds. Pfam-ID intersection is also a coarse family definition and cannot exclude shared superfamily, fold, or other biological relationships. The supported claim is therefore cross-family predominance robust to the tested panel-composition perturbation, not that every cliff error is cross-family or that within-family panel expansion can never help an individual case.
 
 \section{Mapper context}
 Mapper decomposition on PCA-2 lens following Singh, M\'emoli, and Carlsson \cite{singh2007topological,carlsson2009topology,edelsbrunner2010computational} (10$\times$10 cover, 30\% overlap, DBSCAN $\varepsilon{=}0.05$): 149 nodes, 6 entirely positive, 30 positive-enriched $(\text{pos\_frac} > 0.5)$. Positive class is contiguous on the manifold: top two positive-enriched nodes at PCA bins $(7,4)$ and $(7,3)$ contain 1{,}708 and 1{,}568 proteins at 88.5\% and 93.9\% positive rate.
@@ -48,25 +79,26 @@ Mapper decomposition on PCA-2 lens following Singh, M\'emoli, and Carlsson \cite
 \caption{\textbf{Mapper 2D positive-fraction scatter.} Dominant Mapper node per occupied PCA lens bin (largest node by membership), colored by positive fraction $\text{pos\_frac}$. The positive class localizes to a contiguous high-PC1 region (lens-$x \gtrsim 4$), peaking near bins $(6\text{--}8,\,1\text{--}4)$ at $>0.88$ positive fraction; low-PC1 bins (lens-$x \le 2$) are near-zero.}\label{fig:mapper}
 \end{figure}
 
-This spatial localization is consistent with the cross-family finding: frozen ESM-2 \cite{lin2023evolutionary} collects toxins from diverse Pfam families into one manifold region based on functional similarity ESM-2 learned from unsupervised pretraining, not based on explicit family signal. When a query lies near this cluster in cosine space, it gets positive-voted by residents of the cluster regardless of whether its actual family is represented; when a query lies far from the cluster (distant stratum), retrieval still pulls in cluster residents as nearest neighbors and inherits their positive labels with low accuracy.
+This spatial localization is consistent with, but does not prove, an embedding-space explanation for the Pfam result: positive proteins from multiple families occupy a concentrated manifold region, and distant false-positive queries can retrieve residents of that region despite having no shared Pfam identifier. Mapper is used here as exploratory context only; the confirmatory claim rests on the preregistered Pfam partition across panel seeds, not on a causal interpretation of the Mapper graph.
 
 \section{Biosecurity deployment consequence}
-Panel expansion within the failing family is unlikely to be a rescue under the within-family-gap hypothesis tested here. A deployer who observes a distant-stratum false alarm in our regime should not assume that adding more toxin homologs from the failing family to the panel will fix it: in the 20 evaluable cases we examined, the failure was not caused by a gap in that family's representation; the embedding geometry itself was placing non-family neighbors near the query. Stronger conclusions await the 10-seed extension and a finer-grained family definition (InterPro superfamily, CATH fold) -- see Limitations.
+The ten-seed confirmation strengthens the case against relying on within-family panel expansion as a generic cliff rescue in this tested regime. It does not rule out benefit for a particular query or a different family ontology. A deployer should therefore treat panel expansion as insufficient evidence of safety rather than as a guaranteed failure.
 
 Two actionable consequences follow:
 \begin{enumerate}
 \item Route every distant-stratum positive prediction to human review, regardless of vote count or $s_{\max}$. Calibration collapse (Paper 3) independently supports this rule.
-\item Apply the panel-only learned linear projection (Paper 1) as preprocessing before retrieval. The projection improves distant $F_1$ from 0.120 to 0.177 at t30 $R{=}1000$ $k{=}25$, a 47\% relative rescue, by rotating the embedding space into a class-aware subspace. This addresses the correct mechanism: the cliff is a geometric property of the frozen embedding, not a gap in panel coverage.
+\item Apply the panel-only learned linear projection (Paper 1) as preprocessing before retrieval. At t30 $R{=}1000$ $k{=}25$, the projection improves distant $F_1$ from 0.120 to 0.177 (47\% relative). This is an empirically tested intervention on the embedding geometry, whereas within-family panel expansion is not supported as a general rescue by the Pfam robustness result.
 \end{enumerate}
 
 \section{Limitations}
-(L1) Single seed analyzed (20260410). Extending to all 10 seeds is straightforward and unlikely to change the 100\% cross-family finding; deferred to v1.1.
-(L2) 13\% of test proteins lack Pfam annotations and are excluded from the partition.
-(L3) Within-family / cross-family as Pfam-ID overlap is a coarse family definition. A finer-grained analysis (InterPro superfamily, CATH fold, ECO level) could reveal distant-family-but-shared-superfamily relationships the crude Pfam test misses.
-(L4) The result at $k=25$ may differ at $k=1$ where a single near-neighbor dominates.
+(L1) The confirmatory extension tests robustness only to reference-panel composition at fixed ESM-2 t30, $R=1000$, $k=25$, threshold 0.90, dataset, labels, and Pfam ontology; it does not establish invariance across models, $k$, thresholds, or datasets.
+(L2) 13\% of test proteins lack Pfam annotations and are excluded from the WITHIN/CROSS denominator under the locked evaluability rule.
+(L3) Pfam-ID overlap is a coarse family definition. InterPro superfamily, CATH fold, or structure-aware relations could identify biological relatedness that the Pfam test misses.
+(L4) The result at $k=25$ need not hold at $k=1$ or under a different voting rule.
+(L5) This is a single-dataset, single-author result and has not yet been independently replicated by a third party.
 
 \section{Data availability}
-\texttt{data/results\_summaries/cross\_family\_partition.json} in this repository contains the per-case partition with query accession, query Pfam set, panel-voter Pfam union, and shared Pfam set for all 41 distant false alarms.
+The original single-seed per-case partition is \texttt{data/results\_summaries/cross\_family\_partition.json}. The preregistered ten-seed result, including every per-seed count, full distant-false-positive detail, seed-level aggregate, and per-accession history, is \texttt{data/results\_summaries/cross\_family\_partition\_10seed.json} (SHA256 \texttt{332b939622ac2a17\ldots}). The locked protocol is \texttt{data/prereg/PRE\_REGISTRATION\_CROSS\_FAMILY\_10SEED\_v1.md} (SHA256 \texttt{204953efeb098f70\ldots}).
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}

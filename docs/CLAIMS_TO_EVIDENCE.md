@@ -117,20 +117,35 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Expected output | `0` (the only distinct value; every one of the 300 main groups has up=0) |
 | Requires LFS | Yes |
 
-### 9. cross_family_fraction = 20/20
+### 9. cross_family_seed_20260410 = 20/20
 
 | Field | Value |
 |---|---|
-| Claim | 20 of 20 evaluable distant false alarms are cross-family (zero Pfam overlap) |
-| Papers | Paper 5, abstract and Section 2 |
+| Claim | At the original seed 20260410, 20 of 20 evaluable distant false alarms are cross-family (zero Pfam overlap) |
+| Papers | Paper 5 single-seed result; Paper 1 cross-family section |
 | Source artifact | `data/results_summaries/cross_family_partition.json` |
 | Reproducing command | `python -c "import json; d=json.load(open('data/results_summaries/cross_family_partition.json')); print(f\"within={d['within_family']} cross={d['cross_family']} evaluable={d['n_evaluable']}\")"` |
 | Expected output | within=0 cross=20 evaluable=20 |
-| Tolerance | Exact (single seed 20260410, deterministic) |
-| Limitation | Analyzed at one seed only; 10-seed extension deferred. 21 of 41 distant FPs lack Pfam annotation on query or voters, hence n_evaluable=20 not 41. |
+| Tolerance | Exact (seed 20260410, deterministic) |
+| Limitation | This is the original seed-specific observation. 21 of 41 distant FPs lack sufficient Pfam annotation under the locked evaluability rule. |
 | Requires LFS | No |
 
-### 10. rescues_rejected: Mahalanobis, Fisher-Rao, cascade, Mapper augmentation
+### 10. cross_family_10seed_strong_robustness = true
+
+| Field | Value |
+|---|---|
+| Claim | Cross-family false alarms predominate in every one of ten preregistered panel seeds; median per-seed cross-family fraction 1.000, mean 0.994, range 0.962-1.000; strong robustness criterion passed |
+| Papers | Paper 5 confirmatory robustness section; Paper 1 cross-family section |
+| Source artifact | `data/results_summaries/cross_family_partition_10seed.json` |
+| Preregistration | `data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md` (SHA256 `204953efeb098f70...`) |
+| Reproducing command | `python -c "import json; d=json.load(open('data/results_summaries/cross_family_partition_10seed.json')); s=d['cross_family_fraction_across_seeds']; print(f\"mean={s['mean']:.6f} median={s['median']:.3f} min={s['min']:.3f} max={s['max']:.3f}\"); print(d['decision'])"` |
+| Expected output | mean=0.994113 median=1.000 min=0.962 max=1.000; all four decision booleans true |
+| Secondary audit | 102 unique evaluable accessions: 101 always cross-family, 1 always within-family, 0 mixed |
+| Statistical unit | Panel seed. Recurring accession appearances are not independent and are not pooled into a binomial interval. |
+| Scope | Panel-composition robustness only at t30, R=1000, k=25, threshold 0.90, this dataset, labels, and Pfam ontology. |
+| Requires LFS | No for the committed result; LFS is required to re-execute the ten-seed runner from raw frozen inputs. |
+
+### 11. rescues_rejected: Mahalanobis, Fisher-Rao, cascade, Mapper augmentation
 
 | Field | Value |
 |---|---|
@@ -141,7 +156,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Limitation (Mahalanobis/Fisher) | SHA256-locked pre-registrations exist only for the main cliff and full-null; cascade and Fisher pre-registrations are committed but without hashes claimed in paper abstracts. |
 | Requires LFS | Yes (for per-cell verification of cascade/fisher) |
 
-### 11. rescues_accepted: learned linear projection (panel-only)
+### 12. rescues_accepted: learned linear projection (panel-only)
 
 | Field | Value |
 |---|---|
@@ -153,7 +168,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 | Tolerance | "16/18" means: for each of the 18 (scale, R, k) groups, the 10-seed mean of `learned_pooled_f1` exceeds the 10-seed mean of `cosine_pooled_f1`. The two non-winning groups (cosine higher) are t6 R=100 k=5 (0.8200 vs 0.8262) and t6 R=1000 k=5 (0.8773 vs 0.8792). |
 | Requires LFS | Yes |
 
-### 12. Distant F1 relative improvement 47% at t30
+### 13. Distant F1 relative improvement 47% at t30
 
 | Field | Value |
 |---|---|
@@ -172,6 +187,7 @@ All paths are repo-relative. All commands assume a fresh clone with
 |---|---|---|---|
 | `data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_v1.md` | `139f60129d4e73df...` | Yes | `python scripts/ci/verify_prereg_locks.py` |
 | `data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_ADDENDUM_FULLNULL.md` | `f3864d097a0c611d...` | Yes | `python scripts/ci/verify_prereg_locks.py` |
+| `data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md` | `204953efeb098f70...` | Yes | `python scripts/ci/verify_prereg_locks.py` |
 | `data/prereg/PRE_REGISTRATION_STRATIFIED_CASCADE_v1.md` | Not hash-locked in CI | No | File committed; no runtime hash check |
 | `data/prereg/PRE_REGISTRATION_FISHER_CLIFF_v1.md` | Not hash-locked in CI | No | File committed; no runtime hash check |
 
@@ -198,8 +214,7 @@ All paths are repo-relative. All commands assume a fresh clone with
    references `PRE_REGISTRATION_MAPPER_AUGMENTATION_v1.md` which is absent
    from `data/prereg/`. See `.github/RELEASE_AUDIT_v1.4.5.md` Blocker 5.
 
-5. **Cross-family partition at one seed.** The 20/20 result is from seed
-   20260410 only. A 10-seed extension is deferred.
+5. **Cross-family confirmation scope.** The preregistered ten-seed panel-composition extension is complete and passes its strong decision rule. This does not establish robustness across different PLMs, $k$, thresholds, datasets, or family ontologies, and no third-party replication is yet on file.
 
 6. **Precision/recall fields.** The .npz schema declares precision and
    recall fields but they are always NaN in committed cells. See

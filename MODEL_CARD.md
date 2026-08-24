@@ -34,7 +34,7 @@ A linear projection $W \in \mathbb{R}^{D \times 128}$ fit in 50 Adam iterations 
 
 ## Fairness and bias
 - Training panel inherits all biases of the underlying UniProt curation
-- Cross-family Pfam analysis (Paper 5) shows distant false alarms are drawn from families other than the true query family; bias is embedding-space-geometric, not demographic
+- Cross-family Pfam analysis (Paper 5) shows strong cross-family predominance across ten preregistered panel seeds (median fraction 1.000, range 0.962-1.000); this is consistent with an embedding-space geometric failure rather than a purely within-family coverage gap
 - Dataset lacks organism-balanced representation
 
 ## Carbon footprint
@@ -44,7 +44,7 @@ A linear projection $W \in \mathbb{R}^{D \times 128}$ fit in 50 Adam iterations 
 ## Deployment recommendations (paired with Paper 5 cross-family finding)
 1. Apply panel-only learned projection as preprocessing
 2. Route all distant-stratum positive predictions to human review regardless of vote count
-3. Do NOT attempt panel expansion as a cliff rescue (distant false alarms are cross-family)
+3. Do not rely on within-family panel expansion as the sole cliff rescue; the preregistered ten-seed Pfam result shows cross-family predominance, but does not rule out benefit for an individual query
 4. Re-fit the projection whenever the panel changes
 
 ## Files
