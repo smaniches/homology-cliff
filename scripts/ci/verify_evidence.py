@@ -9,7 +9,11 @@ Checks:
   1. calibration_results.json: ECE_close=0.069, ECE_distant=0.294,
      distant_precision=0.068, ECE ratio between 4.0 and 4.5
   2. cross_family_partition.json: within_family=0, cross_family=20
-  3. cross_family_partition_10seed.json: locked seed-level robustness summary passes
+  3. cross_family_partition_10seed.json: locked seed-level robustness summary
+     passes, AND every derived field (per-seed fractions, across-seed
+     aggregates, decision booleans) is independently recomputed from the raw
+     per-seed counts and must agree with the stored values -- a stale or
+     internally inconsistent derived field fails the check
   4. mapper_augmentation_results.json exists and reports CI including zero
   5. adversarial_results.json: 3 targets present
   6. v3_final.txt exists and is non-empty
@@ -23,6 +27,7 @@ Exit code:
 from __future__ import annotations
 
 import json
+import statistics
 import sys
 from pathlib import Path
 
@@ -98,9 +103,17 @@ def check_cross_family() -> bool:
     return ok
 
 
-def check_cross_family_10seed() -> bool:
+def _as_count(value: object) -> int | None:
+    """Return value as a non-negative int count, or None if it is not one."""
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        return None
+    return value
+
+
+def check_cross_family_10seed(path: Path | None = None) -> bool:
     print("\n[3/8] cross_family_partition_10seed.json")
-    path = SUMMARIES / "cross_family_partition_10seed.json"
+    if path is None:
+        path = SUMMARIES / "cross_family_partition_10seed.json"
     if not path.is_file():
         fail(f"missing: {path}")
         return False
@@ -112,14 +125,102 @@ def check_cross_family_10seed() -> bool:
     if [r.get("seed") for r in rows] != expected_seeds:
         fail("ten-seed result does not contain the exact locked seed sequence")
         ok = False
-    if len(rows) != 10 or any(r.get("n_evaluable", 0) <= 0 for r in rows):
+    if len(rows) != 10 or any(_as_count(r.get("n_evaluable")) in (None, 0) for r in rows):
         fail("expected exactly ten nonzero-evaluable seed rows")
         ok = False
-    if any(r.get("cross_family", 0) <= r.get("within_family", 0) for r in rows):
-        fail("cross-family does not exceed within-family in every seed")
+
+    # --- Independent derivation from the raw per-seed counts -------------
+    # Every derived field (per-seed fraction, across-seed aggregates,
+    # decision booleans) is recomputed here from cross_family /
+    # within_family / n_evaluable alone and compared against the stored
+    # values. A per-seed count edited while the derived fields are left
+    # stale is therefore detectable; this check never trusts a stored
+    # derived field on its own.
+    derived_fractions: list[float] = []
+    derived_zero_seeds: list[object] = []
+    nonzero_cross_gt_within: list[bool] = []
+    counts_consistent = True
+    for r in rows:
+        seed = r.get("seed")
+        cross = _as_count(r.get("cross_family"))
+        within = _as_count(r.get("within_family"))
+        n_eval = _as_count(r.get("n_evaluable"))
+        if cross is None or within is None or n_eval is None:
+            fail(f"seed {seed!r}: counts are not non-negative integers")
+            ok = counts_consistent = False
+            continue
+        if cross + within != n_eval:
+            fail(
+                f"seed {seed!r}: cross_family + within_family = {cross + within} "
+                f"!= n_evaluable = {n_eval}"
+            )
+            ok = counts_consistent = False
+            continue
+        stored_fraction = r.get("cross_family_fraction")
+        if n_eval > 0:
+            derived = cross / n_eval
+            derived_fractions.append(derived)
+            nonzero_cross_gt_within.append(cross > within)
+            # Same float division the runner performs, so exact equality.
+            if (
+                isinstance(stored_fraction, bool)
+                or not isinstance(stored_fraction, (int, float))
+                or float(stored_fraction) != derived
+            ):
+                fail(
+                    f"seed {seed!r}: stored cross_family_fraction="
+                    f"{stored_fraction!r} != derived {derived!r}"
+                )
+                ok = False
+        else:
+            derived_zero_seeds.append(seed)
+            if stored_fraction is not None:
+                fail(
+                    f"seed {seed!r}: n_evaluable=0 but stored "
+                    f"cross_family_fraction={stored_fraction!r} is not null"
+                )
+                ok = False
+
+    stored_zero_seeds = d.get("zero_evaluable_seeds")
+    if counts_consistent and stored_zero_seeds != derived_zero_seeds:
+        fail(
+            f"zero_evaluable_seeds={stored_zero_seeds!r} disagrees with "
+            f"seeds derived from the counts {derived_zero_seeds!r}"
+        )
         ok = False
 
     summary = d.get("cross_family_fraction_across_seeds", {})
+    derived_median: float | None = None
+    if counts_consistent and derived_fractions:
+        derived_median = statistics.median(derived_fractions)
+        derived_summary = {
+            "mean": sum(derived_fractions) / len(derived_fractions),
+            "median": derived_median,
+            "min": min(derived_fractions),
+            "max": max(derived_fractions),
+        }
+        # 1e-12 absorbs summation-order float noise only (the runner uses
+        # np.mean's pairwise summation); any genuine count edit moves a
+        # fraction by >= 1/(n_evaluable^2), many orders of magnitude larger.
+        for key, derived_value in derived_summary.items():
+            observed = summary.get(key)
+            if (
+                isinstance(observed, bool)
+                or not isinstance(observed, (int, float))
+                or abs(float(observed) - derived_value) > 1e-12
+            ):
+                fail(
+                    f"cross_family_fraction_across_seeds[{key!r}]={observed!r} "
+                    f"disagrees with value derived from per-seed counts "
+                    f"({derived_value!r})"
+                )
+                ok = False
+    elif counts_consistent:
+        fail("no nonzero-evaluable seed rows to derive aggregates from")
+        ok = False
+
+    # The sealed confirmatory values stay pinned as an additional lock on
+    # top of the derived-consistency checks above.
     expected = {
         "mean": 0.9941130298273156,
         "median": 1.0,
@@ -133,6 +234,32 @@ def check_cross_family_10seed() -> bool:
             ok = False
 
     decision = d.get("decision", {})
+    if counts_consistent:
+        derived_decision = {
+            "cross_gt_within_every_nonzero_seed": (
+                bool(nonzero_cross_gt_within) and all(nonzero_cross_gt_within)
+            ),
+            "median_cross_family_fraction_ge_0_80": (
+                derived_median is not None and derived_median >= 0.80
+            ),
+            "all_ten_seeds_nonzero_evaluable": len(rows) == 10 and not derived_zero_seeds,
+        }
+        derived_decision["strong_robustness_claim"] = (
+            not derived_zero_seeds
+            and derived_decision["cross_gt_within_every_nonzero_seed"]
+            and derived_decision["median_cross_family_fraction_ge_0_80"]
+        )
+        for key, derived_flag in derived_decision.items():
+            observed = decision.get(key)
+            if not isinstance(observed, bool) or observed is not derived_flag:
+                fail(
+                    f"decision[{key!r}]={observed!r} disagrees with value "
+                    f"derived from per-seed counts ({derived_flag!r})"
+                )
+                ok = False
+
+    # The confirmatory claim itself additionally requires every decision
+    # boolean to be true, not merely internally consistent.
     for key in (
         "cross_gt_within_every_nonzero_seed",
         "median_cross_family_fraction_ge_0_80",

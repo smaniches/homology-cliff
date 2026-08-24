@@ -20,7 +20,7 @@ python scripts/ci/verify_manifest.py      # 9,499 manifest entries
 python scripts/ci/verify_prereg_locks.py  # 3 SHA256-locked pre-registrations
 ```
 
-Expected: all manifest entries verified (0 missing, 0 mismatches); both
+Expected: all manifest entries verified (0 missing, 0 mismatches); all three
 pre-registration hashes match.
 
 ## 2. Run tests
