@@ -19,7 +19,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homology-cliff"
-version = "1.5.3"
+version = "1.6.0"
 description = "Homology cliff in frozen protein language models: characterization, pre-registered nulls, and a deployable rescue"
 authors = [{name = "Santiago Maniches", email = "santiago@topologica.llc"}]
 readme = "README.md"

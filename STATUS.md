@@ -2,7 +2,7 @@
 
 Current state of the homology-cliff research compendium.
 
-**Version:** v1.5.3  
+**Version:** v1.6.0  
 **Last updated:** 2026-08-24
 **Maintainer:** Santiago Maniches (ORCID [0009-0005-6480-1987](https://orcid.org/0009-0005-6480-1987)), TOPOLOGICA LLC.
 
@@ -12,11 +12,11 @@ Current state of the homology-cliff research compendium.
 
 | Check | Workflow | What it verifies |
 |---|---|---|
-| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,499 entries total; LFS pointer stubs skipped) |
+| Manifest integrity | `manifest.yml` | All non-LFS file hashes match `MANIFEST.sha256.json` (9,500 entries total; LFS pointer stubs skipped) |
 | Pre-registration locks | `manifest.yml` | 3 SHA256-locked pre-registration files are byte-identical to their locked state |
 | Cell filename inventory | `tests.yml` | 9,360 .npz filenames present (3000 main + 3000 negctrl + 3000 fullnull + 180 cascade + 180 fisher) |
 | Smoke imports | `smoke.yml` | All harnesses and analysis scripts import without error on a fresh clone |
-| No hardcoded Windows paths | `smoke.yml` | No `C:\TOPOLOGICA_BIOSECURITY` references remain in `code/` |
+| No hardcoded Windows paths | `smoke.yml` | No `C:\\TOPOLOGICA_BIOSECURITY` references remain in `code/` |
 | Evidence spot-checks | `evidence.yml` | Headline numbers from committed JSON summaries match expected values |
 | Paper PDF existence | `evidence.yml` | All 5 paper PDFs exist on disk |
 
