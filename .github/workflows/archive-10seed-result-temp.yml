@@ -49,6 +49,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git add data/results_summaries/cross_family_partition_10seed.json
           python scripts/update_manifest.py
           python - <<'PY'
           import hashlib
