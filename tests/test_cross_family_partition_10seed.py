@@ -1,11 +1,14 @@
 """Unit tests for the locked ten-seed cross-family aggregation logic.
 
-These tests exercise only deterministic summary/decision code. They do not load
-embeddings, construct panels, or execute any pre-registered experiment seed.
+These tests exercise deterministic summary/decision code and the input-integrity
+preflight. They do not load the real embeddings, construct panels, or execute
+any pre-registered experiment seed.
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -35,6 +38,42 @@ def _row(seed: int, statuses: list[tuple[str, str]]) -> dict:
     return MOD.summarize_seed(seed, n_distant=len(detail) + 3, detail=detail)
 
 
+def _locked_input_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Path]:
+    paths = {
+        "emb": tmp_path / "data" / "embeddings" / "embeddings_t30.npy",
+        "seqs": tmp_path / "data" / "sequences" / "proteins_25k_sequences.json",
+        "pfam": tmp_path / "data" / "annotations" / "proteins_25k_pfam.json",
+    }
+    payloads = {
+        "emb": b"synthetic-test-bytes-for-integrity-only",
+        "seqs": b'{"test_set": []}\n',
+        "pfam": b'{"test_set": []}\n',
+    }
+    for key, path in paths.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payloads[key])
+
+    manifest = {}
+    for path in paths.values():
+        payload = path.read_bytes()
+        manifest[path.relative_to(tmp_path).as_posix()] = {
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "bytes": len(payload),
+        }
+    manifest_path = tmp_path / "MANIFEST.sha256.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    monkeypatch.setattr(MOD, "REPO", tmp_path)
+    monkeypatch.setattr(MOD, "MANIFEST", manifest_path)
+    monkeypatch.setattr(MOD, "EMB", paths["emb"])
+    monkeypatch.setattr(MOD, "SEQS", paths["seqs"])
+    monkeypatch.setattr(MOD, "PFAM", paths["pfam"])
+    emb_payload = paths["emb"].read_bytes()
+    monkeypatch.setattr(MOD, "PREREG_T30_SHA256", hashlib.sha256(emb_payload).hexdigest())
+    monkeypatch.setattr(MOD, "PREREG_T30_BYTES", len(emb_payload))
+    return paths
+
+
 def test_wilson_zero_successes_matches_locked_formula() -> None:
     low, high = MOD.wilson_interval(0, 20)
     assert low == pytest.approx(0.0)
@@ -45,7 +84,7 @@ def test_wilson_undefined_for_zero_denominator() -> None:
     assert MOD.wilson_interval(0, 0) is None
 
 
-def test_summarize_seed_counts_only_evaluable_cases() -> None:
+def test_summarize_seed_counts_only_evaluable_cases_and_retains_full_detail() -> None:
     detail = [
         {
             "acc": "A",
@@ -74,10 +113,69 @@ def test_summarize_seed_counts_only_evaluable_cases() -> None:
     assert row["cross_family"] == 1
     assert row["within_family_fraction"] == pytest.approx(0.5)
     assert row["cross_family_fraction"] == pytest.approx(0.5)
+    assert row["detail"] == detail
     assert row["evaluable_accessions"] == [
         {"acc": "A", "status": "CROSS_FAMILY"},
         {"acc": "B", "status": "WITHIN_FAMILY"},
     ]
+
+
+def test_verify_locked_inputs_accepts_exact_hydrated_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _locked_input_fixture(tmp_path, monkeypatch)
+    verified = MOD.verify_locked_inputs()
+    for path in paths.values():
+        rel = path.relative_to(tmp_path).as_posix()
+        payload = path.read_bytes()
+        assert verified[rel] == {
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "bytes": len(payload),
+        }
+
+
+def test_verify_locked_inputs_rejects_manifest_mismatch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _locked_input_fixture(tmp_path, monkeypatch)
+    paths["seqs"].write_bytes(paths["seqs"].read_bytes() + b"tampered")
+    with pytest.raises(RuntimeError, match="Locked input mismatch"):
+        MOD.verify_locked_inputs()
+
+
+def test_verify_locked_inputs_rejects_unresolved_lfs_pointer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _locked_input_fixture(tmp_path, monkeypatch)
+    pointer = (
+        b"version https://git-lfs.github.com/spec/v1\n"
+        b"oid sha256:15d6e3656b46729a2483b7fbc603e49a61f25206e3854676bc2e528164608fd6\n"
+        b"size 63705728\n"
+    )
+    paths["emb"].write_bytes(pointer)
+
+    manifest_path = tmp_path / "MANIFEST.sha256.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    rel = paths["emb"].relative_to(tmp_path).as_posix()
+    manifest[rel] = {
+        "sha256": hashlib.sha256(pointer).hexdigest(),
+        "bytes": len(pointer),
+    }
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    monkeypatch.setattr(MOD, "PREREG_T30_SHA256", hashlib.sha256(pointer).hexdigest())
+    monkeypatch.setattr(MOD, "PREREG_T30_BYTES", len(pointer))
+
+    with pytest.raises(RuntimeError, match="unresolved Git LFS pointer"):
+        MOD.verify_locked_inputs()
+
+
+def test_verify_locked_inputs_rejects_prereg_embedding_lock_mismatch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _locked_input_fixture(tmp_path, monkeypatch)
+    monkeypatch.setattr(MOD, "PREREG_T30_SHA256", "0" * 64)
+    with pytest.raises(RuntimeError, match="Pre-registration t30 lock mismatch"):
+        MOD.verify_locked_inputs()
 
 
 def test_aggregate_uses_unweighted_seed_fractions_and_accession_histories() -> None:

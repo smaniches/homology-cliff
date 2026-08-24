@@ -3,8 +3,9 @@
 Implements the protocol locked in
 ``data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md``.  This module is
 import-safe: importing it does not load the experiment data or execute any
-seed.  Running the file executes all ten fixed seeds, verifies that seed
-20260410 reproduces the committed single-seed artifact, and only then writes
+seed.  Running the file first verifies the three locked experiment inputs,
+then executes all ten fixed seeds, verifies that seed 20260410 reproduces the
+committed single-seed artifact, and only then writes
 ``data/results_summaries/cross_family_partition_10seed.json``.
 
 Do not change protocol constants without creating and locking a new
@@ -14,6 +15,7 @@ unit.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from collections import defaultdict
@@ -23,6 +25,7 @@ from typing import Any
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[2]
+MANIFEST = REPO / "MANIFEST.sha256.json"
 EMB = REPO / "data" / "embeddings" / "embeddings_t30.npy"
 PFAM = REPO / "data" / "annotations" / "proteins_25k_pfam.json"
 SEQS = REPO / "data" / "sequences" / "proteins_25k_sequences.json"
@@ -35,6 +38,99 @@ SCALE = "t30"
 DISTANT_THRESHOLD = 0.90
 SEEDS = tuple(range(20260410, 20260420))
 Z_95 = 1.959963984540054
+
+# Independent lock written into the pre-registration.  The runtime preflight
+# checks this in addition to the repository manifest so a later manifest edit
+# cannot silently redefine the frozen t30 input.
+PREREG_T30_SHA256 = "15d6e3656b46729a2483b7fbc603e49a61f25206e3854676bc2e528164608fd6"
+PREREG_T30_BYTES = 63705728
+LFS_PREFIX = b"version https://git-lfs.github.com/spec/v1"
+
+
+def _repo_relative(path: Path) -> str:
+    """Return a stable repository-relative POSIX path for audit metadata."""
+    try:
+        return path.relative_to(REPO).as_posix()
+    except ValueError as exc:
+        raise RuntimeError(f"Locked input is outside repository root: {path}") from exc
+
+
+def _hash_real_file(path: Path, rel_path: str) -> tuple[str, int]:
+    """Hash one hydrated input and reject Git-LFS pointer stubs explicitly."""
+    if not path.is_file():
+        raise RuntimeError(f"Locked input is missing: {rel_path}")
+
+    digest = hashlib.sha256()
+    total = 0
+    with open(path, "rb") as fh:
+        first = fh.read(64)
+        if first.startswith(LFS_PREFIX):
+            raise RuntimeError(
+                f"Locked input {rel_path} is an unresolved Git LFS pointer; "
+                "hydrate Git LFS before any confirmatory seed is run."
+            )
+        digest.update(first)
+        total += len(first)
+        while True:
+            chunk = fh.read(1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+            total += len(chunk)
+    return digest.hexdigest(), total
+
+
+def verify_locked_inputs() -> dict[str, dict[str, Any]]:
+    """Fail closed unless all three pre-registered inputs match their locks.
+
+    The repository manifest is the canonical lock for all three inputs.  The
+    embedding additionally has an explicit SHA256 and byte count in the locked
+    ten-seed pre-registration, so both sources must agree with the actual
+    hydrated file before ``load_inputs`` is allowed to run.
+    """
+    if not MANIFEST.is_file():
+        raise RuntimeError("MANIFEST.sha256.json is missing; refusing confirmatory run.")
+    try:
+        with open(MANIFEST, encoding="utf-8") as fh:
+            manifest = json.load(fh)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("Could not read MANIFEST.sha256.json; refusing confirmatory run.") from exc
+    if not isinstance(manifest, dict):
+        raise RuntimeError("MANIFEST.sha256.json has an invalid top-level format.")
+
+    verified: dict[str, dict[str, Any]] = {}
+    for path in (EMB, SEQS, PFAM):
+        rel_path = _repo_relative(path)
+        expected = manifest.get(rel_path)
+        if not isinstance(expected, dict):
+            raise RuntimeError(f"Manifest has no lock record for required input: {rel_path}")
+        expected_sha = expected.get("sha256")
+        expected_bytes = expected.get("bytes")
+        if not isinstance(expected_sha, str) or not isinstance(expected_bytes, int):
+            raise RuntimeError(f"Manifest lock record is malformed for required input: {rel_path}")
+
+        actual_sha, actual_bytes = _hash_real_file(path, rel_path)
+        if actual_sha != expected_sha or actual_bytes != expected_bytes:
+            raise RuntimeError(
+                f"Locked input mismatch for {rel_path}: "
+                f"manifest sha256={expected_sha}, bytes={expected_bytes}; "
+                f"actual sha256={actual_sha}, bytes={actual_bytes}. "
+                "Refusing to run any confirmatory seed."
+            )
+
+        if path == EMB and (
+            actual_sha != PREREG_T30_SHA256 or actual_bytes != PREREG_T30_BYTES
+        ):
+            raise RuntimeError(
+                f"Pre-registration t30 lock mismatch for {rel_path}: "
+                f"expected sha256={PREREG_T30_SHA256}, bytes={PREREG_T30_BYTES}; "
+                f"actual sha256={actual_sha}, bytes={actual_bytes}. "
+                "Refusing to run any confirmatory seed."
+            )
+
+        verified[rel_path] = {"sha256": actual_sha, "bytes": actual_bytes}
+
+    return verified
 
 
 def wilson_interval(within: int, n: int) -> list[float] | None:
@@ -69,6 +165,10 @@ def summarize_seed(seed: int, n_distant: int, detail: list[dict[str, Any]]) -> d
         "within_family_fraction": within_fraction,
         "cross_family_fraction": cross_fraction,
         "within_family_wilson_95": wilson_interval(within, n_eval),
+        # Retain every distant false positive, including non-evaluable cases.
+        # This is the audit trail promised by the locked protocol; denominators
+        # still use only evaluable rows above.
+        "detail": detail,
         "evaluable_accessions": [
             {"acc": d["acc"], "status": d["status"]} for d in evaluable
         ],
@@ -236,6 +336,7 @@ def load_inputs() -> tuple[np.ndarray, list[str], np.ndarray, dict[str, set[str]
 
 
 def main() -> int:
+    verified_inputs = verify_locked_inputs()
     labels, accs, emb, pfam_by_acc = load_inputs()
     per_seed: list[dict[str, Any]] = []
 
@@ -255,6 +356,10 @@ def main() -> int:
             "seeds": list(SEEDS),
             "robustness_unit": "panel_seed",
             "pooled_binomial_interval": False,
+        },
+        "input_integrity": {
+            "manifest": "MANIFEST.sha256.json",
+            "verified_inputs": verified_inputs,
         },
         "per_seed": per_seed,
         **aggregate(per_seed),
