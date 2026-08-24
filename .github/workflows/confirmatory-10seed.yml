@@ -2,9 +2,9 @@ name: "CONFIRMATORY - locked 10-seed experiment"
 run-name: "maintenance - canonical manifest refresh"
 
 on:
-  push:
+  pull_request:
     branches:
-      - ci/confirmatory-10seed-action
+      - main
 
 permissions:
   contents: write
@@ -16,15 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ci/confirmatory-10seed-action
-          fetch-depth: 2
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
           lfs: false
 
       - name: restore final manual workflow and regenerate canonical manifest
         shell: bash
         run: |
           set -euo pipefail
-          git show HEAD^:.github/workflows/confirmatory-10seed.yml > .github/workflows/confirmatory-10seed.yml
+          git show d183b84c4862f20cd01b79fad85a7858dcf92d6e:.github/workflows/confirmatory-10seed.yml > .github/workflows/confirmatory-10seed.yml
           python scripts/update_manifest.py
           python scripts/update_manifest.py --check
           git diff --check
@@ -43,4 +43,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .github/workflows/confirmatory-10seed.yml MANIFEST.sha256.json
           git commit -m "Refresh manifest for confirmatory workflow"
-          git push origin HEAD:ci/confirmatory-10seed-action
+          git push origin HEAD:${{ github.head_ref }}
