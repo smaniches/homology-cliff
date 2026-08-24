@@ -21,18 +21,16 @@ concurrency:
 
 jobs:
   execute:
-    # The confirmatory protocol is executed only from the reviewed default branch.
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       PYTHONHASHSEED: '0'
-      OMP_NUM_THREADS: '4'
-      OPENBLAS_NUM_THREADS: '4'
-      MKL_NUM_THREADS: '4'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
 
     steps:
-      - name: require explicit confirmation
+      - name: require explicit confirmation and main branch
         shell: bash
         run: |
           set -euo pipefail
@@ -82,7 +80,6 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: install minimal pinned execution runtime
         shell: bash
@@ -90,7 +87,7 @@ jobs:
           set -euo pipefail
           # NumPy matches the repository's current verified CI lock. FAISS is
           # pinned prospectively for this execution; this is not a claim about
-          # the unrecorded FAISS version used for the original GPU-era artifact.
+          # the unrecorded FAISS version used for the original single-seed artifact.
           python -m pip install --quiet "numpy==2.4.6" "faiss-cpu==1.15.0"
 
       - name: verify frozen preregistration and hydrated input bytes
