@@ -37952,8 +37952,8 @@
   "sha256": "613609177079b1297eb92f767bb66ba5669eee9a082926946f6d1c306a287bc3"
  },
  "scripts/ci/verify_manifest.py": {
-  "bytes": 4781,
-  "sha256": "ce3167daf8713c67f67fd954323256310e2c0fe1f2785563238829a4b020ad3d"
+  "bytes": 6261,
+  "sha256": "8fb680266b8ecf9409df38c169f061e89c69e75ead8a3abedb565b5e16a31664"
  },
  "scripts/ci/verify_prereg_locks.py": {
   "bytes": 3418,
@@ -37996,7 +37996,7 @@
   "sha256": "198bfd98a28c43a4f59acefedfe4cd4c6a93c9729b97333dbb2c8188433924c6"
  },
  "tests/test_verify_manifest.py": {
-  "bytes": 4726,
-  "sha256": "ed23bd5c933c93080283bdde3ab16a5e9552b4a6f008feb11716ffe3e664f798"
+  "bytes": 5729,
+  "sha256": "dc2e102e088327a8532e9b286fb80332f6c12cd3bcd789a0ed4a92a86e4bcf9c"
  }
 }
