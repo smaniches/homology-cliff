@@ -6,7 +6,8 @@ carry CRLF line endings while the manifest stores the LF-committed hash.
 The verifier must treat a CRLF-only difference in a text file as a match
 (LF-normalize fallback) while still:
 
-  - matching binary files only on exact raw bytes (never LF-normalized), and
+  - matching binary files only on exact raw bytes (never LF-normalized),
+  - verifying LFS pointer OIDs/sizes rather than skipping them, and
   - failing on a genuine content edit.
 
 These tests build a throwaway repo tree on tmp_path with a hand-written
@@ -105,18 +106,71 @@ def test_missing_build_artifact_is_skipped_not_failed(tmp_path):
     assert mod.main() == 0
 
 
-def test_lfs_pointer_stub_is_skipped(tmp_path):
-    """An LFS pointer stub on disk cannot be hashed against the real-content
-    manifest entry and must be skipped (exit 0), not flagged as a mismatch."""
-    stub = (b"version https://git-lfs.github.com/spec/v1\n"
-            b"oid sha256:" + b"0" * 64 + b"\nsize 12345\n")
-    (tmp_path / "big.npz").write_bytes(stub)
-    _write_manifest(
-        tmp_path,
-        {"big.npz": {"bytes": 99999, "sha256": _sha(b"real-content-hash")}},
+def _lfs_pointer(oid: str, size: int) -> bytes:
+    return (
+        b"version https://git-lfs.github.com/spec/v1\n"
+        + b"oid sha256:"
+        + oid.encode("ascii")
+        + b"\nsize "
+        + str(size).encode("ascii")
+        + b"\n"
     )
-    mod = _load_verifier(tmp_path)
-    assert mod.main() == 0
+
+
+def test_lfs_pointer_oid_and_size_match_passes(tmp_path):
+    """Pointer metadata must match the real-content manifest digest and size."""
+    digest = _sha(b"real-content-hash")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99999))
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 0
+
+
+def test_lfs_pointer_wrong_oid_fails(tmp_path):
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer("0" * 64, 99999))
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": _sha(b"real")}})
+    assert _load_verifier(tmp_path).main() == 1
+
+
+def test_lfs_pointer_wrong_size_fails(tmp_path):
+    digest = _sha(b"real")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99998))
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 1
+
+
+def test_lfs_pointer_malformed_metadata_fails(tmp_path):
+    (tmp_path / "big.npz").write_bytes(
+        b"version https://git-lfs.github.com/spec/v1\n"
+        b"oid sha256:not-a-digest\nsize abc\n"
+    )
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 1, "sha256": _sha(b"real")}})
+    assert _load_verifier(tmp_path).main() == 1
+
+
+def test_lfs_pointer_rejects_non_lf_record_separators(tmp_path):
+    """Canonical LFS pointers must use LF, not CR or other control separators."""
+    digest = _sha(b"real")
+    canonical = _lfs_pointer(digest, 99999)
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    verifier = _load_verifier(tmp_path)
+    for separator in (b"\r", b"\v", b"\f", b"\r\n"):
+        (tmp_path / "big.npz").write_bytes(canonical.replace(b"\n", separator))
+        assert verifier.lfs_pointer_metadata(tmp_path / "big.npz") is None
+        assert verifier.main() == 1
+
+
+def test_lfs_pointer_rejects_extra_blank_line(tmp_path):
+    digest = _sha(b"real")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99999) + b"\n")
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 1
+
+
+def test_lfs_pointer_without_trailing_lf_is_unambiguous(tmp_path):
+    digest = _sha(b"real")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99999).removesuffix(b"\n"))
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 0
 
 
 def test_bad_format_entry_fails(tmp_path):
