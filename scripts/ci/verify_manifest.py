@@ -12,8 +12,8 @@ Behavior:
   - Missing real files:    FAIL with a list of paths
 
 Exit code:
-  0  if all real files match the manifest
-  1  if any real file is missing or its hash does not match
+  0  if real-file bytes and LFS pointer metadata match the manifest
+  1  if a file is missing, hashes differ, or a pointer is invalid
 
 Designed to run on a fresh clone WITHOUT `git lfs pull`. LFS pointers
 are verified against the manifest; this does not attest to the existence
@@ -62,7 +62,11 @@ def lfs_pointer_metadata(path: Path) -> tuple[str, int] | None:
         return None
     if len(content) > 1024:
         return None
-    lines = content.splitlines()
+    # Python's splitlines accepts bare CR, vertical tab and form feed.
+    # Git LFS pointer records must use LF; optional final LF is removed.
+    if content.endswith(b"\n"):
+        content = content[:-1]
+    lines = content.split(b"\n")
     if len(lines) != 3 or lines[0] != LFS_PREFIX:
         return None
     oid = re.fullmatch(rb"oid sha256:([0-9a-f]{64})", lines[1])

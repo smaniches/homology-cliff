@@ -147,6 +147,32 @@ def test_lfs_pointer_malformed_metadata_fails(tmp_path):
     assert _load_verifier(tmp_path).main() == 1
 
 
+def test_lfs_pointer_rejects_non_lf_record_separators(tmp_path):
+    """Canonical LFS pointers must use LF, not CR or other control separators."""
+    digest = _sha(b"real")
+    canonical = _lfs_pointer(digest, 99999)
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    verifier = _load_verifier(tmp_path)
+    for separator in (b"\r", b"\v", b"\f", b"\r\n"):
+        (tmp_path / "big.npz").write_bytes(canonical.replace(b"\n", separator))
+        assert verifier.lfs_pointer_metadata(tmp_path / "big.npz") is None
+        assert verifier.main() == 1
+
+
+def test_lfs_pointer_rejects_extra_blank_line(tmp_path):
+    digest = _sha(b"real")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99999) + b"\n")
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 1
+
+
+def test_lfs_pointer_without_trailing_lf_is_unambiguous(tmp_path):
+    digest = _sha(b"real")
+    (tmp_path / "big.npz").write_bytes(_lfs_pointer(digest, 99999).removesuffix(b"\n"))
+    _write_manifest(tmp_path, {"big.npz": {"bytes": 99999, "sha256": digest}})
+    assert _load_verifier(tmp_path).main() == 0
+
+
 def test_bad_format_entry_fails(tmp_path):
     """A manifest entry that is not a {bytes, sha256} object is a hard error."""
     _write_manifest(tmp_path, {"weird.md": "not-an-object"})
