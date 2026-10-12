@@ -6,6 +6,17 @@ All notable changes to the Homology Cliff compendium. Format: [Keep A Changelog]
 
 ## [Unreleased]
 
+### Fixed
+- **`scripts/ci/verify_evidence.py` `check_mapper_augmentation` no longer fails open.** If the committed Mapper-augmentation summary lacked its `rescue_ci_lo`/`rescue_ci_hi` fields the check printed "skipping value check" and returned success; it now fails with an explicit message. The shipped summary carries both fields (CI [-0.0353, 0.0176] includes zero), so the evidence gate remains 8/8.
+- **`code/harnesses/run_cliff.py` `bootstrap_f1_ci`**: the F1 bootstrap divided before masking (`np.where(denom > 0, 2*tp/denom, 0.0)`), emitting spurious 0/0 `RuntimeWarning`s on empty resamples. Replaced with `np.divide(..., out=zeros, where=denom > 0)`; a new test asserts the result is bit-identical to the previous formula on random cases and warning-free. Removed the never-read `train_pool_idx` parameter of `knn_learned` (sole caller passes four positional arguments).
+- **`scripts/ci/verify_smoke_imports.py`** no longer asserts the checkout directory is literally named `homology-cliff`; it checks for `MANIFEST.sha256.json` and `pyproject.toml` at `run_cliff.REPO_ROOT`, so the smoke gate works from any clone path.
+- **`code/analyses/run_adversarial_phase1.py`** docstring: corrected its own filename and removed the reference to a `PRE_REGISTRATION_ADVERSARIAL_HOMOLOGY_v1.md` that was never shipped; the analysis is now explicitly labelled exploratory (not SHA256-locked), pointing to the "Adversarial phase 2" status in `PROBLEMS.md`.
+
+### Changed
+- `code/analyses/v3_aggregate.py` context-manages `np.load`; `deployment_example/deploy_cliff_rescue.py` uses `np.random.default_rng` (no asserted outputs); `zip(..., strict=True)` in `reproduce.py` and `scripts/build_summary_figure.py` where lengths are provably equal; `collections.abc.Iterator` and redundant `open(..., "r")` modes cleaned up.
+- New no-LFS tests: `tests/test_fisher_whiten_numerics.py`, `tests/test_run_cliff_div_guard.py`, `tests/test_verify_prereg_locks_unit.py` (126 tests total, 0 warnings).
+- **Manifest entry-count references bumped to 9,503** in `README.md`, `STATUS.md`, and `REVIEWER.md`. `MANIFEST.sha256.json` regenerated via `python scripts/update_manifest.py` (9,500 -> 9,503: 8 entries changed for the edited files above, 3 added for the new tests, 0 removed; all LFS pointer stubs preserved, 0 missing, 0 mismatches). No data file, result summary, pre-registration, or paper is modified.
+
 ## [v1.6.0] — 2026-08-24
 
 ### Added

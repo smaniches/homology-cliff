@@ -26,7 +26,7 @@ except ImportError:
 
 def fit_projection(panel_emb, panel_labels, output_dim=128, n_iter=50, seed=0):
     """Fit the triplet-surrogate linear projection on panel alone, <5 CPU seconds."""
-    torch.manual_seed(seed); np.random.seed(seed)
+    torch.manual_seed(seed)
     D = panel_emb.shape[1]; output_dim = min(output_dim, D)
     X = torch.from_numpy(panel_emb.astype(np.float32))
     y = torch.from_numpy(panel_labels.astype(np.int64))
@@ -70,11 +70,11 @@ def rescue_retrieval(panel_emb, panel_labels, query_emb, k=25,
 
 
 if __name__ == "__main__":
-    np.random.seed(42)
+    rng = np.random.default_rng(42)
     D, R, N = 640, 1000, 500
-    panel = np.random.randn(R, D); panel /= np.linalg.norm(panel, axis=1, keepdims=True)
-    panel_labels = np.random.randint(0, 2, R)
-    queries = np.random.randn(N, D); queries /= np.linalg.norm(queries, axis=1, keepdims=True)
+    panel = rng.standard_normal((R, D)); panel /= np.linalg.norm(panel, axis=1, keepdims=True)
+    panel_labels = rng.integers(0, 2, R)
+    queries = rng.standard_normal((N, D)); queries /= np.linalg.norm(queries, axis=1, keepdims=True)
     result = rescue_retrieval(panel, panel_labels, queries, k=25)
     print(f"queries: {N}")
     print(f"strata close={sum(result['stratum']=='close')} "

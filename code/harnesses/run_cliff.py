@@ -40,7 +40,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator
+from collections.abc import Iterator
 
 import numpy as np
 
@@ -197,7 +197,7 @@ def load_labels() -> tuple[np.ndarray, list[str]]:
             f"{PROTEINS_JSON} is a Git LFS pointer stub, not the real dataset. "
             f"Run `git lfs pull` to fetch the binary evidence, then re-run."
         )
-    with open(PROTEINS_JSON, "r", encoding="utf-8") as f:
+    with open(PROTEINS_JSON, encoding="utf-8") as f:
         doc = json.load(f)
     entries = doc["test_set"]
     labels = np.array([int(e["true_label"]) for e in entries], dtype=np.int64)
@@ -339,7 +339,7 @@ def knn_mahalanobis(test_emb, panel_emb, panel_labels, k):
     return _majority_vote(panel_labels[I])
 
 
-def knn_learned(test_emb, panel_emb, panel_labels, k, train_pool_idx=None):
+def knn_learned(test_emb, panel_emb, panel_labels, k):
     """Linear projection fit via class-balanced triplet loss on panel only.
 
     STRICT: no test embeddings touched during fitting. The projection head
@@ -437,9 +437,10 @@ def bootstrap_f1_ci(y_true: np.ndarray, y_pred: np.ndarray,
     tp_b = np.sum((yt == 1) & (yp == 1), axis=1).astype(np.float64)
     fp_b = np.sum((yt == 0) & (yp == 1), axis=1).astype(np.float64)
     fn_b = np.sum((yt == 1) & (yp == 0), axis=1).astype(np.float64)
-    # F1 = 2 TP / (2 TP + FP + FN), safe from division-by-zero via where
+    # F1 = 2 TP / (2 TP + FP + FN); divide only where the denominator is
+    # positive so empty resamples contribute 0.0 without a spurious 0/0 warning.
     denom = 2 * tp_b + fp_b + fn_b
-    boot_f1 = np.where(denom > 0, 2 * tp_b / denom, 0.0)
+    boot_f1 = np.divide(2 * tp_b, denom, out=np.zeros_like(denom), where=denom > 0)
     lo = float(np.percentile(boot_f1, 2.5))
     hi = float(np.percentile(boot_f1, 97.5))
     return float(point), lo, hi
