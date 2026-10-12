@@ -40,8 +40,8 @@ for f in _npz_paths:
     m = PAT.search(f)
     if not m: continue
     kind, scale, r, k, metric, seed = m.group(1), m.group(2), int(m.group(3)), int(m.group(4)), m.group(5), int(m.group(6))
-    d = np.load(f, allow_pickle=True)
-    c = d['close'].item(); mo = d['moderate'].item(); di = d['distant'].item()
+    with np.load(f, allow_pickle=True) as d:
+        c = d['close'].item(); mo = d['moderate'].item(); di = d['distant'].item()
     row = dict(cf=c['f1'], mf=mo['f1'], df=di['f1'], nc=c['n'], nm=mo['n'], nd=di['n'],
                up=(c['underpowered'] or mo['underpowered'] or di['underpowered']))
     if kind == 'fullnull':

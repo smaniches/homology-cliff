@@ -338,14 +338,15 @@ def check_mapper_augmentation() -> bool:
 
     ci_lo = d.get("rescue_ci_lo", d.get("ci_lo", None))
     ci_hi = d.get("rescue_ci_hi", d.get("ci_hi", None))
-    if ci_lo is not None and ci_hi is not None:
-        if not (ci_lo <= 0 <= ci_hi):
-            fail(f"rescue CI [{ci_lo}, {ci_hi}] does not include zero")
-            ok = False
-        else:
-            print(f"  rescue CI [{ci_lo}, {ci_hi}] includes zero (consistent with no rescue): OK")
+    if ci_lo is None or ci_hi is None:
+        fail("rescue CI fields (rescue_ci_lo/rescue_ci_hi) missing; "
+             "cannot verify the no-rescue claim")
+        return False
+    if not (ci_lo <= 0 <= ci_hi):
+        fail(f"rescue CI [{ci_lo}, {ci_hi}] does not include zero")
+        ok = False
     else:
-        print("  mapper augmentation results present (CI fields not in expected format; skipping value check)")
+        print(f"  rescue CI [{ci_lo}, {ci_hi}] includes zero (consistent with no rescue): OK")
 
     return ok
 

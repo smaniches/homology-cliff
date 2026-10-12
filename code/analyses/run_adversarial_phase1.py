@@ -1,5 +1,5 @@
 """
-run_adversarial.py -- Adversarial Homology Test
+run_adversarial_phase1.py -- Adversarial Homology Test (Phase 1: selection)
 
 Author: Santiago Maniches (ORCID 0009-0005-6480-1987), TOPOLOGICA LLC
 Date:   April 12, 2026
@@ -15,7 +15,10 @@ and measures:
 If a small number of BLOSUM-favorable edits can flip the label, the cliff
 is adversarially fragile. If not, it is a genuine geometric limitation.
 
-Pre-reg: PRE_REGISTRATION_ADVERSARIAL_HOMOLOGY_v1.md
+Status: exploratory analysis, not covered by a SHA256-locked pre-registration.
+No adversarial pre-reg is shipped and none of the locks checked by
+scripts/ci/verify_prereg_locks.py is adversarial; see PROBLEMS.md
+("Adversarial phase 2") for the documented status of this line of work.
 Writes: adversarial_results.json
 
 NOTE: requires ESM-2 t30 model loaded. Uses CPU inference. ~50 queries x
@@ -44,7 +47,7 @@ BLOSUM62 = {
 
 
 def load_sequences():
-    with open(PROTEINS_JSON, 'r', encoding='utf-8') as f:
+    with open(PROTEINS_JSON, encoding='utf-8') as f:
         doc = json.load(f)
     return {e['uniprot_acc']: e['sequence'] for e in doc['test_set']}
 

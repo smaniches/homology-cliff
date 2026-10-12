@@ -52,8 +52,13 @@ def step_master_harness() -> bool:
     except Exception as e:
         fail(f"run_cliff import: {e!r}")
         return False
-    if run_cliff.REPO_ROOT.name != "homology-cliff":
-        fail(f"run_cliff.REPO_ROOT = {run_cliff.REPO_ROOT}")
+    missing_markers = [
+        name for name in ("MANIFEST.sha256.json", "pyproject.toml")
+        if not (run_cliff.REPO_ROOT / name).is_file()
+    ]
+    if missing_markers:
+        fail(f"run_cliff.REPO_ROOT = {run_cliff.REPO_ROOT} "
+             f"is not a repo root (missing markers: {missing_markers})")
         return False
     if not run_cliff.PRE_DIR.exists():
         fail(f"PRE_DIR does not exist: {run_cliff.PRE_DIR}")

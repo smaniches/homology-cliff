@@ -193,7 +193,7 @@ def main() -> None:
     bar_colors = ["#1f77b4", "#ff7f0e", "#d62728"]
     bars = ax.bar(strata, eces, color=bar_colors, edgecolor="black",
                   linewidth=0.8)
-    for bar, e in zip(bars, eces):
+    for bar, e in zip(bars, eces, strict=True):
         ax.text(bar.get_x() + bar.get_width() / 2, e + 0.008,
                 f"{e:.3f}", ha="center", fontsize=10, fontweight="bold")
     ax.set_ylabel("Expected Calibration Error (ECE)")
@@ -224,10 +224,10 @@ def main() -> None:
                 label="close stratum", edgecolor="black", linewidth=0.8)
     b2 = ax.bar(x + width/2, distants, width, color="#d62728",
                 label="distant stratum", edgecolor="black", linewidth=0.8)
-    for bar, v in zip(b1, closes):
+    for bar, v in zip(b1, closes, strict=True):
         ax.text(bar.get_x() + bar.get_width()/2, v + 0.012,
                 f"{v:.2f}", ha="center", fontsize=9)
-    for bar, v in zip(b2, distants):
+    for bar, v in zip(b2, distants, strict=True):
         ax.text(bar.get_x() + bar.get_width()/2, v + 0.012,
                 f"{v:.2f}", ha="center", fontsize=9)
     ax.set_xticks(x); ax.set_xticklabels(

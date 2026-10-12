@@ -264,7 +264,7 @@ def mapper_results_match(committed: dict, generated: dict) -> tuple[bool, str]:
             if len(c_list) != len(g_list):
                 violations.append(f"results.{arm}: length committed={len(c_list)} generated={len(g_list)}")
                 continue
-            for i, (c_entry, g_entry) in enumerate(zip(c_list, g_list)):
+            for i, (c_entry, g_entry) in enumerate(zip(c_list, g_list, strict=True)):
                 if set(c_entry) != _MAPPER_RESULT_KEYS or set(g_entry) != _MAPPER_RESULT_KEYS:
                     violations.append(f"results.{arm}[{i}]: keys committed={sorted(c_entry)} "
                                       f"generated={sorted(g_entry)} expected={sorted(_MAPPER_RESULT_KEYS)}")
