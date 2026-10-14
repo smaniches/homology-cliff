@@ -7,7 +7,7 @@ Questions anticipated from reviewers, deployers, and curious readers. If your qu
 ## About the work
 
 **Q1. Why did you stop at ESM-2 t30 instead of t33 (650M)?**
-Local hardware constraint. ESM-2 t33 needs a GPU to embed 24,885 sequences in reasonable time. The current compendium was produced entirely on a 36 GB i7 CPU workstation. The t33 extension is scaffolded via the Colab notebook in `code/colab_notebook/plm_benchmark.ipynb` and expected in v1.5.
+Local hardware constraint. ESM-2 t33 needs a GPU to embed 24,885 sequences in reasonable time. The current compendium was produced entirely on a 36 GB i7 CPU workstation. The t33 extension is scaffolded in `code/colab_notebook/plm_benchmark.ipynb` but has not been executed as part of the v1.6.0 evidence.
 
 **Q2. Why the 0.95 / 0.90 stratification cuts?**
 These were locked in the main pre-registration (SHA256 `139f6012…`) before any evaluation. The 0.95 cut roughly separates the CD-HIT-90 near-homolog regime from genuinely novel sequences; 0.90 gives a buffer "moderate" stratum to see the cliff onset. A threshold sensitivity sweep is listed as unverified in `PROBLEMS.md`.
@@ -16,7 +16,7 @@ These were locked in the main pre-registration (SHA256 `139f6012…`) before any
 BCa requires a jackknife per cell, which is O(n) extra computation. With 9,360 cells the additional cost is nontrivial. Percentile is the standard fallback. For individual headline numbers in the papers, BCa confidence intervals can be computed on demand from the committed .npz files.
 
 **Q4. Why 10 seeds? Isn't 30-50 the standard?**
-Cost tradeoff. 10 seeds at the current factorial size is already 9,360 cells. Doubling seeds doubles compute and storage. The pre-committed seed-variance gate compensates: any cell where across-seed std exceeds the claimed gap is voided, which ensures 10-seed claims are not inflated relative to what 30 seeds would support.
+Ten seeds were a computational tradeoff across 9,360 experimental cells. The preregistered seed-variance gate flags groups whose across-seed distant-stratum $F_1$ standard deviation exceeds the observed close–distant gap. Passing this gate does not establish equivalent precision or statistical power to a 30–50-seed study. Additional seeds and external replication are still needed to assess broader stability.
 
 **Q5. Cosine and Euclidean are equivalent on the unit sphere. Why report both?**
 As a numerical-correctness check. Paper 1 proves the equivalence formally and Paper 4 verifies it to 4 decimal places in 75 of 75 cells. This is a cheap sanity check that FAISS IndexFlatIP and IndexFlatL2 are returning identical neighbor sets on L2-normalized embeddings.
@@ -25,7 +25,7 @@ As a numerical-correctness check. Paper 1 proves the equivalence formally and Pa
 Yes, and we acknowledge this in the Paper 1 limitations and Paper 4 methods. The centroid surrogate was chosen because it fits in 5 CPU seconds on a panel of 1000 and requires no hard-negative mining infrastructure. A proper FaceNet-style triplet loss with semi-hard mining likely works equally well or better. The choice is about deployability, not optimality.
 
 **Q7. What is the TOPOLOGICA "v7 seed-variance gate"?**
-A pre-committed void rule from earlier TOPOLOGICA work on GO annotation pipelines. It states: if across-seed standard deviation of the distant-stratum F1 exceeds the observed close-distant gap, the group is voided. The rule protects against claiming a cliff that is actually seed noise. All 300 main groups passed.
+A pre-committed void rule from earlier TOPOLOGICA work on GO annotation pipelines. It states: if across-seed standard deviation of the distant-stratum F1 exceeds the observed close-distant gap, the group is voided. The rule is a screening check for one form of seed variability, not a general statistical uncertainty bound. All 300 main groups passed the stated rule.
 
 **Q8. Why did the panel-only shuffle null fail its pre-registered criterion?**
 The pre-registration required "distant F1 at chance = 0.5" under the null. But shuffling only the panel labels (while leaving test labels intact) preserves the 28.7% test class prior, and chance F1 in this class-imbalanced regime is not 0.5. This was caught within the session. A corrected pre-registration (the full-pool permutation null) was SHA256-locked before running the stricter test, and passed 300/300.
@@ -38,14 +38,14 @@ Only cross-Pfam as of v1.3.1. Pfam is a coarse family definition. A finer-graine
 
 ## About the authorship
 
-**Q11. You are one researcher working with AI tools. How do I trust this work?**
-See the "How we addressed the solo researcher with AI trust concern" section of the README, and `PROBLEMS.md` for self-audited errors caught during authoring. The architectural trust arguments: SHA256-locked pre-registrations that the running code verifies, every cell committed as .npz with bootstrap CI, deterministic seeds, git history, self-audited errors. Run `pytest tests/`, pick any committed cell, rerun its harness, confirm the .npz hash matches `MANIFEST.sha256.json`.
+**Q11. What was the role of AI tools, and what evidence can be checked?**
+Santiago Maniches is the sole scientific author. AI tools supported implementation, experiment orchestration, writing, and internal critique, as described in `ACKNOWLEDGMENTS.md`. Three preregistrations are SHA-256 locked and CI-verified, the 9,360 committed `.npz` cells are indexed by `MANIFEST.sha256.json`, and `PROBLEMS.md` documents corrections. `pytest tests/` and the procedures in `REVIEWER.md` check specified artifacts and results. These checks are not independent peer review; independent reconstruction of class labels requires separate curation.
 
 **Q12. What is TOPOLOGICA LLC?**
-TOPOLOGICA LLC is Santiago Maniches's registered solo research lab. It is not a company with employees; it is a legal structure under which one independent researcher conducts research. Work is single-author. AI collaboration tools are used to accelerate execution; scientific direction, hypothesis formation, experimental design, and final judgment are Santiago's.
+TOPOLOGICA LLC is Santiago Maniches's registered solo research lab. It is not a company with employees; it is a legal structure under which one independent researcher conducts research. The scientific research is single-author work. AI-assisted tools contributed to development and internal review, while scientific direction, hypotheses, experimental design, interpretation, and publication decisions remain Santiago's. Third-party software and data retain their own credit.
 
 **Q13. Has this work been peer-reviewed?**
-Not yet externally. The `REFEREES.md` document logs the self-adversarial review passes applied to each paper. External peer review is pending arXiv / journal submission.
+Not yet externally. `REFEREES.md` records internal, AI-assisted adversarial review passes, not reports from independent referees. External review and third-party replication remain separate future steps.
 
 ## About reproducibility
 
@@ -64,7 +64,7 @@ File a reproducibility_failure issue. Include Python version, numpy version, FAI
 ## About deployment
 
 **Q18. Can I use this in production tomorrow?**
-The learned projection is deployable in the sense that it is code that runs. See `deployment_example/`. But `MODEL_CARD.md` documents important out-of-scope uses: calibration under the projection is unmeasured, so distant-stratum predictions still need human review. If your use case has a false-positive cost (panel expansion, human review capacity) we are happy to discuss.
+Not as a validated biosecurity screen. The panel-fitted projection is implemented and evaluated within the recorded experimental protocol (`deployment_example/`), but its calibration and external deployment performance have not been established. `MODEL_CARD.md` documents these limits; distant-stratum positives require human review. If your use case has a false-positive cost (panel expansion, human review capacity) we are happy to discuss.
 
 **Q19. Can you come consult on our biosecurity screen?**
 Open a GitHub Discussion or email santiago at topologica dot ai. TOPOLOGICA LLC is the legal vehicle for such engagements.
