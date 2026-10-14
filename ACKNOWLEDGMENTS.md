@@ -1,6 +1,6 @@
 # Acknowledgments
 
-With maximum humility.
+**Scientific author:** Santiago Maniches. The tools, sources, and internal review assistance acknowledged here supported the work but are not scientific coauthors or independent external reviewers.
 
 ## Infrastructure
 
@@ -11,11 +11,11 @@ With maximum humility.
 - **NumPy / SciPy** — bootstrap CIs, covariance estimation, linear algebra.
 - **MiKTeX** — LaTeX compilation on Windows.
 - **Git + Git LFS** — version control for both the small and the large.
-- **Anthropic Claude** — pair-research interlocutor throughout the April 11-12 session. Caught several of my own early errors via the adversarial-referee pattern (especially the Mahalanobis-rescue framing and the panel-shuffle-null criterion mismatch). Executed MCP-driven file and process operations to orchestrate the four parallel factorials.
+- **Anthropic Claude** — AI-assisted coding and critical discussion during the April 11–12 development session. Helped challenge early interpretations of the Mahalanobis-rescue and panel-shuffle-null results, and executed MCP-driven file and process operations during factorial orchestration. Santiago Maniches directed the research and is responsible for the methods, interpretation, and published claims.
 
-## Epistemology
+## Interpretation of negative results
 
-Every null result in this compendium is a teacher. The panel-only shuffle failing its own criterion taught the class-prior mechanism. The stratified cascade failing 18/18 taught that Mahalanobis is not a rescue. The Fisher-Rao result replicating DR-010 in a new domain taught that within-class covariance on frozen PLMs carries class signal. The Mapper-augmentation null taught that panel composition is not the lever. The one positive finding (learned projection) is interpretable only against the backdrop of these four failed hypotheses; absent the nulls the positive claim would be an unfalsified guess.
+The panel-only label-shuffle control failed its original criterion because the test-set class prior was preserved, motivating the full-pool null. The stratified cascade, Fisher-Rao, and Mapper-augmentation experiments did not support their preregistered rescue hypotheses under the evaluated controls. The observed improvement under the learned projection should be interpreted alongside these negative controls and its remaining calibration and generalization limits.
 
 ## Priors
 
@@ -23,6 +23,6 @@ Every null result in this compendium is a teacher. The panel-only shuffle failin
 - TOPOLOGICA **v7 seed-variance gate** — pre-committed void rule adopted from prior work.
 - TOPOLOGICA **pre-registration discipline** (prior pre-regs v1-v6 on different questions) — the habit of locking hypotheses before running experiments is older than this work.
 
-## What this compendium is not
+## Scope
 
-It is not a complete biosecurity retrieval solution. The learned projection achieves distant F1 = 0.177 at t30 R=1000 k=25, an improvement from 0.120 but still far from useful. The calibration collapse (ECE 0.294 on distant) means all distant-stratum hits still require human review. The cross-family question is unresolved. The PLM comparison is unfinished. The adversarial attack is unfinished. v1.0 is a real step, not a destination.
+This is not a validated operational biosecurity retrieval system. At t30 R=1000 k=25, the learned projection improves distant $F_1$ from 0.120 to 0.177, which remains low. Calibration of that projection and external deployment performance have not been established, so distant-stratum positives require human review. The cross-family finding has been checked across ten fixed panel seeds under the Pfam definition, but cross-model, cross-ontology, and third-party validation remain open. The external PLM benchmark and second adversarial phase are not completed.

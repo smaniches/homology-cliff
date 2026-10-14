@@ -1,8 +1,8 @@
-# Referees Log
+# Internal Adversarial Review Log
 
-Self-adversarial review passes applied to each paper before public release. This log exists because this compendium is authored by one person, Santiago Maniches (Independent Researcher, TOPOLOGICA LLC), with AI-collaboration support. Absent external peer review, the discipline is to simulate hostile referees from multiple angles and document what they caught. See `PROBLEMS.md` for the complete error log.
+This records internal, AI-assisted review exercises used during manuscript development by Santiago Maniches, the sole scientific author (Independent Researcher, TOPOLOGICA LLC). The reviewer roles below are simulated critical perspectives, not independent people or external peer reviewers. Historical findings and the author's corrections are preserved here; see `PROBLEMS.md` for the correction and limitations record.
 
-The five adversarial-referee personas used, per the TOPOLOGICA `adversarial-manuscript-referee` protocol:
+The five internal review lenses used in the `adversarial-manuscript-referee` protocol:
 
 1. **Logical structure referee** — is the argument valid even if the numbers are right?
 2. **Mathematical rigor referee** — do the proofs/derivations hold?

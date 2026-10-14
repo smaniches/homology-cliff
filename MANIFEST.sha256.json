@@ -60,8 +60,8 @@
   "sha256": "632d176ecac734faecb1c225238900a4ec1ecd380974d730ae1c8814a1dd59ae"
  },
  "ACKNOWLEDGMENTS.md": {
-  "bytes": 2585,
-  "sha256": "fd57d419e4480354389e26e581c9af99c7c2ae745b08d936eb05bf8d2dc6f898"
+  "bytes": 2810,
+  "sha256": "21b22b1a7a5b16860f8172473c650de6db37be808a938a3a32ca8d1d125f4d76"
  },
  "BENCHMARK.md": {
   "bytes": 4452,
@@ -88,8 +88,8 @@
   "sha256": "6c4b196edc5f2b6058dfdcf120d15e60f9b239e4a09fa993acc2a96a7936c0c5"
  },
  "FAQ.md": {
-  "bytes": 9630,
-  "sha256": "2fc809e2acaa3087d760d06481b4dd19f7b21bb7abf12e5b95f3f3423c9489d8"
+  "bytes": 10071,
+  "sha256": "ba284a0200ec779d5712b7dc9f3f5cfeb33a78007207ad95d0bbee5bb3343ee4"
  },
  "LICENSE-code.txt": {
   "bytes": 1119,
@@ -112,12 +112,12 @@
   "sha256": "b8d48e714a4dd5f3c9d7d547d1533549dae19a4c602f97202106cec617b331ae"
  },
  "README.md": {
-  "bytes": 23931,
-  "sha256": "f72c3580fab8278e35583987ae1f621edfa2a7b13e446702373596d2eddf01c3"
+  "bytes": 24386,
+  "sha256": "18dee61771df8538c5dcaf15b8c9f982c60e4b80db75799da5b1cb12faa02eb6"
  },
  "REFEREES.md": {
-  "bytes": 7986,
-  "sha256": "5e50c6e008e754f1af2b0d06db2c5f5559fa5ba8a4932dc0f1baad4f84e585ea"
+  "bytes": 7999,
+  "sha256": "0f3809c0a152a4c88b6a7a90483205bed011dad88ec16e18c8c7ef3a71a5eb6e"
  },
  "REVIEWER.md": {
   "bytes": 6036,
