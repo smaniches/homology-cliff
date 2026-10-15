@@ -203,7 +203,12 @@ All paths are repo-relative. All commands assume a fresh clone with
 2. **Pre-registration lock-time.** The SHA256 hashes prove byte-identity
    with the locked file, but the absolute claim "locked before experiments
    ran" depends on trusting the git history. An external timestamp anchor
-   (e.g., OpenTimestamps) is listed as deferred in `PROBLEMS.md`.
+   (e.g., OpenTimestamps) is listed as deferred in `PROBLEMS.md`. The
+   original registrations first appear in the initial public commit
+   together with completed papers and summaries, so public history does not
+   establish lock-before-run for them; see `docs/ERRATUM_2026-10-15.md`,
+   which also records an unresolved Paper 5 table discrepancy and scopes
+   0.8905/+47% to t30 R=1000 k=25.
 
 3. **Mapper augmentation truncation.** The Mapper graph generator truncates
    per-node member lists to 50 (`code/analyses/run_mapper.py:67`). The
