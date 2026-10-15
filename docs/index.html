@@ -148,7 +148,7 @@
       <div class="stat"><div class="n bad">3 / 44</div><div class="l">distant high-confidence positive-prediction precision = 0.068</div></div>
       <div class="stat"><div class="n bad">0.069 &rarr; 0.294</div><div class="l">Expected Calibration Error, close &rarr; distant (4.3&times;)</div></div>
       <div class="stat"><div class="n">1.000</div><div class="l">median cross-family fraction across 10 preregistered panel seeds (range 0.962-1.000)</div></div>
-      <div class="stat"><div class="n good">+47%</div><div class="l">relative distant F<sub>1</sub> from the learned-projection rescue</div></div>
+      <div class="stat"><div class="n good">+47%</div><div class="l">relative distant F<sub>1</sub> from the learned-projection rescue at t30, R=1000, k=25 (other t30 settings: +0.9% to +67.6%)</div></div>
       <div class="stat"><div class="n">300 / 300</div><div class="l">full-pool null groups pass the gap-near-zero criterion</div></div>
     </div>
     <p style="margin-top:16px">The distant-stratum failure is not merely lower accuracy: the classifier is <b>confidently wrong</b> there. Expected Calibration Error quadruples, and in the highest-confidence distant bin the positive-prediction precision is 3 of 44. A downstream filter that routes high-confidence positives to automated action would route false alarms to automation precisely where human review is most needed.</p>
@@ -164,7 +164,7 @@
       <li><b>A full-pool permutation null.</b> A matching 3,000-cell experiment permutes labels across all 24,885 proteins. With no real signal, the close&minus;distant gap should vanish &mdash; and it does: 300 of 300 groups pass the gap-near-zero criterion (panel b). The cliff is therefore not produced by the stratification itself.</li>
       <li><b>Label-free stratification.</b> Queries are split by maximum cosine similarity to the panel (close &ge; 0.95, distant &lt; 0.90), independent of their labels.</li>
       <li><b>A seed-variance gate</b> voids underpowered cells, so reported effects are not driven by small strata.</li>
-      <li><b>SHA256-locked pre-registrations.</b> Each hypothesis and success criterion was committed and hashed before the experiment ran; the harness recomputes the hash at runtime and aborts if it has drifted.</li>
+      <li><b>SHA256-locked pre-registrations.</b> Three registrations are SHA256-locked and re-verified in CI; one shared runtime check re-verifies the main registration and aborts if it has drifted. Cascade and Fisher-Rao registrations are committed without a hash lock. Public history cannot show that the original registrations were written or hashed before their experiments ran; see the <a href="https://github.com/smaniches/homology-cliff/blob/main/docs/ERRATUM_2026-10-15.md">2026-10-15 erratum</a>.</li>
     </ul>
   </div>
 </section>
@@ -189,7 +189,8 @@
           <li>Not a claim about <b>all</b> protein language models or scales: ESM-2 650M, ProtT5, SaProt, and ESM-3 are scaffolded but <b>not yet run</b> (this study is CPU-only).</li>
           <li>Not <b>independently replicated</b>: a single-author, AI-assisted compendium; no third-party replication is on file yet.</li>
           <li>Not a <b>finished product</b>: the rescue ships as a reference implementation, not a packaged tool.</li>
-          <li>The cross-family mechanism is at <b>n=20</b> evaluable cases at one seed (Wilson 95% CI on the within-family rate [0%, 17%]) &mdash; suggestive, not definitive.</li>
+          <li>Cross-family predominance of distant false alarms holds in all ten preregistered panel seeds (2 within-family appearances in total). This is consistent with, but does not prove, an embedding-space explanation, and does not rule out panel expansion helping a particular query.</li>
+          <li>A <a href="https://github.com/smaniches/homology-cliff/blob/main/docs/ERRATUM_2026-10-15.md">dated erratum (2026-10-15)</a> scopes lock statements, the v1.6.0 Zenodo archive contents and the +47% figure.</li>
           <li>The dataset's <b>label-curation rule is withheld</b> per dual-use guidance.</li>
         </ul>
       </div>

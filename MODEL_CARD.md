@@ -23,8 +23,8 @@ A linear projection $W \in \mathbb{R}^{D \times 128}$ fit in 50 Adam iterations 
 
 ## Performance
 - 16 of 18 factorial (scale, $R$, $k$) groups: learned projection wins pooled $F_1$ (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at $k=5$)
-- At t30 $R=1000$ $k=25$: pooled $F_1$ 0.891 (best in 3000-cell factorial; learned 0.8905 vs cosine 0.8476, 10/10 seeds)
-- Distant-stratum $F_1$: t6 +16%, t12 +33%, t30 +47% relative over cosine baseline
+- At t30 $R=1000$ $k=25$: pooled $F_1$ 0.891 (learned 0.8905 vs cosine 0.8476, 10/10 seeds). This is not the highest archived pooled value: learned at t30 $R=1000$ $k=5$ reaches 0.8960 ([erratum, 2026-10-15](docs/ERRATUM_2026-10-15.md))
+- Distant-stratum $F_1$ at $R=1000$ $k=25$: t6 +16%, t12 +33%, t30 +47% relative over cosine baseline; the gain depends on $R$ and $k$
 
 ## Out-of-scope uses
 - NOT a calibrated classifier — calibration under the projection was NOT measured in this work

@@ -48,7 +48,7 @@ Following Urbina et al. 2022 on AI-powered drug discovery dual-use concerns, we 
 | Pfam annotations | Yes | Yes | Retrievable from UniProt ID-mapping API |
 | Per-cell .npz results (9,360 cells) | Yes | Yes | Reproducible from embeddings + labels using committed harness code |
 | Aggregate JSON summaries | Yes | Yes | Reproducible from per-cell .npz files using committed analysis scripts |
-| Pre-registration files | Yes | Yes (hash-locked) | SHA256 verified by CI and by harness at runtime |
+| Pre-registration files | Yes | Three hash-locked | Three SHA256 locks verified by CI; one shared runtime check covers only the main registration; cascade and Fisher are not hash-locked (see `docs/ERRATUM_2026-10-15.md`) |
 | SHA256 manifest | Yes | Yes | Verified by CI on every push |
 
 **Which claims require trust in the committed labels:**

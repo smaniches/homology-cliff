@@ -68,8 +68,8 @@
   "sha256": "a8e183d51b33572b4eaa0e558b9bf2eed25c334cc45cf7b004513a8149905977"
  },
  "CHANGELOG.md": {
-  "bytes": 53812,
-  "sha256": "7101d001d6f80e5c42db216cd6a3bf96378ea16b84443ef1a2687b652fd61f28"
+  "bytes": 55469,
+  "sha256": "26512bdcfde465c1ce9fc454bdc671410795849d54d94de0e12647e697c3b4d9"
  },
  "CITATION.cff": {
   "bytes": 610,
@@ -84,12 +84,12 @@
   "sha256": "4780c30c019db7b7442e1fc060470ca69ee1c3323a868b318150ca825d5992a8"
  },
  "DATA_CARD.md": {
-  "bytes": 4756,
-  "sha256": "6c4b196edc5f2b6058dfdcf120d15e60f9b239e4a09fa993acc2a96a7936c0c5"
+  "bytes": 4877,
+  "sha256": "307dec4807701231c888ddfdef2ae78a7dc04b88c705980a3637b79a8dd5d4b9"
  },
  "FAQ.md": {
-  "bytes": 10071,
-  "sha256": "ba284a0200ec779d5712b7dc9f3f5cfeb33a78007207ad95d0bbee5bb3343ee4"
+  "bytes": 10259,
+  "sha256": "4b181c3126f1a1df0b281383b36183b673958abfe67dfcce233b766fedf18208"
  },
  "LICENSE-code.txt": {
   "bytes": 1119,
@@ -100,8 +100,8 @@
   "sha256": "40cbd6c7624dbe76c22132047d06e57ebad75fd3f8cbf3bb1d7aebd2928e5b72"
  },
  "MODEL_CARD.md": {
-  "bytes": 3578,
-  "sha256": "d3ae80f3284fd0e350653e1de24a938642a7f2148fc2fa0dc34919c9fc77bace"
+  "bytes": 3746,
+  "sha256": "553a98d31c996bf2aa750245060745485e86269f7de00fc2652bd15a3e815506"
  },
  "OWNER_REVIEW_paper_abstract.md": {
   "bytes": 5005,
@@ -112,8 +112,8 @@
   "sha256": "b8d48e714a4dd5f3c9d7d547d1533549dae19a4c602f97202106cec617b331ae"
  },
  "README.md": {
-  "bytes": 24386,
-  "sha256": "18dee61771df8538c5dcaf15b8c9f982c60e4b80db75799da5b1cb12faa02eb6"
+  "bytes": 25346,
+  "sha256": "3009b4f4a5accaaee1437ec7c1ebf73a26a84019fdda78818f4f121b1bc489de"
  },
  "REFEREES.md": {
   "bytes": 7999,
@@ -121,15 +121,15 @@
  },
  "REVIEWER.md": {
   "bytes": 6036,
-  "sha256": "60c9a2f92a1ab8469117951be444b4f06c06e1be4cf6b88e5fa6bc64019c5fe6"
+  "sha256": "1fd699dacf7cb2d62e3d67a921b504c11c0a3746291b7be31f3a69cfbb3d5865"
  },
  "SECURITY.md": {
   "bytes": 3279,
   "sha256": "cc8a0d73bf58fda95ee0fb89684ff8c475a4c72fb253ca5d7af8211bfbf50c6d"
  },
  "STATUS.md": {
-  "bytes": 5444,
-  "sha256": "d64055c36111848cf270ec7ddd2377865d661d16411302596e352ceb11c7b844"
+  "bytes": 5590,
+  "sha256": "ed5115f4ba7b7d65f53ac746b17deadbd403598d8bdf49b3f77bdfcd54dfcfd2"
  },
  "code/analyses/compute_pooled_f1.py": {
   "bytes": 20135,
@@ -37784,16 +37784,20 @@
   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
  },
  "docs/CLAIMS_TO_EVIDENCE.md": {
-  "bytes": 14555,
-  "sha256": "64c8904e0e9189eef9398ab1eb3ead092708ea64e1d3b687f7dff2a267da18c9"
+  "bytes": 14884,
+  "sha256": "59d42e15444f6f4219c708e709b78d991b219deafe9c0e5f0e244ae1eca85719"
+ },
+ "docs/ERRATUM_2026-10-15.md": {
+  "bytes": 9532,
+  "sha256": "deb74d0e2ecabb777c37c3e4d8a1214be32df0b8b950503b603c6f8cd2157279"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 7314,
   "sha256": "98c4adaa8830f741e5a081e9ba35a9020583a6dba49d97f553ee43eac18db435"
  },
  "docs/index.html": {
-  "bytes": 20096,
-  "sha256": "7b60c06db7d7bd7a05737d485cd718d2f43140d261884d2a328cf3a424f1d6db"
+  "bytes": 20787,
+  "sha256": "3e14383d5888eb6d18da151b9f1e44d9cb33831be12a3dfde230dec564e95457"
  },
  "docs/robots.txt": {
   "bytes": 88,
