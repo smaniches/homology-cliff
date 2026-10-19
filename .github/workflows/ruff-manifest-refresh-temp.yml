@@ -1,0 +1,90 @@
+name: Verify isolated Ruff manifest update (temporary)
+
+on:
+  push:
+    branches: [dependabot/pip/verification-toolchain-2e7b3bee18]
+    paths: [".github/workflows/ruff-manifest-refresh-temp.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-one-entry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      BASE_COMMIT: 3ab261fbd23102538f04473608aedc84eab3f3a7
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+      - name: Update only the verification-lock entry and prove research entries unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import subprocess
+
+          base = os.environ['BASE_COMMIT']
+          manifest = pathlib.Path('MANIFEST.sha256.json')
+          lock = pathlib.Path('requirements-lock.txt')
+          before = subprocess.check_output(['git', 'show', f'{base}:MANIFEST.sha256.json'])
+          old_lock = subprocess.check_output(['git', 'show', f'{base}:requirements-lock.txt'])
+          new_lock = lock.read_bytes()
+          assert manifest.read_bytes() == before, 'Manifest already differs from reviewed base'
+          assert old_lock.count(b'ruff==0.16.10\n') == 1
+          assert new_lock == old_lock.replace(b'ruff==0.16.10\n', b'ruff==0.17.1\n'), 'Unrelated toolchain change'
+          files = set(subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines())
+          assert files == {'requirements-lock.txt', '.github/workflows/ruff-manifest-refresh-temp.yml'}, files
+          old = json.loads(before)
+          entry = old['requirements-lock.txt']
+          assert entry['sha256'] == hashlib.sha256(old_lock).hexdigest()
+          assert entry['bytes'] == len(old_lock)
+          text = before.decode('utf-8')
+          pattern = r'"requirements-lock\.txt"\s*:\s*\{[^{}]*\}'
+          matches = list(re.finditer(pattern, text))
+          assert len(matches) == 1
+          match = matches[0]
+          block = match.group()
+          assert block.count(entry['sha256']) == 1
+          block = block.replace(entry['sha256'], hashlib.sha256(new_lock).hexdigest())
+          block, count = re.subn(r'("bytes"\s*:\s*)' + str(len(old_lock)) + r'(?=[,\s}])', lambda m: m.group(1) + str(len(new_lock)), block)
+          assert count == 1
+          after = (text[:match.start()] + block + text[match.end():]).encode('utf-8')
+          new = json.loads(after)
+          assert new.keys() == old.keys(), 'Manifest inventory changed'
+          changed = [name for name in old if old[name] != new[name]]
+          assert changed == ['requirements-lock.txt'], changed
+          assert new['requirements-lock.txt']['sha256'] == hashlib.sha256(new_lock).hexdigest()
+          assert new['requirements-lock.txt']['bytes'] == len(new_lock)
+          manifest.write_bytes(after)
+          print(f'Manifest entries: {len(old)}; unchanged entries: {len(old)-1}; changed: {changed}')
+          print('Old verification-lock entry:', entry)
+          print('New verification-lock entry:', new['requirements-lock.txt'])
+          print('All bytes outside this one manifest entry are unchanged.')
+          PY
+      - name: Run the unchanged manifest and preregistration verifiers
+        run: |
+          python3 scripts/ci/verify_manifest.py
+          python3 scripts/ci/verify_prereg_locks.py
+      - name: Commit only the reviewed manifest-entry correction
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/dependabot/pip/verification-toolchain-2e7b3bee18
+          test "$(git diff --name-only)" = MANIFEST.sha256.json
+          git add -- MANIFEST.sha256.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'build: refresh only the Ruff verification-lock manifest entry'
+          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:refs/heads/dependabot/pip/verification-toolchain-2e7b3bee18
