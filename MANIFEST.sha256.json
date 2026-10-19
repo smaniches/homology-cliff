@@ -37944,8 +37944,8 @@
   "sha256": "cfc621e89d9c57dc5a4ba966f09a9231032dd9b3f1b39810623199928e903a7c"
  },
  "requirements-lock.txt": {
-  "bytes": 1069,
-  "sha256": "08d735fd97e005a164d698f8c35a78a91296be7a9f63994a1a8fcb5ac3292152"
+  "bytes": 1068,
+  "sha256": "6a4ab1c55b93dc20797a35288dcf4f735f57b33f90bfcf6868390df7b51755c0"
  },
  "scripts/build_summary_figure.py": {
   "bytes": 10744,
