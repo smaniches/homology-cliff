@@ -1,0 +1,86 @@
+name: Prepare public evidence-scope correction
+on:
+  push:
+    branches: [fix/public-claim-scope-20261023]
+    paths: [.github/workflows/public-scope-repair.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/public-claim-scope-20261023
+      - name: Correct summaries without changing experiments or papers
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          python3 - <<'PY'
+          import hashlib,json,re
+          from pathlib import Path
+          p=Path('README.md'); text=p.read_text()
+          changes={
+              'Pre-registered cells':'Archived experimental cells',
+              'four pre-registered rescues fail at H1':'four tested rescues fail their stated hypotheses',
+              'the cliff is not a stratification artifact':'the tested permutation null does not reproduce the measured gap',
+              '3,000-cell pre-registered factorial':'3,000-cell factorial with archived hypothesis documents',
+              'We pre-register and reject four rescue hypotheses:':'We test and reject four rescue hypotheses under their archived criteria:',
+              'all pre-registered H1 rejected':'stated H1 rejected; original registration chronology not independently established',
+              'Mapper-biased panel augmentation was pre-registered and added as the fourth':'Mapper-biased panel augmentation was documented and added as the fourth',
+              'Pre-registered cosine+Mahalanobis cascade':'Archived cosine+Mahalanobis cascade',
+              'Pre-registered Fisher whitening':'Archived Fisher whitening',
+              'Cascade and Fisher-Rao registrations were committed before execution but are not CI hash-enforced.':'Cascade and Fisher-Rao registrations are not CI hash-enforced; their presence before execution is not established by public history.',
+              '(9,504 entries total)':'(see the manifest for the exact current inventory)',
+              'In a deployment screen, the distant queries are the ones where a novel bioweapon might hide.':'Whether these distance-stratified results transfer to a deployment population or threat novelty was not tested.',
+          }
+          for old,new in changes.items():
+              assert old in text,old
+              text=text.replace(old,new)
+          start=text.index('You are building a biosecurity screen.')
+          end=text.index('\n\n## Why this matters',start)
+          text=text[:start]+'''This archive evaluates frozen ESM-2 nearest-neighbor retrieval under a particular protein panel, query set, labeling procedure, and distance stratification. In the archived t30/R=1000/k=25 condition, close-stratum F1 is approximately 0.866 and distant-stratum F1 is 0.120. We call this measured gap the homology cliff. These observations concern the included evaluation data; they do not establish where novel biological threats occur, clinical utility, or the performance of an operational screening service.'''+text[end:]
+          old='all claims are traceable to committed evidence via `MANIFEST.sha256.json`. Experimental hypotheses were pre-registered before execution; three registrations are SHA256-locked and CI-verified, while other committed registrations are not hash-enforced.'
+          new='the manifest binds archived numerical evidence, not the truth of every claim. Three registration documents are hash-checked; only the later ten-seed extension has public ordering evidence consistent with registration before its run. The original registration chronology and the Paper 5 table discrepancy remain explicitly limited by the erratum.'
+          assert old in text; text=text.replace(old,new)
+          marker='**Scientific authorship:**'
+          note='**Evidence boundary:** Public history does not establish registration-before-execution for the original factorial, full-null, cascade, or Fisher experiments. The later ten-seed extension has separate ordering evidence. Two Paper 5 filter-count rows remain unresolved in the existing erratum. This is a research archive, not a validated deployment system.\n\n'
+          text=text.replace(marker,note+marker,1)
+          text=re.sub(r'\*One researcher\. Four pre-registrations\..*?\*', '*Five papers, archived numerical evidence, and explicit unresolved limitations. Candidate interventions are not deployment validation.*', text)
+          p.write_text(text)
+          p=Path('docs/index.html'); text=p.read_text()
+          changes={
+              'A pre-registered characterization':'A research characterization',
+              '<b>Pre-registered factorial.</b>':'<b>Archived factorial.</b>',
+              'Four rescues were pre-registered and rejected at their stated hypotheses:':'Four rescues were tested and rejected under their archived hypotheses:',
+              'each rejected at its pre-registered hypothesis':'each rejected under its stated hypothesis',
+              'about 47% relative at the largest scale studied.':'about 47% relative at t30, R=1000, k=25; this is not a result for every t30 configuration.',
+              'a SHA256 manifest over 9,488 files, two byte-locked pre-registration hashes':'a SHA256 manifest over the current tracked inventory, three byte-locked registration hashes',
+              'Fully <b>traceable to committed evidence</b>':'<b>Numerical evidence is archived</b>, with the exceptions and chronology limits recorded in the erratum',
+              'on the queries that matter most &mdash; those most distant from any panel member, exactly where a novel threat would sit &mdash; the pipeline fails systematically, while still appearing confident from the outside.':'on distant queries in this archived evaluation, retrieval performance is substantially lower. This does not establish the location of novel threats or deployed screening performance.',
+          }
+          for old,new in changes.items():
+              assert old in text,old
+              text=text.replace(old,new)
+          p.write_text(text)
+          test=Path('tests/test_public_claim_scope.py')
+          test.write_text('''"""Public summaries must not contradict the dated archive erratum."""\nfrom pathlib import Path\n\nROOT = Path(__file__).resolve().parents[1]\n\ndef test_readme_preserves_chronology_and_validation_limits():\n    text = (ROOT / "README.md").read_text()\n    assert "Public history does not establish registration-before-execution" in text\n    assert "Two Paper 5 filter-count rows remain unresolved" in text\n    assert "Experimental hypotheses were pre-registered before execution" not in text\n    assert "registrations were committed before execution" not in text\n    assert "all claims are traceable" not in text\n    assert "exactly where novel threats will live" not in text\n\ndef test_website_avoids_unsupported_global_preregistration():\n    text = (ROOT / "docs/index.html").read_text()\n    assert "A pre-registered characterization" not in text\n    assert "exactly where a novel threat would sit" not in text\n    assert "three byte-locked registration hashes" in text\n    assert "t30, R=1000, k=25" in text\n''')
+          manifest=Path('MANIFEST.sha256.json'); data=json.loads(manifest.read_text())
+          before=dict(data)
+          edited=['README.md','docs/index.html',str(test)]
+          for rel in edited:
+              raw=Path(rel).read_bytes()
+              data[rel]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+          assert all(data[k]==v for k,v in before.items() if k not in edited)
+          manifest.write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+          print('Changed document/test commitments only; all existing experimental and paper commitments preserved.')
+          PY
+          python3 scripts/ci/verify_manifest.py
+          git diff --stat
+          git add README.md docs/index.html tests/test_public_claim_scope.py MANIFEST.sha256.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -s -m 'docs: align public claim scope with the existing chronology erratum'
+          git push origin HEAD:fix/public-claim-scope-20261023
