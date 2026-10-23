@@ -145,23 +145,23 @@
     <h2>Key results</h2>
     <div class="stats">
       <div class="stat"><div class="n bad">+0.745</div><div class="l">close &minus; distant F<sub>1</sub> gap (t30, R=1000, k=25)</div></div>
-      <div class="stat"><div class="n bad">3 / 44</div><div class="l">distant high-confidence positive-prediction precision = 0.068</div></div>
+      <div class="stat"><div class="n bad">3 / 44</div><div class="l">distant positive-prediction precision across all positive calls = 0.068</div></div>
       <div class="stat"><div class="n bad">0.069 &rarr; 0.294</div><div class="l">Expected Calibration Error, close &rarr; distant (4.3&times;)</div></div>
       <div class="stat"><div class="n">1.000</div><div class="l">median cross-family fraction across 10 preregistered panel seeds (range 0.962-1.000)</div></div>
       <div class="stat"><div class="n good">+47%</div><div class="l">relative distant F<sub>1</sub> from the learned-projection rescue at t30, R=1000, k=25 (other t30 settings: +0.9% to +67.6%)</div></div>
       <div class="stat"><div class="n">300 / 300</div><div class="l">full-pool null groups pass the gap-near-zero criterion</div></div>
     </div>
-    <p style="margin-top:16px">The distant-stratum failure is not merely lower accuracy: the classifier is <b>confidently wrong</b> there. Expected Calibration Error quadruples, and in the highest-confidence distant bin the positive-prediction precision is 3 of 44. A downstream filter that routes high-confidence positives to automated action would route false alarms to automation precisely where human review is most needed.</p>
+    <p style="margin-top:16px">The distant-stratum failure is not merely lower accuracy: the classifier is <b>confidently wrong</b> there. Expected Calibration Error quadruples, and across all 44 distant positive calls, 3 are correct. In the highest-confidence bin, 0 of 3 are correct; this tiny bin does not support a precise population estimate. A downstream filter that routes high-confidence positives to automated action would route false alarms to automation precisely where human review is most needed.</p>
   </div>
 </section>
 
 <section id="rigor">
   <div class="wrap">
     <h2>How the cliff was established</h2>
-    <p>The central question a careful reader asks is: <i>is this a real effect, or an artifact of how the data was sliced?</i> The study was designed to answer that before it was run.</p>
+    <p>The central question a careful reader asks is: <i>is this a real effect, or an artifact of how the data was sliced?</i> The archived controls address specific alternatives; public history does not establish original registration-before-execution.</p>
     <ul class="card" style="list-style:none; background:var(--soft)">
-      <li><b>Archived factorial.</b> 3,000 cells &mdash; 3 ESM-2 scales (t6/t12/t30) &times; 5 panel sizes &times; 5 values of <i>k</i> &times; 4 metrics &times; 10 seeds &mdash; each with bootstrap confidence intervals, on a 24,885-protein test set.</li>
-      <li><b>A full-pool permutation null.</b> A matching 3,000-cell experiment permutes labels across all 24,885 proteins. With no real signal, the close&minus;distant gap should vanish &mdash; and it does: 300 of 300 groups pass the gap-near-zero criterion (panel b). The cliff is therefore not produced by the stratification itself.</li>
+      <li><b>Archived factorial.</b> 3,000 cells &mdash; 3 ESM-2 scales (t6/t12/t30) &times; 5 panel sizes &times; 5 values of <i>k</i> &times; 4 metrics &times; 10 seeds &mdash; each with bootstrap confidence intervals, from a 24,885-protein source pool; query-set size depends on the held-out panel.</li>
+      <li><b>A full-pool permutation null.</b> A matching 3,000-cell experiment permutes labels across all 24,885 proteins. With no real signal, the close&minus;distant gap should vanish &mdash; and it does: 300 of 300 groups pass the gap-near-zero criterion (panel b). The tested permutation null does not reproduce the measured gap; it does not exclude every sampling or measurement artifact.</li>
       <li><b>Label-free stratification.</b> Queries are split by maximum cosine similarity to the panel (close &ge; 0.95, distant &lt; 0.90), independent of their labels.</li>
       <li><b>A seed-variance gate</b> voids underpowered cells, so reported effects are not driven by small strata.</li>
       <li><b>SHA256-locked pre-registrations.</b> Three registrations are SHA256-locked and re-verified in CI; one shared runtime check re-verifies the main registration and aborts if it has drifted. Cascade and Fisher-Rao registrations are committed without a hash lock. Public history cannot show that the original registrations were written or hashed before their experiments ran; see the <a href="https://github.com/smaniches/homology-cliff/blob/main/docs/ERRATUM_2026-10-15.md">2026-10-15 erratum</a>.</li>
@@ -178,8 +178,8 @@
         <h3>What it is</h3>
         <ul>
           <li>A reproducible characterization of a failure mode in frozen <b>ESM-2 (t6/t12/t30, up to 150M parameters)</b> cosine <i>k</i>-NN biosecurity retrieval.</li>
-          <li>A controlled demonstration that the effect is <b>not a stratification artifact</b> (full-pool permutation null).</li>
-          <li>A <b>candidate rescue</b> and an explicit deployment recommendation.</li>
+          <li>A controlled comparison with a <b>full-pool permutation null</b> that does not reproduce the observed gap.</li>
+          <li>A <b>candidate intervention</b> requiring independent validation before operational use.</li>
           <li><b>Numerical evidence is archived</b>, with the exceptions and chronology limits recorded in the erratum &mdash; 9,360 per-cell results, a SHA256 manifest, pre-registration locks, and CI.</li>
         </ul>
       </div>
@@ -201,16 +201,16 @@
 
 <section id="rescue">
   <div class="wrap">
-    <h2>The rescue, and the deployment recommendation</h2>
+    <h2>The candidate intervention and validation boundary</h2>
     <p>Four rescues were tested and rejected under their archived hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at <i>k</i>=5) and improves distant-stratum F<sub>1</sub> by about 47% relative at t30, R=1000, k=25; this is not a result for every t30 configuration.</p>
-    <p class="note">The honest operational consequence: apply the projection, and <b>even then route every distant-stratum positive to human review.</b> The rescue narrows the gap; it does not make the distant stratum trustworthy on its own.</p>
+    <p class="note">The projection is a research candidate, not a validated screening control. Independent-cohort testing, calibration, and a deployment-specific safety assessment are prerequisites for operational use; human review alone does not establish validity.</p>
   </div>
 </section>
 
 <section id="reproduce">
   <div class="wrap">
     <h2>Reproduce it yourself</h2>
-    <p>Every claim traces to a committed artifact. Two checks run in seconds on a fresh clone with <b>no large-file download</b>:</p>
+    <p>Archived computations can be checked against committed artifacts, subject to the explicit erratum and curation limitations. Two checks run in seconds on a fresh clone with <b>no large-file download</b>:</p>
 
     <h3>1 &middot; Regenerate the summary figure from committed evidence</h3>
 <pre><span class="c"># reads only data/results_summaries/v3_final.txt + calibration_results.json</span>
@@ -235,10 +235,10 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
 
 <section id="adopt">
   <div class="wrap">
-    <h2>Adopting the rescue</h2>
-    <p>If you operate a frozen-PLM screen, the actionable result is small and self-contained: fit the panel-only projection on your own panel, apply it before retrieval, and route distant-stratum positives to human review. A minimal, dependency-light reference implementation and the deployment scope are committed:</p>
+    <h2>Evaluating the candidate intervention</h2>
+    <p>For independent research evaluation, a minimal reference implementation and model card are available. The archived result is not sufficient to recommend operational adoption; evaluation must keep training, calibration, and external testing separate:</p>
     <div class="grid2">
-      <div class="card"><h3>Reference implementation</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/deployment_example/deploy_cliff_rescue.py">deployment_example/deploy_cliff_rescue.py</a> &mdash; the learned panel-only projection as a drop-in rescue.</p></div>
+      <div class="card"><h3>Reference implementation</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/deployment_example/deploy_cliff_rescue.py">deployment_example/deploy_cliff_rescue.py</a> &mdash; the learned panel-only projection as a research reference implementation.</p></div>
       <div class="card"><h3>Deployment scope</h3><p style="margin:0"><a href="https://github.com/smaniches/homology-cliff/blob/main/MODEL_CARD.md">MODEL_CARD.md</a> &mdash; where the rescue applies, its limits, and the human-review requirement.</p></div>
     </div>
   </div>

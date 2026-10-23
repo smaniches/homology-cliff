@@ -112,8 +112,8 @@
   "sha256": "b8d48e714a4dd5f3c9d7d547d1533549dae19a4c602f97202106cec617b331ae"
  },
  "README.md": {
-  "bytes": 25563,
-  "sha256": "8580190eec598c34ce75473e7c217870f45b51492f663ba5a62f8180b64e65db"
+  "bytes": 25645,
+  "sha256": "aa8a87c4f198998334728f5196ab0d29536a1f3afe6b7242f02048ee4d464d9f"
  },
  "REFEREES.md": {
   "bytes": 7999,
@@ -37796,8 +37796,8 @@
   "sha256": "98c4adaa8830f741e5a081e9ba35a9020583a6dba49d97f553ee43eac18db435"
  },
  "docs/index.html": {
-  "bytes": 20842,
-  "sha256": "7c8651ba6c9f677501ea6ac9ae5c04c2e321e0e50a3185b3cea719cb0ac6def3"
+  "bytes": 21216,
+  "sha256": "2888512614866fd13f90e28a790c2136b7a41b7a5a9d2bcc27aa43b8c8bd673f"
  },
  "docs/robots.txt": {
   "bytes": 88,
@@ -37996,8 +37996,8 @@
   "sha256": "d17f144f297b15477f86df3b3613302438d443826f58955304a216b9e11e70c5"
  },
  "tests/test_public_claim_scope.py": {
-  "bytes": 1004,
-  "sha256": "0fe6dd211c2a5adae021da7be5e00c4201dfd54337000caf00fcd412aaf850c9"
+  "bytes": 1658,
+  "sha256": "512932c07b5156b90cb92648b0fc4d5aaac1d2d53496808d205688dda0717871"
  },
  "tests/test_reproduce_mapper_tolerance.py": {
   "bytes": 14861,
