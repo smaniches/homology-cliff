@@ -1,0 +1,33 @@
+name: Preserve original manifest formatting
+on:
+  push:
+    branches: [fix/public-claim-scope-20261023]
+    paths: [.github/workflows/manifest-format-once.yml]
+permissions:
+  contents: write
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/public-claim-scope-20261023
+      - name: Preserve one-space indentation without changing commitments
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('MANIFEST.sha256.json')
+          data=json.loads(path.read_text())
+          path.write_text(json.dumps(data,sort_keys=True,indent=1)+'\n')
+          assert json.loads(path.read_text())==data
+          PY
+          git add MANIFEST.sha256.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -s -m 'style: retain the original manifest serialization'
+          git push origin HEAD:fix/public-claim-scope-20261023
