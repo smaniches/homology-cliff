@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Homology Cliff in Frozen Protein Language Models</title>
-<meta name="description" content="A pre-registered characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval, with 9,360 committed results, a candidate rescue, and explicit limitations.">
+<meta name="description" content="A research characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval, with 9,360 committed results, a candidate rescue, and explicit limitations.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Homology Cliff in Frozen Protein Language Models">
-<meta property="og:description" content="A pre-registered characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval — 9,360 committed results, a candidate rescue, and stated limitations.">
+<meta property="og:description" content="A research characterization of a systematic failure mode in frozen ESM-2 biosecurity retrieval — 9,360 committed results, a candidate rescue, and stated limitations.">
 <meta property="og:image" content="https://raw.githubusercontent.com/smaniches/homology-cliff/main/figures/cliff_summary.png">
 <meta property="og:url" content="https://smaniches.github.io/homology-cliff/">
 <meta name="twitter:card" content="summary_large_image">
@@ -93,7 +93,7 @@
 <header class="hero">
   <div class="wrap">
     <h1>The Homology Cliff in Frozen Protein Language Models</h1>
-    <p class="lead">A pre-registered characterization of a systematic, safety-relevant failure mode in frozen ESM-2 biosecurity retrieval &mdash; with 9,360 committed experimental results, a candidate rescue, and its limitations stated plainly.</p>
+    <p class="lead">A research characterization of a systematic, safety-relevant failure mode in frozen ESM-2 biosecurity retrieval &mdash; with 9,360 committed experimental results, a candidate rescue, and its limitations stated plainly.</p>
     <div class="meta">
       <span><b>Santiago Maniches</b>, Independent Researcher</span>
       <span>ORCID <a href="https://orcid.org/0009-0005-6480-1987" style="color:#fff">0009-0005-6480-1987</a></span>
@@ -136,7 +136,7 @@
 <section id="problem">
   <div class="wrap">
     <h2>The problem, in one paragraph</h2>
-    <p>You are building a biosecurity screen: a panel of a few hundred to a thousand known toxin proteins, frozen protein-language-model embeddings, cosine <i>k</i>-nearest-neighbor retrieval, and a vote. Recent literature shows this performs well on average. This work shows that <b>on the queries that matter most &mdash; those most distant from any panel member, exactly where a novel threat would sit &mdash; the pipeline fails systematically, while still appearing confident from the outside.</b> At the largest scale studied here, with a panel of 1,000, close-stratum F<sub>1</sub> is 0.866 while distant-stratum F<sub>1</sub> is 0.120. Within the studied range, the gap grows with model scale and panel size. We call this the homology cliff.</p>
+    <p>You are building a biosecurity screen: a panel of a few hundred to a thousand known toxin proteins, frozen protein-language-model embeddings, cosine <i>k</i>-nearest-neighbor retrieval, and a vote. Recent literature shows this performs well on average. This work shows that <b>on distant queries in this archived evaluation, retrieval performance is substantially lower. This does not establish the location of novel threats or deployed screening performance.</b> At the largest scale studied here, with a panel of 1,000, close-stratum F<sub>1</sub> is 0.866 while distant-stratum F<sub>1</sub> is 0.120. Within the studied range, the gap grows with model scale and panel size. We call this the homology cliff.</p>
   </div>
 </section>
 
@@ -160,7 +160,7 @@
     <h2>How the cliff was established</h2>
     <p>The central question a careful reader asks is: <i>is this a real effect, or an artifact of how the data was sliced?</i> The study was designed to answer that before it was run.</p>
     <ul class="card" style="list-style:none; background:var(--soft)">
-      <li><b>Pre-registered factorial.</b> 3,000 cells &mdash; 3 ESM-2 scales (t6/t12/t30) &times; 5 panel sizes &times; 5 values of <i>k</i> &times; 4 metrics &times; 10 seeds &mdash; each with bootstrap confidence intervals, on a 24,885-protein test set.</li>
+      <li><b>Archived factorial.</b> 3,000 cells &mdash; 3 ESM-2 scales (t6/t12/t30) &times; 5 panel sizes &times; 5 values of <i>k</i> &times; 4 metrics &times; 10 seeds &mdash; each with bootstrap confidence intervals, on a 24,885-protein test set.</li>
       <li><b>A full-pool permutation null.</b> A matching 3,000-cell experiment permutes labels across all 24,885 proteins. With no real signal, the close&minus;distant gap should vanish &mdash; and it does: 300 of 300 groups pass the gap-near-zero criterion (panel b). The cliff is therefore not produced by the stratification itself.</li>
       <li><b>Label-free stratification.</b> Queries are split by maximum cosine similarity to the panel (close &ge; 0.95, distant &lt; 0.90), independent of their labels.</li>
       <li><b>A seed-variance gate</b> voids underpowered cells, so reported effects are not driven by small strata.</li>
@@ -180,7 +180,7 @@
           <li>A reproducible characterization of a failure mode in frozen <b>ESM-2 (t6/t12/t30, up to 150M parameters)</b> cosine <i>k</i>-NN biosecurity retrieval.</li>
           <li>A controlled demonstration that the effect is <b>not a stratification artifact</b> (full-pool permutation null).</li>
           <li>A <b>candidate rescue</b> and an explicit deployment recommendation.</li>
-          <li>Fully <b>traceable to committed evidence</b> &mdash; 9,360 per-cell results, a SHA256 manifest, pre-registration locks, and CI.</li>
+          <li><b>Numerical evidence is archived</b>, with the exceptions and chronology limits recorded in the erratum &mdash; 9,360 per-cell results, a SHA256 manifest, pre-registration locks, and CI.</li>
         </ul>
       </div>
       <div class="card lim">
@@ -202,7 +202,7 @@
 <section id="rescue">
   <div class="wrap">
     <h2>The rescue, and the deployment recommendation</h2>
-    <p>Four rescues were pre-registered and rejected at their stated hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at <i>k</i>=5) and improves distant-stratum F<sub>1</sub> by about 47% relative at the largest scale studied.</p>
+    <p>Four rescues were tested and rejected under their archived hypotheses: Mahalanobis whitening, Fisher-Rao whitening, a stratified cosine-then-Mahalanobis cascade, and Mapper-biased panel augmentation. One survives: a <b>supervised linear projection of the embedding space, fit on the panel alone</b> in seconds of CPU time. It wins pooled F<sub>1</sub> in 16 of 18 factorial groups (12 of 12 at t12 and t30; the two misses are at the smallest t6/8M scale at <i>k</i>=5) and improves distant-stratum F<sub>1</sub> by about 47% relative at t30, R=1000, k=25; this is not a result for every t30 configuration.</p>
     <p class="note">The honest operational consequence: apply the projection, and <b>even then route every distant-stratum positive to human review.</b> The rescue narrows the gap; it does not make the distant stratum trustworthy on its own.</p>
   </div>
 </section>
@@ -229,7 +229,7 @@ python -c "import json; d=json.load(open('data/results_summaries/cross_family_pa
 <pre>git lfs pull                              <span class="c"># ~188 MB of binary evidence</span>
 pytest tests/ -v                          <span class="c"># schema + invariant checks</span>
 python code/analyses/v3_aggregate.py      <span class="c"># regenerates the headline table</span></pre>
-    <p class="note">Integrity is machine-checked on every push: a SHA256 manifest over 9,488 files, two byte-locked pre-registration hashes, and headline-number spot-checks all run in CI. See <a href="https://github.com/smaniches/homology-cliff/blob/main/REVIEWER.md">REVIEWER.md</a> for the full five-command verification.</p>
+    <p class="note">Integrity is machine-checked on every push: a SHA256 manifest over the current tracked inventory, three byte-locked registration hashes, and headline-number spot-checks all run in CI. See <a href="https://github.com/smaniches/homology-cliff/blob/main/REVIEWER.md">REVIEWER.md</a> for the full five-command verification.</p>
   </div>
 </section>
 
@@ -249,7 +249,7 @@ python code/analyses/v3_aggregate.py      <span class="c"># regenerates the head
     <h2>The five papers</h2>
     <ul class="papers">
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/01_homology_cliff_and_rescue/paper.pdf">1 &middot; Homology Cliff and Its Rescue</a></span><div class="pd">Cliff confirmed (+0.745 gap at t30); full-pool null passes 300/300; rescue via learned projection wins 16/18 (12/12 at t12 and t30).</div></li>
-      <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/02_three_failed_rescues/paper.pdf">2 &middot; Four Failed Rescue Attempts</a></span><div class="pd">Mahalanobis, Fisher-Rao, cascade, Mapper-augmentation &mdash; each rejected at its pre-registered hypothesis.</div></li>
+      <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/02_three_failed_rescues/paper.pdf">2 &middot; Four Failed Rescue Attempts</a></span><div class="pd">Mahalanobis, Fisher-Rao, cascade, Mapper-augmentation &mdash; each rejected under its stated hypothesis.</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/03_calibration_collapse/paper.pdf">3 &middot; Calibration Collapse</a></span><div class="pd">ECE 0.069 &rarr; 0.294 close&rarr;distant; 0 of 3 highest-confidence distant predictions correct.</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/04_methods_and_preregistrations/paper.pdf">4 &middot; Methods and Pre-Registrations</a></span><div class="pd">The 9,360-cell factorial template, the seed-variance gate, and the SHA256 pre-registration pattern.</div></li>
       <li><span class="pt"><a href="https://github.com/smaniches/homology-cliff/blob/main/papers/05_cross_family_and_mapper/paper.pdf">5 &middot; Cross-Family and Mapper Topology</a></span><div class="pd">All 20 evaluable distant false alarms are cross-family (Wilson 95% CI on the within-family rate [0%, 17%]).</div></li>
