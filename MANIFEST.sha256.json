@@ -24,8 +24,8 @@
   "sha256": "79733fbebdc1c58ecbadada5b6be06800c6b4d44d08c19c6f65d1faf3b49c9be"
  },
  ".github/dependabot.yml": {
-  "bytes": 1281,
-  "sha256": "66f9f20d49049e288d0b2fbc6f5b150c803836b5988a37ebf0a59b20dbddd620"
+  "bytes": 806,
+  "sha256": "d0111257f8283461754916ae40ee7810cee11bff7843da6fc8feeb50abbba64a"
  },
  ".github/workflows/confirmatory-10seed.yml": {
   "bytes": 4975,
