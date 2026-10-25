@@ -1,21 +1,14 @@
-# Dependabot keeps the CI verification toolchain and the GitHub Actions pins
-# current. The pip ecosystem watches requirements-lock.txt and pyproject.toml;
-# github-actions watches the workflow action versions. Runtime GPU dependencies
-# (torch, faiss) are intentionally left to the compatibility floors in
-# pyproject.toml -- they are not installed in CI and have no committed lock.
-#
-# Cadence is weekly (the repository is under active external review, so a CVE in
-# the verification toolchain -- which includes pip-audit and bandit -- should
-# surface within a week rather than up to a month). Updates are grouped so each
-# ecosystem opens a single batched PR instead of one per dependency, matching the
-# maintainer's existing practice of landing dependency bumps as a single batch.
+# Routine Dependabot version-update PRs are disabled for both ecosystems.
+# Security updates remain eligible when Dependabot alerts and security updates
+# are enabled in GitHub repository settings. Keep scientific lockfiles stable;
+# perform other dependency upgrades in deliberate, separately reviewed batches.
 version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "deps"
     groups:
@@ -27,7 +20,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "ci"
     groups:
