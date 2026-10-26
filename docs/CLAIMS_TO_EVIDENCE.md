@@ -181,6 +181,19 @@ All paths are repo-relative. All commands assume a fresh clone with
 
 ---
 
+### 12. Paper 5 single-seed Pfam filter counts (corrected descriptive rows)
+
+| Field | Evidence |
+|---|---|
+| Scope | t30, R=1000, k=25, panel seed 20260410; distant false positives only |
+| Source | `data/results_summaries/cross_family_partition.json` and `cross_family_partition_10seed.json` (seed 20260410) |
+| Predicates | Query known = `q_pfam_known`; voter known = `any_nbr_pfam_known`; evaluable = both true |
+| Verified counts | 41 distant false positives; 20 query known; 41 voter known; 20 evaluable; 0 within-family; 20 cross-family |
+| Publication correction | The original Paper 5 table incorrectly shows 36 query-known and 20 voter-known; see `docs/ERRATUM_2026-10-15.md` section 4 |
+| Reproducing check | `pytest tests/test_paper5_filter_counts.py -q` |
+| Requires LFS | No; both committed JSON summaries are regular Git objects |
+| Limitation | These are descriptive Pfam-annotation predicates, not proof of protein function or causal mechanism |
+
 ## Pre-Registration Integrity
 
 | File | Expected SHA256 | CI-verified | Verify command |
