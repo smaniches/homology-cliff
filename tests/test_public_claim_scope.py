@@ -6,10 +6,13 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_readme_preserves_chronology_and_validation_limits():
     text = (ROOT / "README.md").read_text()
     assert "Public history does not establish registration-before-execution" in text
-    assert "Two Paper 5 filter-count rows remain unresolved" in text
+    assert "Two unsupported Paper 5 filter-count rows are explicitly corrected" in text
     assert "Experimental hypotheses were pre-registered before execution" not in text
     assert "registrations were committed before execution" not in text
     assert "all claims are traceable" not in text
+    assert "records an unresolved Paper 5 table discrepancy" not in text
+    claims = (ROOT / "docs/CLAIMS_TO_EVIDENCE.md").read_text()
+    assert "unresolved Paper 5 table discrepancy" not in claims
     assert "exactly where novel threats will live" not in text
 
 def test_website_avoids_unsupported_global_preregistration():
