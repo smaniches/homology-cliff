@@ -11,6 +11,8 @@ def test_readme_preserves_chronology_and_validation_limits():
     assert "registrations were committed before execution" not in text
     assert "all claims are traceable" not in text
     assert "records an unresolved Paper 5 table discrepancy" not in text
+    claims = (ROOT / "docs/CLAIMS_TO_EVIDENCE.md").read_text()
+    assert "unresolved Paper 5 table discrepancy" not in claims
     assert "exactly where novel threats will live" not in text
 
 def test_website_avoids_unsupported_global_preregistration():
