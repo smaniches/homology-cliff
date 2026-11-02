@@ -29,6 +29,8 @@ jobs:
         run: python -m unittest discover -s experiments/esm2_t33_full_20261102 -p 'test_*.py' -v
 
   extract:
+    # Full extraction is opt-in; PR validation is handled by shard-gate.
+    if: github.event_name == 'workflow_dispatch'
     needs: contract
     runs-on: ubuntu-24.04
     timeout-minutes: 350
@@ -62,21 +64,25 @@ jobs:
           python -m pip install --only-binary=:all: --index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1+cpu'
           python -m pip install --only-binary=:all: 'numpy==2.1.3' 'transformers==4.46.3' 'huggingface-hub==0.36.0' 'safetensors==0.4.5'
           python -m pip check
-      - name: Fetch frozen six-vector reference by its original Actions run ID
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Download original six-vector pilot artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: esm2-t33-pilot-evidence
+          repository: smaniches/homology-cliff
+          run-id: 41405031973
+          github-token: ${{ github.token }}
+          path: pilot-reference
+      - name: Verify frozen pilot SHA-256 before inference
         run: |
-          gh run download 41405031973 --repo smaniches/homology-cliff \\
-            --name esm2-t33-pilot-evidence --dir pilot-reference
-          printf '%s  %s\\n' \\
-            2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0 \\
+          printf '%s  %s\n' \
+            2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0 \
             pilot-reference/pilot_embedding.npy | sha256sum --check --strict
       - name: Extract assigned full-data shard with atomic block checkpoints
         env:
           SHARD_ID: ${{ matrix.shard }}
         run: |
           python -u experiments/esm2_t33_full_20261102/run_full_extraction.py shard \
-            --rank "$SHARD_ID" --shards 8 --block-size 128 --outdir shard-output \\
+            --rank "$SHARD_ID" --shards 8 --block-size 128 --outdir shard-output \
             --anchor-reference pilot-reference/pilot_embedding.npy
       - uses: actions/upload-artifact@v6
         if: always()
