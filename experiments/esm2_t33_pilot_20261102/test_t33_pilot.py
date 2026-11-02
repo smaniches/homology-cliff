@@ -21,6 +21,9 @@ class PilotTest(unittest.TestCase):
         self.assertEqual(max(mod.EXPECTED_LENGTHS), 995)
         self.assertTrue(all(x > 0 for x in mod.EXPECTED_LENGTHS))
 
+    def test_frozen_model_revision(self):
+        self.assertEqual(mod.MODEL_REVISION, "08e4846e537177426273712802403f7ba8261b6c")
+
     def test_hash_different(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "data.json"

@@ -20,6 +20,7 @@ import torch
 DATASET = Path("data/sequences/proteins_25k_sequences.json")
 DATASET_SHA256 = "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc"
 MODEL_ID = "facebook/esm2_t33_650M_UR50D"
+MODEL_REVISION = "08e4846e537177426273712802403f7ba8261b6c"
 SAMPLE_INDICES = (4670, 14847, 24533, 10775, 5190, 23445)
 EXPECTED_LENGTHS = (5, 78, 184, 516, 703, 995)
 OUTPUT_DIR = Path(os.environ.get("PILOT_OUTPUT_DIR", "pilot-out"))
@@ -111,11 +112,10 @@ def save_output(embedding: np.ndarray, manifest: dict, root: Path) -> None:
 
 def run() -> None:
     from transformers import EsmModel, EsmTokenizer
-    from huggingface_hub import HfApi
 
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
     torch.set_num_threads(2)
-    revision = HfApi().model_info(MODEL_ID).sha
+    revision = MODEL_REVISION
     if not isinstance(revision, str) or re.fullmatch(r"[0-9a-f]{40}", revision) is None:
         raise RuntimeError("Could not freeze model revision")
     seqs = load_sequences(DATASET)
