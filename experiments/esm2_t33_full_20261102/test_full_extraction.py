@@ -1,4 +1,5 @@
 import hashlib
+import json
 import importlib.util
 from pathlib import Path
 import tempfile
@@ -98,6 +99,35 @@ class Test(unittest.TestCase):
             x = np.ones((1,f.D), dtype=np.float32)
             x[0,0] = np.nan
             f.norm_check(x)
+
+    def test_source_hash_mutation_detected(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)
+            f.save_block(p,0,2,fixture(0,2),'cpu')
+            m=p/'part_00000_00002.json'
+            obj=json.loads(m.read_text())
+            obj['script_sha256']='0'*64
+            m.write_text(json.dumps(obj))
+            with self.assertRaisesRegex(ValueError,'source revision'):
+                f.verify_block(m)
+
+    def test_orphan_array_rejected(self):
+        with tempfile.TemporaryDirectory() as d,patch.object(f,'N',2):
+            p=Path(d)
+            f.save_block(p,0,2,fixture(0,2),'cpu')
+            (p/'part_00003_00004.npy').write_bytes(b'orphan')
+            with self.assertRaisesRegex(ValueError,'Untracked'):
+                f.assemble(p,p/'result')
+
+    def test_mixed_source_revisions_rejected(self):
+        with tempfile.TemporaryDirectory() as d,patch.object(f,'N',4):
+            p=Path(d)
+            with patch.dict('os.environ',{'GITHUB_SHA':'a'}):
+                f.save_block(p/'a',0,2,fixture(0,2),'cpu')
+            with patch.dict('os.environ',{'GITHUB_SHA':'b'}):
+                f.save_block(p/'b',2,4,fixture(2,4),'cpu')
+            with self.assertRaisesRegex(ValueError,'Mixed source revisions'):
+                f.assemble(p,p/'result')
 
     def test_sha_is_file_bytes(self):
         with tempfile.TemporaryDirectory() as d:

@@ -98,7 +98,9 @@ def save_block(outdir, start, end, vectors, device):
             "model_revision": MODEL_SHA, "data_sha256": DATA_SHA,
             "start": start, "end": end, "n": end-start, "dim": D,
             "dtype": "float32", "device": device, "file": npy.name,
-            "npy_sha256": sha256(npy)}
+            "npy_sha256": sha256(npy),
+            "script_sha256": sha256(Path(__file__)),
+            "source_revision": os.environ.get("GITHUB_SHA")}
     save_atomic(manifest, (json.dumps(info, indent=2, sort_keys=True) + "\n").encode())
     return info
 
@@ -112,6 +114,8 @@ def verify_block(manifest_path, expected_device=None):
         info.get("dtype") != "float32" or info.get("n") != info.get("end")-info.get("start") or
         not 0 <= info.get("start", -1) < info.get("end", -1) <= N):
         raise ValueError("Invalid or incompatible block manifest")
+    if info.get("script_sha256") != sha256(Path(__file__)):
+        raise ValueError("Extraction source revision mismatch")
     if expected_device is not None and info.get("device") != expected_device:
         raise ValueError("Mixed extraction devices disallowed")
     if Path(info["file"]).name != info["file"]:
@@ -137,6 +141,13 @@ def assemble(directory, output):
         info, x = verify_block(path, expected_device="cpu")
         pieces.append((info["start"], info["end"], path, x))
     pieces.sort(key=lambda p: p[0])
+    expected_arrays = {str(path.parent / json.loads(path.read_text())["file"]) for path in manifests}
+    all_arrays = {str(p) for p in directory.rglob("part_*.npy")}
+    if all_arrays != expected_arrays:
+        raise ValueError("Untracked or missing shard arrays")
+    revisions = {json.loads(path.read_text()).get("source_revision") for path in manifests}
+    if len(revisions) != 1:
+        raise ValueError("Mixed source revisions across shards")
     offset = 0
     for start, end, _, _ in pieces:
         if start != offset:
@@ -172,6 +183,8 @@ def assemble(directory, output):
         doc = {"schema": "homology-cliff/t33-combined/v1", "rows": N, "dim": D,
                "model": MODEL_ID, "model_revision": MODEL_SHA,
                "data_sha256": DATA_SHA, "output_sha256": sha256(dest),
+               "script_sha256": sha256(Path(__file__)),
+               "source_revision": next(iter(revisions)),
                "algorithm": "single-sequence FP32 CPU, residue mean excluding CLS/EOS/PAD, L2-normalize",
                "parts": [{"start": s, "end": e, "sha256": json.loads(p.read_text())["npy_sha256"]}
                          for s, e, p, _ in pieces]}
