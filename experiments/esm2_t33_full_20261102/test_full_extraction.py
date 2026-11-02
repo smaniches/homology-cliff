@@ -49,8 +49,13 @@ class Test(unittest.TestCase):
         self.assertEqual(f.check_anchor(idx, ref, anchors), 0)
         self.assertIsNone(f.check_anchor(idx + 1, ref, anchors))
         slightly_changed = ref.copy()
-        slightly_changed[0] += np.float32(1e-5)
+        slightly_changed[0] += np.float32(1e-6)
         self.assertLess(f.check_anchor(idx, slightly_changed, anchors), f.ANCHOR_MAX_L2)
+        # This would pass the old 1e-3 ceiling; it must now fail closed.
+        materially_changed = ref.copy()
+        materially_changed[0] += np.float32(2e-5)
+        with self.assertRaisesRegex(ValueError, "L2 drift"):
+            f.check_anchor(idx, materially_changed, anchors)
         wrong = ref.copy()
         wrong[0] += np.float32(0.1)
         with self.assertRaisesRegex(ValueError, "L2 drift"):
