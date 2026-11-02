@@ -1,6 +1,10 @@
 name: Exploratory ESM2 t30 parity (manual only)
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - experiments/esm2_t30_parity_20261101/run_parity.py
+      - .github/workflows/esm2-t30-parity-exploratory.yml
 
 permissions:
   contents: read
