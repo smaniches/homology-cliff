@@ -1,0 +1,63 @@
+{
+  "actual_output_shape": [
+    6,
+    1280
+  ],
+  "batch_invariance_l2": [
+    3.6846543805903485e-7,
+    0
+  ],
+  "cosine_vs_special_token_pooling": [
+    0.9885191652980234,
+    0.9999136640728853,
+    0.9999705282667639,
+    0.9999979306547172,
+    0.9999988142249905,
+    0.9999995694927383
+  ],
+  "embedding_sha256": "2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0",
+  "environment": {
+    "huggingface_hub": "0.36.0",
+    "numpy": "2.1.3",
+    "python": "3.11.17",
+    "torch": "2.5.1+cpu",
+    "transformers": "4.46.3"
+  },
+  "float_precision": "fp32, CPU",
+  "limitations": [
+    "Only six prespecified proteins, not the 24,885-protein benchmark.",
+    "No biological scores, no training, and no superiority claim.",
+    "Model revision is frozen at run start and recorded in this manifest.",
+    "Precision and batch invariance apply only to this CPU reference execution."
+  ],
+  "model_id": "facebook/esm2_t33_650M_UR50D",
+  "model_revision": "08e4846e537177426273712802403f7ba8261b6c",
+  "pooling": "residue-only mean excluding CLS/EOS/PAD, then L2 normalize",
+  "selected_indices": [
+    4670,
+    14847,
+    24533,
+    10775,
+    5190,
+    23445
+  ],
+  "selected_lengths": [
+    5,
+    78,
+    184,
+    516,
+    703,
+    995
+  ],
+  "source_hash": "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc",
+  "source_revision": "299801f43a14754d77fea52038de7cc3b7b1039b",
+  "status": "T33_FROZEN_EMBEDDING_PILOT_ONLY",
+  "unit_norms": [
+    0.9999999403953552,
+    1,
+    0.9999999403953552,
+    1,
+    1,
+    0.9999999403953552
+  ]
+}
