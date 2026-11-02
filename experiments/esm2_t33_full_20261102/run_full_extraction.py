@@ -21,7 +21,7 @@ DATA_SHA = "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc"
 N = 24885
 D = 1280
 ANCHOR_REFERENCE_SHA256 = "2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0"
-ANCHOR_MAX_L2 = 1e-3  # Matches the preregistered pilot batch-invariance tolerance.
+ANCHOR_MAX_L2 = 1e-5  # Post-hoc CPU/FP32 parity guard; not a GPU or statistical guarantee.
 ANCHOR_HASHES = {
     4670: "73a18796d0e2801574b8a69b24d3c2f7575673f6b63cfe8fff8cf259726d28fa",
     14847: "850b0f67fa38f1d4f1979893233b3769cd9f404ab76cf6b7bedf6506de999d71",
