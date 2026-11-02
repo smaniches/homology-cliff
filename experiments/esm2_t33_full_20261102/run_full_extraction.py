@@ -20,6 +20,8 @@ MODEL_SHA = "08e4846e537177426273712802403f7ba8261b6c"
 DATA_SHA = "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc"
 N = 24885
 D = 1280
+ANCHOR_REFERENCE_SHA256 = "2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0"
+ANCHOR_MAX_L2 = 1e-3  # Matches the preregistered pilot batch-invariance tolerance.
 ANCHOR_HASHES = {
     4670: "73a18796d0e2801574b8a69b24d3c2f7575673f6b63cfe8fff8cf259726d28fa",
     14847: "850b0f67fa38f1d4f1979893233b3769cd9f404ab76cf6b7bedf6506de999d71",
@@ -61,6 +63,35 @@ def norm_check(x):
         raise ValueError("Invalid embedding shape/dtype/finiteness")
     if not np.all(np.abs(np.linalg.norm(x.astype(np.float64), axis=1) - 1) < 2e-6):
         raise ValueError("Invalid L2 normalization")
+
+
+def load_anchor_reference(path):
+    """Verify the immutable six-row pilot reference before using tolerance."""
+    if not path:
+        raise ValueError("A verified pilot anchor array is required for extraction")
+    path = Path(path)
+    if sha256(path) != ANCHOR_REFERENCE_SHA256:
+        raise ValueError("Frozen pilot anchor array SHA256 mismatch")
+    vectors = np.load(path, allow_pickle=False)
+    if vectors.shape != (len(ANCHOR_HASHES), D) or vectors.dtype != np.float32:
+        raise ValueError("Pilot anchor array shape/dtype mismatch")
+    norm_check(vectors)
+    for (index, expected_hash), vector in zip(ANCHOR_HASHES.items(), vectors):
+        if hashlib.sha256(vector.tobytes()).hexdigest() != expected_hash:
+            raise ValueError(f"Frozen pilot row {index} hash mismatch")
+    return dict(zip(ANCHOR_HASHES, vectors))
+
+
+def check_anchor(index, vector, anchors, max_l2=ANCHOR_MAX_L2):
+    """Reject scientific drift; do not equate byte hash mismatch with model drift."""
+    if index not in anchors:
+        return None
+    if vector.shape != (D,) or vector.dtype != np.float32 or not np.isfinite(vector).all():
+        raise ValueError(f"Invalid anchor vector at {index}")
+    delta = float(np.linalg.norm(vector.astype(np.float64) - anchors[index].astype(np.float64)))
+    if not np.isfinite(delta) or delta > max_l2:
+        raise ValueError(f"Pilot anchor {index} L2 drift {delta:.9g} > {max_l2:g}")
+    return delta
 
 
 def save_atomic(path: Path, content: bytes):
@@ -209,6 +240,7 @@ def run_shard(args):
     torch.set_num_threads(2)
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
     data = read_dataset(Path(args.dataset))
+    anchors = load_anchor_reference(args.anchor_reference)
     a, b = (args.start, args.end) if args.start is not None else shard_interval(args.rank, args.shards)
     if a is None or b is None or a < 0 or b > N or b <= a:
         raise ValueError("Invalid source range")
@@ -237,10 +269,9 @@ def run_shard(args):
                 vector, _ = extract(enc, hid, tok, len(seq))
                 if vector.shape != (D,):
                     raise ValueError("Model dimension mismatch")
-                if index in ANCHOR_HASHES:
-                    digest = hashlib.sha256(vector.tobytes()).hexdigest()
-                    if digest != ANCHOR_HASHES[index]:
-                        raise ValueError(f"Previously validated anchor {index} differs: {digest}")
+                delta = check_anchor(index, vector, anchors)
+                if delta is not None:
+                    print(f"ANCHOR row={index} L2_to_frozen_pilot={delta:.9g}", flush=True)
                 vectors[j] = vector
             info = save_block(args.outdir, start, end, vectors, "cpu")
             done += end-start
@@ -253,6 +284,8 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("shard")
     s.add_argument("--dataset", default="data/sequences/proteins_25k_sequences.json")
+    s.add_argument("--anchor-reference", required=True,
+                   help="SHA256-verified pilot_embedding.npy from frozen run 41405031973")
     s.add_argument("--outdir", required=True)
     s.add_argument("--rank", type=int, default=0)
     s.add_argument("--shards", type=int, default=1)
