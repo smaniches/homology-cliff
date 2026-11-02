@@ -33,6 +33,29 @@ class Test(unittest.TestCase):
         for i,k in [(-1,1),(3,2),(0,0),(0,f.N+1)]:
             with self.assertRaises(ValueError): f.shard_interval(i,k)
 
+    def test_anchor_reference_required_and_hash_bound(self):
+        with self.assertRaisesRegex(ValueError, "required"):
+            f.load_anchor_reference(None)
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "pilot_embedding.npy"
+            np.save(p, fixture(0, 6), allow_pickle=False)
+            with self.assertRaisesRegex(ValueError, "SHA256 mismatch"):
+                f.load_anchor_reference(p)
+
+    def test_anchor_numerical_tolerance_and_rejection(self):
+        ref = fixture(0, 1)[0].copy()
+        idx = next(iter(f.ANCHOR_HASHES))
+        anchors = {idx: ref}
+        self.assertEqual(f.check_anchor(idx, ref, anchors), 0)
+        self.assertIsNone(f.check_anchor(idx + 1, ref, anchors))
+        slightly_changed = ref.copy()
+        slightly_changed[0] += np.float32(1e-5)
+        self.assertLess(f.check_anchor(idx, slightly_changed, anchors), f.ANCHOR_MAX_L2)
+        wrong = ref.copy()
+        wrong[0] += np.float32(0.1)
+        with self.assertRaisesRegex(ValueError, "L2 drift"):
+            f.check_anchor(idx, wrong, anchors)
+
     def test_frozen_anchor_count(self):
         self.assertEqual(len(f.ANCHOR_HASHES), 6)
         self.assertEqual(len(set(f.ANCHOR_HASHES)), 6)
