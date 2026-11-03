@@ -1,0 +1,62 @@
+{
+  "experiment": "esm2_t33_six_anchor_gpu_parity_2026_11_03",
+  "scope": "six_frozen_reference_anchors_only",
+  "status": "PASS",
+  "source_revision": "00dbc1a98110953b96b13ae7e076437bd37fda28",
+  "model": "facebook/esm2_t33_650M_UR50D",
+  "model_revision": "08e4846e537177426273712802403f7ba8261b6c",
+  "dataset_sha256": "c99d8329c02b806b9d208465946c68826d17245cd9e012ca9a7b94faea0a60fc",
+  "reference_sha256": "2074ee00b89619abe5cafaa0877207c87e717636e185700a6c5e30791ed6b5d0",
+  "precision": "FP32; TF32 disabled",
+  "hardware": "NVIDIA RTX PRO 6000 Blackwell Server Edition (96 GB)",
+  "software": {
+    "torch": "2.9.1+cu128",
+    "cuda_runtime": "12.8"
+  },
+  "peak_gpu_allocated_bytes": 2914034176,
+  "acceptance_max_l2": 0.00001,
+  "observed_max_l2": 5.46294776044178e-7,
+  "anchor_results": [
+    {
+      "row": 4670,
+      "residues": 5,
+      "l2": 5.46294776044178e-7,
+      "inference_seconds": 0.2669
+    },
+    {
+      "row": 14847,
+      "residues": 78,
+      "l2": 3.2747437116648473e-7,
+      "inference_seconds": 0.0193
+    },
+    {
+      "row": 24533,
+      "residues": 184,
+      "l2": 4.0455311881234477e-7,
+      "inference_seconds": 0.0196
+    },
+    {
+      "row": 10775,
+      "residues": 516,
+      "l2": 2.3671128404069345e-7,
+      "inference_seconds": 0.0315
+    },
+    {
+      "row": 5190,
+      "residues": 703,
+      "l2": 2.006954039498689e-7,
+      "inference_seconds": 0.0414
+    },
+    {
+      "row": 23445,
+      "residues": 995,
+      "l2": 1.4896377741826193e-7,
+      "inference_seconds": 0.0506
+    }
+  ],
+  "limitations": [
+    "The existing engineering threshold was set after prior CPU pilot measurements; it is not a preregistered statistical bound.",
+    "Measured inference_seconds exclude initial model download, initialization, and input processing.",
+    "This does not establish full-dataset extraction, downstream retrieval accuracy, or generalization to other accelerators."
+  ]
+}
