@@ -44,8 +44,8 @@
   "sha256": "9bc8cc88fc01f379a74d9f20a2dcf75f74981bd6c24ca32c9a19f100345d5bd1"
  },
  ".github/workflows/hydrated-companion.yml": {
-  "bytes": 3322,
-  "sha256": "93c6ef4609c8265d236296f18c574c39611778e595cfa326c47403d415d712d4"
+  "bytes": 3264,
+  "sha256": "3281c6883f4bf728e7e0bdfa03a88feac1410e839a56624fe48719dd18f36a84"
  },
  ".github/workflows/lint.yml": {
   "bytes": 1251,
