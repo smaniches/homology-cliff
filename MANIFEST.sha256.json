@@ -37800,8 +37800,8 @@
   "sha256": "4b471def48a5fc7d0251a605638335db07ea398c916d63a744096a0656a04222"
  },
  "docs/ERRATUM_2026-10-15.md": {
-  "bytes": 10498,
-  "sha256": "18bf9d833c52d330b0f85ba88de1481aab4028a42ceac8f24abe370e99de5a6a"
+  "bytes": 11575,
+  "sha256": "de2853cfcc69c73d697758ae4b710586e2b06502c1bc34c69567667f606c1b46"
  },
  "docs/MAPPER_AUGMENTATION_ROBUSTNESS.md": {
   "bytes": 7314,
