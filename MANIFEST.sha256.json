@@ -43,6 +43,10 @@
   "bytes": 838,
   "sha256": "9bc8cc88fc01f379a74d9f20a2dcf75f74981bd6c24ca32c9a19f100345d5bd1"
  },
+ ".github/workflows/hydrated-companion.yml": {
+  "bytes": 3322,
+  "sha256": "93c6ef4609c8265d236296f18c574c39611778e595cfa326c47403d415d712d4"
+ },
  ".github/workflows/lint.yml": {
   "bytes": 1251,
   "sha256": "1b2144b5bd8ea8e70cec21698344b9b5b6d0c98f326b0d91793876ca0b591bd5"
@@ -37986,6 +37990,10 @@
  "scripts/build_summary_figure.py": {
   "bytes": 10744,
   "sha256": "007b7b3169007ffd74622c28766fc6dd8e19667ce90f1f2c43daeaa04c2eab7e"
+ },
+ "scripts/ci/build_hydrated_release_archive.py": {
+  "bytes": 4793,
+  "sha256": "e848c42dd6dbd9921f5b95df19907053af93142a076110e6ed24a6cfa9ad6873"
  },
  "scripts/ci/verify_evidence.py": {
   "bytes": 16635,
