@@ -1,0 +1,85 @@
+name: Verify hydrated Homology Cliff v1.6.0 companion
+
+on:
+  pull_request:
+    paths:
+      - scripts/ci/build_hydrated_release_archive.py
+      - .github/workflows/hydrated-companion.yml
+      - MANIFEST.sha256.json
+  push:
+    branches: [main]
+    paths:
+      - scripts/ci/build_hydrated_release_archive.py
+      - .github/workflows/hydrated-companion.yml
+      - MANIFEST.sha256.json
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout audited builder, without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: builder
+          persist-credentials: false
+      - name: Checkout immutable research release with LFS payloads
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: smaniches/homology-cliff
+          ref: v1.6.0
+          path: frozen
+          lfs: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Require exact frozen commit, all LFS payloads and manifest hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C frozen rev-parse HEAD)" = "54711fc9f7d788b31d24ddf5db6950f6544d914f"
+          python builder/scripts/ci/build_hydrated_release_archive.py \
+            --root frozen --tag v1.6.0 --expected-lfs 9365 \
+            --output outputs/homology-cliff-v1.6.0-hydrated.zip
+          (cd outputs && sha256sum --check homology-cliff-v1.6.0-hydrated.zip.sha256)
+      - name: Preserve bounded audit outputs for review
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: homology-cliff-v1.6.0-hydrated-companion
+          path: outputs/
+          retention-days: 3
+          if-no-files-found: error
+
+  publish:
+    # PRs never receive the release-write token. This job only publishes after
+    # a reviewed main-branch merge and successful independent read-only build.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: homology-cliff-v1.6.0-hydrated-companion
+          path: outputs
+      - name: Attach verified companion to existing v1.6.0 release (never replace)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd outputs && sha256sum --check homology-cliff-v1.6.0-hydrated.zip.sha256)
+          existing="$(gh release view v1.6.0 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')"
+          for file in outputs/*; do
+            if grep -Fxq "$(basename "$file")" <<< "$existing"; then
+              echo "::error::Existing asset would be overwritten: $file"
+              exit 1
+            fi
+          done
+          gh release upload v1.6.0 outputs/* --repo "$GITHUB_REPOSITORY"
+          echo 'Hydrated, hash-verified data companion attached to the existing tag.' >> "$GITHUB_STEP_SUMMARY"
