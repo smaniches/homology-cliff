@@ -37992,8 +37992,8 @@
   "sha256": "007b7b3169007ffd74622c28766fc6dd8e19667ce90f1f2c43daeaa04c2eab7e"
  },
  "scripts/ci/build_hydrated_release_archive.py": {
-  "bytes": 4793,
-  "sha256": "e848c42dd6dbd9921f5b95df19907053af93142a076110e6ed24a6cfa9ad6873"
+  "bytes": 4806,
+  "sha256": "ff61dcb3e130c3c1cbfe426b097eb46f5c5fe001c6fb8cb851cf4b3a21bd1ab0"
  },
  "scripts/ci/verify_evidence.py": {
   "bytes": 16635,
