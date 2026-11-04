@@ -24,6 +24,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -79,6 +80,24 @@ def lfs_pointer_metadata(path: Path) -> tuple[str, int] | None:
 def main() -> int:
     with open(MANIFEST_PATH) as fh:
         manifest = json.load(fh)
+
+    # In a Git checkout, a valid manifest must also cover every tracked file.
+    # The previous verifier checked only entries already present in the
+    # manifest, silently accepting new unindexed research sources/workflows.
+    unindexed: list[str] = []
+    if (REPO_ROOT / ".git").exists():
+        tracked = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=True,
+        ).stdout
+        tracked_paths = {
+            part.decode("utf-8", errors="surrogateescape")
+            for part in tracked.split(b"\x00")
+            if part
+        }
+        unindexed = sorted(tracked_paths - set(manifest) - {"MANIFEST.sha256.json"})
 
     ok = 0
     lfs_pointers_verified = 0
@@ -152,6 +171,7 @@ def main() -> int:
     print(f"  Gitignored build artifacts (skipped):     {gitignored}")
     print(f"  Missing real files (failure if non-zero): {len(missing)}")
     print(f"  Hash mismatches (failure if non-zero):    {len(mismatches)}")
+    print(f"  Unindexed Git-tracked files (failure):    {len(unindexed)}")
 
     if missing:
         print("\nMISSING:")
@@ -166,7 +186,14 @@ def main() -> int:
         if len(mismatches) > 25:
             print(f"  ... and {len(mismatches) - 25} more")
 
-    fail = bool(missing or mismatches)
+    if unindexed:
+        print("\nUNINDEXED TRACKED FILES:")
+        for p in unindexed[:25]:
+            print(f"  - {p}")
+        if len(unindexed) > 25:
+            print(f"  ... and {len(unindexed) - 25} more")
+
+    fail = bool(missing or mismatches or unindexed)
     return 1 if fail else 0
 
 

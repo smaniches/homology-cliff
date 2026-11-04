@@ -20,11 +20,11 @@ jobs:
       OMP_NUM_THREADS: "2"
       PILOT_OUTPUT_DIR: pilot-out
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
       - name: Verify original frozen sequences
@@ -44,7 +44,7 @@ jobs:
         run: python -m unittest discover -s experiments/esm2_t33_pilot_20261102 -p 'test_*.py' -v
       - name: Execute real ESM-2 t33 inference
         run: python -u experiments/esm2_t33_pilot_20261102/run_t33_pilot.py
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: always()
         with:
           name: esm2-t33-pilot-evidence

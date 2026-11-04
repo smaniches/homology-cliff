@@ -28,28 +28,36 @@
   "sha256": "d0111257f8283461754916ae40ee7810cee11bff7843da6fc8feeb50abbba64a"
  },
  ".github/workflows/confirmatory-10seed.yml": {
-  "bytes": 4975,
-  "sha256": "0e1843a88e964ee9c8e3958f561ea51cbd2175146e57d1ace2c2fdee2eba3b84"
+  "bytes": 5104,
+  "sha256": "e99d202dae5b72e5fcb2b4421d28980e836e6a19dcf9a4449fd218478e7eef97"
+ },
+ ".github/workflows/esm2-t30-parity-exploratory.yml": {
+  "bytes": 2817,
+  "sha256": "092012e1f0814ff60568c39da03410883529054b1c6eebc1ef07d1e394400fd2"
+ },
+ ".github/workflows/esm2-t33-pilot-exploratory.yml": {
+  "bytes": 2032,
+  "sha256": "60cd07f5b933e126812460413f33af32cffc460e99a342a4ef1a0f8c7104028f"
  },
  ".github/workflows/evidence.yml": {
   "bytes": 838,
   "sha256": "9bc8cc88fc01f379a74d9f20a2dcf75f74981bd6c24ca32c9a19f100345d5bd1"
  },
  ".github/workflows/lint.yml": {
-  "bytes": 1165,
-  "sha256": "ab0c47a24adc753ef6d096f362c13c5ff9e1b8924fb84722de5d6202503b4185"
+  "bytes": 1251,
+  "sha256": "1b2144b5bd8ea8e70cec21698344b9b5b6d0c98f326b0d91793876ca0b591bd5"
  },
  ".github/workflows/manifest.yml": {
-  "bytes": 869,
-  "sha256": "4f6d08199610f6337ce7d0c771e681ce962aecd117810cbac1408e2a38565c2b"
+  "bytes": 955,
+  "sha256": "a606d44254d7c19634e4125186c8ef0ee1c54302636ae5cec0752deb443690b4"
  },
  ".github/workflows/smoke.yml": {
-  "bytes": 1013,
-  "sha256": "e6b4220473bb5b5e4027fc6bf286b42410b98158db6e32fdab90a1c7d7c21bd9"
+  "bytes": 1099,
+  "sha256": "71bdde393ac4ad8feb04649e3478ccd463f31318da9821e73c7eeda2b130ce2a"
  },
  ".github/workflows/tests.yml": {
-  "bytes": 1234,
-  "sha256": "95b174a1a06c52a2f405e0e7230c2d788f5a532181c0a351138d64976cd33090"
+  "bytes": 1320,
+  "sha256": "cea6efbb902ba3e4568cc92bbc426bde977d6f6d783c049ee669917225e52b19"
  },
  ".gitignore": {
   "bytes": 208,
@@ -37807,6 +37815,34 @@
   "bytes": 220,
   "sha256": "ebe839db9bb28795e236c682a014857f92105e7a2f07df71b2cccd4de903d384"
  },
+ "experiments/esm2_t30_parity_20261101/RESULTS.md": {
+  "bytes": 4195,
+  "sha256": "bf5ca6266f7dd59870c5f4938596cf58a473680aeeb589ec7598156ee8a07b3c"
+ },
+ "experiments/esm2_t30_parity_20261101/results/41371173247.json": {
+  "bytes": 3109,
+  "sha256": "5bb9fc49c791f7f9f5b6cb97ad49d4ad6b42b09c2873586d14c9077dba8bd764"
+ },
+ "experiments/esm2_t30_parity_20261101/run_parity.py": {
+  "bytes": 5891,
+  "sha256": "b692f6e64f79165915f740eb4f36695cd61de85b6a14d3a0ea732e0a76cf9aa8"
+ },
+ "experiments/esm2_t33_pilot_20261102/RESULTS.md": {
+  "bytes": 3002,
+  "sha256": "24e9a21d7ff73a1f36825b80877d9cdd2bf0ed7fb010437a766cde46413aa726"
+ },
+ "experiments/esm2_t33_pilot_20261102/results/41405031973.json": {
+  "bytes": 1576,
+  "sha256": "d155ce22e6e60eb66dd4e9589ccf96a43ff50c1500386071e55287cb5827b7d6"
+ },
+ "experiments/esm2_t33_pilot_20261102/run_t33_pilot.py": {
+  "bytes": 8596,
+  "sha256": "62f5acbb2ea42374bab0ce0ba16c461be8e096510d7581fc3ab42d6f8308309d"
+ },
+ "experiments/esm2_t33_pilot_20261102/test_t33_pilot.py": {
+  "bytes": 2906,
+  "sha256": "f3340635f8ebf24247afa64b8520655b6cd2a3e36ebe9561e1c958e499ed934c"
+ },
  "figures/cliff_summary.png": {
   "bytes": 238776,
   "sha256": "5db7926fbfb88cc9356fe9f85b95a006e31c1b1a7f8eb6c08bc703d96fcac91b"
@@ -37956,8 +37992,8 @@
   "sha256": "3ed0f3cd8b28377db8c45d4d1982ce2e272f6a9c8ee0c4787db27e4a19df55ac"
  },
  "scripts/ci/verify_manifest.py": {
-  "bytes": 6500,
-  "sha256": "14534c8aea6020b5d826cd499703845e9ba33f5c1c1bdff3d30e01b7568ec45f"
+  "bytes": 7540,
+  "sha256": "d8c5f3ff6ad12020780fd88df4e70bcd8e4ff9e7280010e1c8b6c3f5c389d03b"
  },
  "scripts/ci/verify_prereg_locks.py": {
   "bytes": 3418,
