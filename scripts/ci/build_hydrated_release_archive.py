@@ -24,7 +24,7 @@ def git_output(root: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=root).decode("utf-8").strip()
 
 
-def build(root: Path, destination: Path, tag: str, expected_lfs: int) -> dict:
+def build(root: Path, destination: Path, tag: str, expected_lfs: int) -> dict[str, object]:
     root = root.resolve(strict=True)
     if destination.resolve().is_relative_to(root):
         raise ValueError("output must be outside the frozen source checkout")
