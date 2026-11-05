@@ -246,8 +246,8 @@ def main() -> None:
 
     fig.tight_layout(rect=(0, 0.02, 1, 0.97))
     fig.text(0.5, 0.005,
-             "github.com/smaniches/homology-cliff  -  9,360 pre-registered cells "
-             "-  4 SHA256-locked pre-registrations  -  CC-BY-4.0 papers / MIT code",
+             "homology-cliff  -  9,360 archived result cells "
+             "-  3 verified registration hashes  -  see erratum for chronology",
              ha="center", fontsize=8.5, style="italic", color="#444")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Verify pre-registration SHA256 locks claimed in paper abstracts.
+"""Verify the SHA-256 byte identities of three archived registrations.
 
-The compendium's central credibility claim is that hypotheses were locked
-via SHA256 before any experiment ran. Each paper cites a 16-character
-prefix of the lock; the harness `code/harnesses/run_cliff.py` verifies
-the full hash at runtime and aborts if the file has been edited. This
-script duplicates the verification at CI time so the public Actions tab
-displays the integrity status independently of any harness run.
+These hashes detect edits to the registered files; they do not establish
+when a protocol was written or executed. Public history does not establish
+registration-before-execution for the original experiments. See
+docs/ERRATUM_2026-10-15.md for chronology and archive scope.
+
+The runtime harness checks only the main factorial registration; this script
+checks all three declared file hashes in CI.
 
 Exit code:
   0  if every claimed pre-registration hash matches the file on disk
@@ -22,7 +23,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-# Claimed pre-registration locks, taken verbatim from the paper sources.
+# Registered file hashes: byte-identity checks, not evidence of lock time.
 # The lock is canonically defined over the LF-normalized bytes of each file
 # (the form committed to git). We strip CR before hashing so the check is
 # byte-stable across platforms: on a Windows clone with core.autocrlf=true the
@@ -37,10 +38,10 @@ EXPECTED = {
         "139f60129d4e73dfb13444c360cc80c5b48c217d9bc87b1bf4b48b06515bcc06",
     "data/prereg/PRE_REGISTRATION_HOMOLOGY_CLIFF_ADDENDUM_FULLNULL.md":
         "f3864d097a0c611d790e6fb15a42e7efb36b2d1b103be4ec1c4f28f99d1004dc",
-    # Confirmatory 10-seed cross-family robustness extension. Locked before any
-    # additional panel seed is run; not yet cited by any paper and not verified
-    # by a runtime harness (CI-only lock). Companion digest is stored beside the
-    # document at PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md.sha256.
+    # Confirmatory 10-seed extension: the public commit sequence is consistent
+    # with registration preceding its later run, not an external timestamp.
+    # No runtime harness verifies this registration (CI-only file hash).
+    # Its companion digest is at PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md.sha256.
     "data/prereg/PRE_REGISTRATION_CROSS_FAMILY_10SEED_v1.md":
         "204953efeb098f7004b5e82586d5db6f721439b0abe9d214256817679a7a6804",
 }

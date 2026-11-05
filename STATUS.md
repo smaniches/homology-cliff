@@ -72,4 +72,4 @@ rejection holds under full node membership (see the B4 row below and
 | "experimentally observed" | Measured in committed cells; not yet independently replicated |
 | "not yet independently validated" | No third-party replication |
 | "research prototype" | Code runs and produces correct results but is not production-hardened |
-| "pre-registered" | Hypothesis and success criterion committed (as text file) before experiment; SHA256-locked where noted |
+| "pre-registered" | Historical protocol label; three files have SHA-256 checks. For the original studies, public history does not establish registration-before-execution (see [erratum](docs/ERRATUM_2026-10-15.md)). |
